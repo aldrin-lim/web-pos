@@ -1,0 +1,36 @@
+.Navbar {
+  @apply fixed
+    bottom-4
+    flex
+    flex-row
+    justify-evenly
+    rounded-md
+    bg-gray-100
+    py-2
+    border
+    border-gray-200 
+    z-40
+    max-w-md;
+  transform: translateX(-50%);
+  left: 50%;
+}
+
+.Navbar_ButtonContainer {
+  @apply flex w-[90px] flex-col ;
+}
+
+.Navbar_Button {
+  @apply flex flex-col  gap-1 shadow-none;
+}
+
+.Navbar_Button___active {
+  @apply text-purple-500;
+}
+
+.Navbar_ButtonIcon {
+  @apply mx-auto w-6 text-gray-500;
+}
+
+.Navbar_Button___active .Navbar_ButtonIcon {
+  @apply text-purple-500;
+}

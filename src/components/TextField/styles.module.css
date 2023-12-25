@@ -1,0 +1,34 @@
+.TextField {
+  @apply input input-bordered relative z-10 w-full;
+}
+
+.TextField___withLabel {
+  @apply placeholder:text-transparent
+    focus:placeholder:text-gray-400;
+}
+
+.TextField_Label {
+  @apply absolute
+    left-3
+    top-[12px]
+    z-0
+    px-1
+    text-base
+    text-gray-400
+    transition-all
+    peer-focus:bg-red-500;
+}
+
+.TextField_Label___inputFocused {
+  @apply left-2
+    -translate-y-5
+    bg-base-100
+    text-xs;
+}
+
+.TextField_Label___inputValue {
+  @apply left-2
+    -translate-y-5
+    bg-base-100
+    text-xs;
+}
