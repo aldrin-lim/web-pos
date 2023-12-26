@@ -4,17 +4,12 @@ import {
   ShoppingCartIcon,
 } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
-import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 
 import './styles.css'
-import { useNavigate } from 'react-router-dom'
-import { AppPath } from 'routes/AppRoutes.types'
 import { useState } from 'react'
 import SlidingTransition from 'components/SlidingTransition'
 import ProductSelection from './screens/ProductSelection'
-import ImageLoader from 'components/ImageLoader'
-import MiddleTruncatedText from 'components/MiddleTruncatedText'
 import OrderItemCard from './components/OrderItemCard'
 
 enum ProductMenuScreen {
@@ -23,8 +18,6 @@ enum ProductMenuScreen {
 }
 
 const ProductMenu = () => {
-  const navigate = useNavigate()
-
   const [activeScreen, setActiveScreen] = useState(ProductMenuScreen.None)
   return (
     <div

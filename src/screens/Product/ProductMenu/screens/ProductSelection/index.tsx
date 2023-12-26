@@ -1,5 +1,6 @@
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
+import ProductSelectionGrid from './ProductSelectionGrid'
 
 const ProductSelection = () => {
   return (
@@ -7,7 +8,7 @@ const ProductSelection = () => {
       <Toolbar
         items={[<div key={1} />, <ToolbarTitle key={2} title="Menu" />]}
       />
-      Product selection
+      <ProductSelectionGrid />
     </div>
   )
 }
