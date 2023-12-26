@@ -1,0 +1,15 @@
+{
+  "eslint.workingDirectories": ["./"],
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
+  "tailwind-class-sorter.classRegex": {
+    "rescript": [
+      "className\\w*?=\\w*(\"[\\s\\S]+?\")|className\\w*?=\\w*?\\{([\\s\\S]+?)\\}",
+      "\"(.+?)\""
+    ]
+  }
+}

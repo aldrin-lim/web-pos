@@ -30,7 +30,7 @@ html, body {
 
 @layer components {
   .section {
-    @apply p-6 w-full
+    @apply p-6 absolute flex min-h-screen w-full flex-col bg-base-100
   }
 
   .section:has(.Toolbar) {
