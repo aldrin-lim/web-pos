@@ -7,27 +7,45 @@ import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 
 import './styles.css'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import SlidingTransition from 'components/SlidingTransition'
 import ProductSelection from './screens/ProductSelection'
 import OrderItemCard from './components/OrderItemCard'
+import {
+  ProductMenuActionType,
+  ProductMenuActiveScreen,
+  ProductMenuContextProvider,
+  useProductMenuContext,
+} from './context/ProductMenuContext'
 
-enum ActiveScreen {
-  None = 'none',
-  ProductSelection = 'productSelection',
-}
-
-const ProductMenu = () => {
-  const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
+const ProductMenuComponent = () => {
+  const {
+    state: { activeScreen },
+    dispatch,
+  } = useProductMenuContext()
 
   const goBackToMainScreen = useCallback(() => {
-    setActiveScreen(ActiveScreen.None)
-  }, [])
+    dispatch({
+      type: ProductMenuActionType.UpdateActiveScreen,
+      payload: {
+        screen: ProductMenuActiveScreen.None,
+      },
+    })
+  }, [dispatch])
+
+  const setActiveScreen = (screen: ProductMenuActiveScreen) => {
+    dispatch({
+      type: ProductMenuActionType.UpdateActiveScreen,
+      payload: {
+        screen,
+      },
+    })
+  }
 
   return (
     <div
       className={`ProductMenu main-screen ${
-        activeScreen === ActiveScreen.None ? 'h-full' : 'h-screen'
+        activeScreen === ProductMenuActiveScreen.None ? 'h-full' : 'h-screen'
       }`}
     >
       <div className="section">
@@ -41,7 +59,9 @@ const ProductMenu = () => {
         <div className="ProductMenuGrid flex w-full flex-row flex-wrap gap-4">
           <button
             className="btn btn-square  mt-1 flex h-[213px] w-[150px] flex-col border-2 border-dashed border-gray-300"
-            onClick={() => setActiveScreen(ActiveScreen.ProductSelection)}
+            onClick={() =>
+              setActiveScreen(ProductMenuActiveScreen.ProductSelection)
+            }
           >
             <PlusIcon className="w-8 text-success" />
             Add Product
@@ -66,7 +86,7 @@ const ProductMenu = () => {
 
       <SlidingTransition
         direction="right"
-        isVisible={activeScreen === ActiveScreen.ProductSelection}
+        isVisible={activeScreen === ProductMenuActiveScreen.ProductSelection}
         zIndex={10}
       >
         <ProductSelection onBack={goBackToMainScreen} />
@@ -74,5 +94,11 @@ const ProductMenu = () => {
     </div>
   )
 }
+
+const ProductMenu = () => (
+  <ProductMenuContextProvider>
+    <ProductMenuComponent />
+  </ProductMenuContextProvider>
+)
 
 export default ProductMenu

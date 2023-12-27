@@ -21,7 +21,7 @@ const ProductSelection = (props: ProductSelectionProps) => {
 
   const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
 
-  const goBackToMainScreen = useCallback(() => {
+  const goBackToProductSelectionScreen = useCallback(() => {
     setActiveScreen(ActiveScreen.None)
   }, [])
 
@@ -53,7 +53,7 @@ const ProductSelection = (props: ProductSelectionProps) => {
         isVisible={activeScreen === ActiveScreen.ProductList}
         zIndex={10}
       >
-        <ProductSelectionList onBack={goBackToMainScreen} />
+        <ProductSelectionList onBack={goBackToProductSelectionScreen} />
       </SlidingTransition>
     </div>
   )
