@@ -30,7 +30,7 @@ html, body {
 
 @layer components {
   .section {
-    @apply p-6 absolute flex min-h-screen w-full flex-col bg-base-100
+    @apply p-6 absolute flex min-h-screen w-full flex-col bg-base-100 gap-4
   }
 
   .section:has(.Toolbar) {
@@ -44,5 +44,13 @@ html, body {
 
   .form-control-error {
     @apply text-left text-xs text-red-500
+  }
+
+  .main-screen {
+    @apply flex min-h-screen w-full flex-col gap-4 overflow-hidden bg-base-300
+  }
+
+  .sub-screen {
+
   }
 }

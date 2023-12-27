@@ -7,22 +7,27 @@ import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 
 import './styles.css'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import SlidingTransition from 'components/SlidingTransition'
 import ProductSelection from './screens/ProductSelection'
 import OrderItemCard from './components/OrderItemCard'
 
-enum ProductMenuScreen {
+enum ActiveScreen {
   None = 'none',
   ProductSelection = 'productSelection',
 }
 
 const ProductMenu = () => {
-  const [activeScreen, setActiveScreen] = useState(ProductMenuScreen.None)
+  const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
+
+  const goBackToMainScreen = useCallback(() => {
+    setActiveScreen(ActiveScreen.None)
+  }, [])
+
   return (
     <div
-      className={`ProductMenu flex min-h-screen w-full flex-col gap-4 overflow-hidden bg-base-300 ${
-        activeScreen === ProductMenuScreen.None ? 'h-full' : 'h-screen'
+      className={`ProductMenu main-screen ${
+        activeScreen === ActiveScreen.None ? 'h-full' : 'h-screen'
       }`}
     >
       <div className="section">
@@ -33,14 +38,17 @@ const ProductMenu = () => {
             <div key={3} />,
           ]}
         />
-        <div className="flex w-full flex-row flex-wrap gap-4">
-          <button className="btn btn-square  mt-1 flex h-[213px] w-[150px] flex-col border-2 border-dashed border-gray-300 ">
+        <div className="ProductMenuGrid flex w-full flex-row flex-wrap gap-4">
+          <button
+            className="btn btn-square  mt-1 flex h-[213px] w-[150px] flex-col border-2 border-dashed border-gray-300"
+            onClick={() => setActiveScreen(ActiveScreen.ProductSelection)}
+          >
             <PlusIcon className="w-8 text-success" />
             Add Product
           </button>
           <OrderItemCard id="" name="New Product" quantity={33} />
         </div>
-        <div className="fixed bottom-10 left-0 right-0 flex justify-center ">
+        <div className="CartButton fixed bottom-10 left-0 right-0 flex justify-center ">
           <button className="CartButton btn mx-4 flex w-full max-w-md flex-shrink flex-row justify-center gap-4 rounded-md bg-purple-400 p-4 text-white">
             <div className="mx-auto flex flex-row gap-4">
               <div data-testid className="flex flex-row gap-1">
@@ -58,10 +66,10 @@ const ProductMenu = () => {
 
       <SlidingTransition
         direction="right"
-        isVisible={activeScreen === ProductMenuScreen.ProductSelection}
+        isVisible={activeScreen === ActiveScreen.ProductSelection}
         zIndex={10}
       >
-        <ProductSelection />
+        <ProductSelection onBack={goBackToMainScreen} />
       </SlidingTransition>
     </div>
   )

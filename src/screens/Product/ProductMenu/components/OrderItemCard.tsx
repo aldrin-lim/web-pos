@@ -3,6 +3,7 @@ type OrderItemCardProps = {
   name: string
   quantity: number
   image?: string
+  outOfStock?: boolean
 }
 
 import ImageLoader from 'components/ImageLoader'
@@ -10,7 +11,7 @@ import MiddleTruncatedText from 'components/MiddleTruncatedText'
 import './OrderItemCard.styles.css'
 
 const OrderItemCard = (props: OrderItemCardProps) => {
-  const { name, quantity, image } = props
+  const { name, quantity, image, outOfStock = false } = props
 
   return (
     <div className="OrderItem card card-compact w-[155px] cursor-pointer border border-gray-300 bg-base-100">
@@ -24,7 +25,11 @@ const OrderItemCard = (props: OrderItemCardProps) => {
         </h2>
 
         <div className="flex flex-row gap-1  text-xs">
-          <span className="overflow-hidden truncate text-ellipsis">
+          <span
+            className={`overflow-hidden truncate text-ellipsis ${
+              outOfStock ? 'text-red-400' : ''
+            }`}
+          >
             {quantity} available
           </span>
         </div>
