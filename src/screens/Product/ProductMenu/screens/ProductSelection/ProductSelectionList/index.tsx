@@ -143,7 +143,7 @@ const ProductSelectionList = (props: ProductSelectionListProps) => {
       <Toolbar
         items={[
           <ToolbarButton
-            key={2}
+            key={1}
             icon={<ChevronLeftIcon className="w-6" />}
             onClick={onBack}
           />,

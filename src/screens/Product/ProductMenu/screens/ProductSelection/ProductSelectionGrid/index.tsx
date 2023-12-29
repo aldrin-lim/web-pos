@@ -1,9 +1,16 @@
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 import useAllProducts from 'hooks/useAllProducts'
 import useMediaQuery, { ScreenSize } from 'hooks/useMediaQuery'
+import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import useUser from 'hooks/useUser'
 import { Navigate } from 'react-router-dom'
 import { AppPath } from 'routes/AppRoutes.types'
 import OrderItemCard from 'screens/Product/ProductMenu/components/OrderItemCard'
+import {
+  ProductMenuActionType,
+  ProductMenuActiveScreen,
+  useProductMenuContext,
+} from 'screens/Product/ProductMenu/context/ProductMenuContext'
 
 type ProductSelectionGridProps = {
   onViewAll: () => void
@@ -27,8 +34,19 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
   const { currentBreakpoint } = useMediaQuery({ updateOnResize: true })
 
   const { user, isLoading: isUserLoading, error: userError } = useUser()
+  const { updateProductCollection } = useUpdateProductCollection()
+
+  const {
+    state: {
+      productCollectionState: { activeCollection },
+    },
+    dispatch,
+  } = useProductMenuContext()
 
   const bussinessId = user?.businesses[0]?.id
+
+  const productInCollectionIds =
+    activeCollection?.products.map((p) => p.id) ?? []
 
   const productCardNumber = getProductCardNumber(currentBreakpoint)
   const {
@@ -66,10 +84,70 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
 
   const verticalScrollStyle = 'flex-wrap justify-center'
   const horizontalScrollSyle = 'overflow-x-auto'
+
+  const goToInventoryApp = () => {
+    window.location.href = import.meta.env.VITE_INVENTORY_APP_URL
+  }
+
+  const filteredInStockProducts = products.filter(
+    (p) => !productInCollectionIds.includes(p.id ?? ''),
+  )
+
+  const filteredOutOfStockProducts = outOfStockProducts.filter(
+    (p) => !productInCollectionIds.includes(p.id ?? ''),
+  )
+
+  const onProductClick = async (productId: string) => {
+    if (activeCollection) {
+      await updateProductCollection({
+        products: activeCollection.products
+          .map((p) => ({ id: p.id }))
+          .concat({ id: productId }),
+      })
+      dispatch({
+        type: ProductMenuActionType.UpdateActiveScreen,
+        payload: {
+          screen: ProductMenuActiveScreen.None,
+        },
+      })
+    }
+  }
+
+  const hasNoProducts = outOfStockProducts.length === 0 && products.length === 0
+  const allProductsAddedInActiveCollection =
+    filteredInStockProducts.length === 0 &&
+    filteredOutOfStockProducts.length === 0
+
   return (
     <div className="flex flex-col gap-4">
+      {hasNoProducts && (
+        <div className="flex flex-col gap-8 text-center">
+          <h1 className="text-xl font-bold">No Products Found</h1>
+          <p>
+            Seems like you haven&apos;t added any product yet. Easily manage
+            them in the Inventory.
+          </p>
+          <button onClick={goToInventoryApp} className="btn btn-primary">
+            Go to Inventory App <ArrowTopRightOnSquareIcon className="w-5" />
+          </button>
+        </div>
+      )}
+
+      {allProductsAddedInActiveCollection && (
+        <div className="flex flex-col gap-8 text-center">
+          <h1 className="text-xl font-bold">No Products to Add</h1>
+          <p>
+            Seems like you added all the product on the current collection.
+            Easily manage them in the Inventory.
+          </p>
+          <button onClick={goToInventoryApp} className="btn btn-primary">
+            Go to Inventory App <ArrowTopRightOnSquareIcon className="w-5" />
+          </button>
+        </div>
+      )}
+
       {/* IN STOCKS */}
-      {products.length > 0 && (
+      {filteredInStockProducts.length > 0 && (
         <div className="flex flex-col gap-4">
           <div className="flex w-full flex-row items-center justify-between">
             <h2 className="font-bold">Available</h2>
@@ -85,8 +163,9 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
               hasOutOfStocks ? horizontalScrollSyle : verticalScrollStyle
             }`}
           >
-            {products.map((product) => (
+            {filteredInStockProducts.map((product) => (
               <OrderItemCard
+                onClick={() => onProductClick(product.id ?? '')}
                 id={product.id as string}
                 image={product?.images?.[0] || ''}
                 name={product.name}
@@ -99,7 +178,7 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
       )}
 
       {/* OUT OF STOCKS */}
-      {outOfStockProducts.length > 0 && (
+      {filteredOutOfStockProducts.length > 0 && (
         <div className="flex flex-col gap-4">
           <div className="flex w-full flex-row items-center justify-between">
             <h2 className="font-bold">Out of Stocks</h2>
@@ -115,9 +194,10 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
               hasOutOfStocks ? horizontalScrollSyle : verticalScrollStyle
             }`}
           >
-            {outOfStockProducts.map((product) => (
+            {filteredOutOfStockProducts.map((product) => (
               <OrderItemCard
                 outOfStock
+                onClick={() => onProductClick(product.id ?? '')}
                 id={product.id as string}
                 image={product?.images?.[0] || ''}
                 name={product.name}
