@@ -91,14 +91,6 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
     window.location.href = import.meta.env.VITE_INVENTORY_APP_URL
   }
 
-  const filteredInStockProducts = products.filter(
-    (p) => !productInCollectionIds.includes(p.id ?? ''),
-  )
-
-  const filteredOutOfStockProducts = outOfStockProducts.filter(
-    (p) => !productInCollectionIds.includes(p.id ?? ''),
-  )
-
   const onProductClick = async (productId: string) => {
     if (activeCollection) {
       await updateProductCollection({
@@ -115,10 +107,19 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
     }
   }
 
-  const hasNoProducts = outOfStockProducts.length === 0 && products.length === 0
+  const filteredInStockProducts = products.filter(
+    (p) => !productInCollectionIds.includes(p.id ?? ''),
+  )
+
+  const filteredOutOfStockProducts = outOfStockProducts.filter(
+    (p) => !productInCollectionIds.includes(p.id ?? ''),
+  )
+
   const allProductsAddedInActiveCollection =
     filteredInStockProducts.length === 0 &&
     filteredOutOfStockProducts.length === 0
+
+  const hasNoProducts = outOfStockProducts.length === 0 && products.length === 0
 
   return (
     <div className="flex flex-col gap-4">
@@ -135,18 +136,20 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
         </div>
       )}
 
-      {allProductsAddedInActiveCollection && (
-        <div className="flex flex-col gap-8 text-center">
-          <h1 className="text-xl font-bold">No Products to Add</h1>
-          <p>
-            Seems like you added all the product on the current collection.
-            Easily manage them in the Inventory.
-          </p>
-          <button onClick={goToInventoryApp} className="btn btn-primary">
-            Go to Inventory App <ArrowTopRightOnSquareIcon className="w-5" />
-          </button>
-        </div>
-      )}
+      {filteredInStockProducts.length > 0 &&
+        filteredOutOfStockProducts.length > 0 &&
+        allProductsAddedInActiveCollection && (
+          <div className="flex flex-col gap-8 text-center">
+            <h1 className="text-xl font-bold">No Products to Add</h1>
+            <p>
+              Seems like you added all the product on the current collection.
+              Easily manage them in the Inventory.
+            </p>
+            <button onClick={goToInventoryApp} className="btn btn-primary">
+              Go to Inventory App <ArrowTopRightOnSquareIcon className="w-5" />
+            </button>
+          </div>
+        )}
 
       {/* IN STOCKS */}
       {filteredInStockProducts.length > 0 && (
