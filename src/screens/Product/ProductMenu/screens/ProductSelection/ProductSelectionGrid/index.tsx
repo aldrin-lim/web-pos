@@ -5,7 +5,7 @@ import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import useUser from 'hooks/useUser'
 import { Navigate } from 'react-router-dom'
 import { AppPath } from 'routes/AppRoutes.types'
-import OrderItemCard from 'screens/Product/ProductMenu/components/OrderItemCard'
+import ProductCard from 'screens/Product/ProductMenu/components/ProductCard'
 import {
   ProductMenuActionType,
   ProductMenuActiveScreen,
@@ -29,12 +29,14 @@ const getProductCardNumber = (size: ScreenSize) => {
   }
 }
 
+// TODO: Create a ProductCard to handle its own loading state
+
 const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
   const { onViewAll } = props
   const { currentBreakpoint } = useMediaQuery({ updateOnResize: true })
 
   const { user, isLoading: isUserLoading, error: userError } = useUser()
-  const { updateProductCollection } = useUpdateProductCollection()
+  const { updateProductCollection, isUpdating } = useUpdateProductCollection()
 
   const {
     state: {
@@ -164,7 +166,8 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
             }`}
           >
             {filteredInStockProducts.map((product) => (
-              <OrderItemCard
+              <ProductCard
+                isLoading={isUpdating}
                 onClick={() => onProductClick(product.id ?? '')}
                 id={product.id as string}
                 image={product?.images?.[0] || ''}
@@ -195,7 +198,8 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
             }`}
           >
             {filteredOutOfStockProducts.map((product) => (
-              <OrderItemCard
+              <ProductCard
+                isLoading={isUpdating}
                 outOfStock
                 onClick={() => onProductClick(product.id ?? '')}
                 id={product.id as string}

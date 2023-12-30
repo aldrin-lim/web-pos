@@ -5,8 +5,9 @@ import {
 } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
-import OrderItemCard from '../../components/OrderItemCard'
 import { useProductMenuContext } from '../../context/ProductMenuContext'
+import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
+import ProductCard from '../../components/ProductCard'
 
 type ProductCollectionProps = {
   onAddProduct: () => void
@@ -19,9 +20,22 @@ const ProductCollection = (props: ProductCollectionProps) => {
       productCollectionState: { activeCollection, isLoading },
     },
   } = useProductMenuContext()
+  const { updateProductCollection } = useUpdateProductCollection()
 
-  const onProductClick = (productId: string) => {
+  const onProductClick = async (productId: string) => {
     console.log(productId)
+  }
+
+  const removeProductFromActiveCollection = async (productId: string) => {
+    if (activeCollection) {
+      const productIds = activeCollection.products
+        .map((p) => ({ id: p.id }))
+        .filter((p) => p.id !== productId)
+
+      await updateProductCollection({
+        products: productIds,
+      })
+    }
   }
 
   return (
@@ -44,8 +58,11 @@ const ProductCollection = (props: ProductCollectionProps) => {
             Add Product
           </button>
           {activeCollection?.products.map((p, index) => (
-            <OrderItemCard
-              onClick={() => onProductClick(p.id)}
+            <ProductCard
+              onRemove={async () =>
+                await removeProductFromActiveCollection(p.id)
+              }
+              onClick={async () => await onProductClick(p.id)}
               key={index}
               {...p}
             />

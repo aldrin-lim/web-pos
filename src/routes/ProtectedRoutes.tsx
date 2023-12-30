@@ -16,7 +16,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ element, ...args }) => {
   // Wrap the component with authentication and render it
   const WithAuth = withAuthenticationRequired(Component, {
     onRedirecting: () => (
-      <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center">
         <span className="loading loading-ring loading-lg"></span>
       </div>
     ),

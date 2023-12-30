@@ -6,7 +6,6 @@ import ToolbarButton from 'components/Layout/components/Toolbar/components/Toolb
 import { useCallback, useState } from 'react'
 import SlidingTransition from 'components/SlidingTransition'
 import ProductSelectionList from './ProductSelectionList'
-import useGetProductCollection from 'hooks/useGetProductCollection'
 
 enum ActiveScreen {
   None = 'none',
@@ -28,12 +27,6 @@ const ProductSelection = (props: ProductSelectionProps) => {
 
   const showProductSelectionList = () =>
     setActiveScreen(ActiveScreen.ProductList)
-
-  const selectProduct = useCallback(async (productId: string) => {
-    setActiveScreen(ActiveScreen.None)
-  }, [])
-
-  const { productCollection, isLoading } = useGetProductCollection()
 
   return (
     <div
