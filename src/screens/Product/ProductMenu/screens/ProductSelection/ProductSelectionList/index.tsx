@@ -21,6 +21,7 @@ import {
   ProductMenuActionType,
   ProductMenuActiveScreen,
 } from 'screens/Product/ProductMenu/context/ProductMenuContext'
+import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 
 const getTruncateSize = (size: ScreenSize) => {
   switch (size) {
@@ -60,7 +61,14 @@ type ProductSelectionListProps = {
 const ProductSelectionList = (props: ProductSelectionListProps) => {
   const { onBack } = props
 
-  const { dispatch } = useProductMenuContext()
+  const { updateProductCollection, isUpdating } = useUpdateProductCollection()
+
+  const {
+    state: {
+      productCollectionState: { activeCollection },
+    },
+    dispatch,
+  } = useProductMenuContext()
 
   const goBackToMainScreen = useCallback(() => {
     dispatch({
@@ -98,6 +106,9 @@ const ProductSelectionList = (props: ProductSelectionListProps) => {
   const filteredProducts = useMemo(() => {
     let items = data?.pages.flatMap((page) => page) || []
 
+    const productInCollectionIds =
+      activeCollection?.products.map((p) => p.id) ?? []
+
     // Apply out-of-stock filter
     if (enableFilter && typeof outOfStockFilter === 'boolean') {
       items = items.filter((item) =>
@@ -112,8 +123,14 @@ const ProductSelectionList = (props: ProductSelectionListProps) => {
       )
     }
 
-    return items
-  }, [data?.pages, enableFilter, outOfStockFilter, debouncedSearchTerm])
+    return items.filter((p) => !productInCollectionIds.includes(p.id ?? ''))
+  }, [
+    data?.pages,
+    activeCollection?.products,
+    enableFilter,
+    outOfStockFilter,
+    debouncedSearchTerm,
+  ])
 
   useEffect(() => {
     const paramsObject = Object.fromEntries(searchParams) as {
@@ -134,12 +151,25 @@ const ProductSelectionList = (props: ProductSelectionListProps) => {
     }
   }, [searchParams])
 
-  const onClick = (_id: string) => {
-    goBackToMainScreen()
+  const onProductClick = async (productId: string) => {
+    if (activeCollection) {
+      await updateProductCollection({
+        products: activeCollection.products
+          .map((p) => ({ id: p.id }))
+          .concat({ id: productId }),
+      })
+      dispatch({
+        type: ProductMenuActionType.UpdateActiveScreen,
+        payload: {
+          screen: ProductMenuActiveScreen.None,
+        },
+      })
+      goBackToMainScreen()
+    }
   }
 
   return (
-    <div className="section sub-screen">
+    <div className="section sub-screen relative">
       <Toolbar
         items={[
           <ToolbarButton
@@ -191,6 +221,12 @@ const ProductSelectionList = (props: ProductSelectionListProps) => {
             </div>
           </>
         )}
+
+        {isUpdating && (
+          <div className="absolute left-0 top-[35%] flex h-[30px] w-full justify-center px-6 align-middle">
+            <span className="loading loading-bars loading-lg " />
+          </div>
+        )}
         {!error && !isLoading && (
           <List
             height={400} // adjust based on your layout
@@ -203,9 +239,10 @@ const ProductSelectionList = (props: ProductSelectionListProps) => {
               const product = filteredProducts[index]
               const thumbnail = product.images && product.images[0]
               return (
-                <div style={style} className="" key={product.name}>
+                <div style={style} className="relative" key={product.name}>
                   <button
-                    onClick={() => onClick(product.id as string)}
+                    disabled={isUpdating}
+                    onClick={() => onProductClick(product.id)}
                     className="rounded-row btn btn-ghost no-animation flex w-full flex-row justify-start rounded-none border-b-gray-200 bg-gray-100"
                   >
                     <figure className="h-[24px] w-[24px]">

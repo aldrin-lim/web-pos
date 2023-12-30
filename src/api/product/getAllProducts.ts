@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { PaginationOptions } from 'types/api.types'
+import { Product } from 'types/product.types'
 import { httpClient } from 'util/http'
 import { z } from 'zod'
 
@@ -13,7 +14,7 @@ export default async (
   }
 
   const result = await httpClient
-    .get<unknown, AxiosResponse<Array<GetAllProductSchema>>>(url)
+    .get<unknown, AxiosResponse<Array<Product>>>(url)
     .then((res) => res.data)
   return result || []
 }
