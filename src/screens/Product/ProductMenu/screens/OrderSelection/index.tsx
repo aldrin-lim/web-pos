@@ -1,37 +1,28 @@
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
-import ProductSelectionGrid from './ProductSelectionGrid'
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import { useCallback, useState } from 'react'
-import SlidingTransition from 'components/SlidingTransition'
-import ProductSelectionList from './ProductSelectionList'
+import { Product } from 'types/product.types'
 
 // This component lets you pick product to be inlcuded in the main screen of the POS
 enum ActiveScreen {
   None = 'none',
-  ProductList = 'list',
+  DiscountList = 'list',
 }
 
-type ProductSelectionProps = {
+type OrderSelectionProps = {
   onBack: () => void
+  product: Product
 }
 
-const ProductSelection = (props: ProductSelectionProps) => {
-  const { onBack } = props
+const OrderSelection = (props: OrderSelectionProps) => {
+  const { onBack, product } = props
 
   const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
-
-  const goBackToProductSelectionScreen = useCallback(() => {
-    setActiveScreen(ActiveScreen.None)
-  }, [])
-
-  const showProductSelectionList = () =>
-    setActiveScreen(ActiveScreen.ProductList)
-
   return (
     <div
-      className={`ProductSelection main-screen ${
+      className={`OrderSelection main-screen ${
         activeScreen === ActiveScreen.None ? 'h-full' : 'h-screen'
       }`}
     >
@@ -46,18 +37,10 @@ const ProductSelection = (props: ProductSelectionProps) => {
             <ToolbarTitle key={2} title="Products" />,
           ]}
         />
-
-        <ProductSelectionGrid onViewAll={showProductSelectionList} />
+        {product.name}
       </div>
-      <SlidingTransition
-        direction="right"
-        isVisible={activeScreen === ActiveScreen.ProductList}
-        zIndex={11}
-      >
-        <ProductSelectionList onBack={goBackToProductSelectionScreen} />
-      </SlidingTransition>
     </div>
   )
 }
 
-export default ProductSelection
+export default OrderSelection

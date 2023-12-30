@@ -6,7 +6,7 @@ import { ProductCollection } from 'types/productCollection.types'
 export enum ProductMenuActiveScreen {
   None = '',
   ProductSelection = 'productSelection',
-  OrderItemDetail = 'orderItemDetail',
+  OrderSelection = 'orderSelection',
   OrderCart = 'orderCart',
 }
 

@@ -10,24 +10,22 @@ import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import ProductCard from '../../components/ProductCard'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import { useAuth0 } from '@auth0/auth0-react'
+import { Product } from 'types/product.types'
 
 type ProductCollectionProps = {
   onAddProduct: () => void
+  onProductClick?: (product: Product) => void
 }
 
 const ProductCollection = (props: ProductCollectionProps) => {
   const { logout } = useAuth0()
-  const { onAddProduct } = props
+  const { onAddProduct, onProductClick } = props
   const {
     state: {
       productCollectionState: { activeCollection, isLoading },
     },
   } = useProductMenuContext()
   const { updateProductCollection } = useUpdateProductCollection()
-
-  const onProductClick = async (productId: string) => {
-    console.log(productId)
-  }
 
   const removeProductFromActiveCollection = async (productId: string) => {
     if (activeCollection) {
@@ -48,7 +46,7 @@ const ProductCollection = (props: ProductCollectionProps) => {
           <div key={1} />,
           <ToolbarTitle key={2} title="Product Menu" />,
           <ToolbarButton
-            key={1}
+            key={3}
             label="Sign out"
             onClick={() =>
               logout({
@@ -70,14 +68,18 @@ const ProductCollection = (props: ProductCollectionProps) => {
             <PlusIcon className="w-8 text-success" />
             Add Product
           </button>
-          {activeCollection?.products.map((p, index) => (
+          {activeCollection?.products.map((product, index) => (
             <ProductCard
               onRemove={async () =>
-                await removeProductFromActiveCollection(p.id)
+                await removeProductFromActiveCollection(product.id)
               }
-              onClick={async () => await onProductClick(p.id)}
+              onClick={async () => {
+                if (onProductClick) {
+                  await onProductClick(product)
+                }
+              }}
               key={index}
-              {...p}
+              {...product}
             />
           ))}
         </div>
