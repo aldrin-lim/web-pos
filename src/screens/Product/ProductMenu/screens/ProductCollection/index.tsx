@@ -8,12 +8,16 @@ import ToolbarTitle from 'components/Layout/components/Toolbar/components/Toolba
 import { useProductMenuContext } from '../../context/ProductMenuContext'
 import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import ProductCard from '../../components/ProductCard'
+import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
+import { ArrowRightEndOnRectangleIcon } from '@heroicons/react/24/outline'
+import { useAuth0 } from '@auth0/auth0-react'
 
 type ProductCollectionProps = {
   onAddProduct: () => void
 }
 
 const ProductCollection = (props: ProductCollectionProps) => {
+  const { logout } = useAuth0()
   const { onAddProduct } = props
   const {
     state: {
@@ -44,7 +48,17 @@ const ProductCollection = (props: ProductCollectionProps) => {
         items={[
           <div key={1} />,
           <ToolbarTitle key={2} title="Product Menu" />,
-          <div key={3} />,
+          <ToolbarButton
+            key={1}
+            label="Sign out"
+            onClick={() =>
+              logout({
+                logoutParams: {
+                  returnTo: window.location.origin,
+                },
+              })
+            }
+          />,
         ]}
       />
       {isLoading && <Skeleton />}
