@@ -9,7 +9,6 @@ import { useProductMenuContext } from '../../context/ProductMenuContext'
 import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import ProductCard from '../../components/ProductCard'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
-import { ArrowRightEndOnRectangleIcon } from '@heroicons/react/24/outline'
 import { useAuth0 } from '@auth0/auth0-react'
 
 type ProductCollectionProps = {
