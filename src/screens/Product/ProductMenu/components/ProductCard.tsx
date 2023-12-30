@@ -61,9 +61,9 @@ const ProductCard = (props: OrderItemCardProps) => {
         <button
           onClick={onRemove}
           disabled={isLoading}
-          className="btn btn-circle btn-ghost btn-xs absolute right-2 top-2 bg-purple-300"
+          className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2 bg-purple-300"
         >
-          <TrashIcon className="w-4 text-white" />
+          <TrashIcon className="w-5 text-white" />
         </button>
       )}
       <figure onClick={onClick} className="h-[155px] w-[155px] bg-gray-300">
