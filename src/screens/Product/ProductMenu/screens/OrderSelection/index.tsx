@@ -144,12 +144,11 @@ const OrderSelection = (props: OrderSelectionProps) => {
         {errors.selectedProduct && (
           <p className="form-control-error">Select a variant first</p>
         )}
-        {selectedProduct.quantity === 0}{' '}
-        {
+        {selectedProduct.quantity === 0 && (
           <p className="mt-4 w-full text-center text-xl font-bold">
             Out of stock
           </p>
-        }
+        )}
         {selectedProduct.quantity > 0 && (
           <div className="flex flex-col gap-1">
             <div className="label">
