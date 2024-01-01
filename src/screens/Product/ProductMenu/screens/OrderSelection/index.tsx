@@ -64,7 +64,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
         activeScreen === ActiveScreen.None ? 'h-full' : 'h-screen'
       }`}
     >
-      <div className="section sub-screen">
+      <div className="sub-screen">
         {!hasVariants && (
           <OrderItemForm
             quantity={quantity}
@@ -75,6 +75,12 @@ const OrderSelection = (props: OrderSelectionProps) => {
         {hasVariants && (
           <OrderItemWithVariantForm onBack={onBack} product={product} />
         )}
+        <button
+          className="btn btn-primary mt-2"
+          onClick={() => setActiveScreen(ActiveScreen.DiscountList)}
+        >
+          Add Discount
+        </button>
       </div>
 
       {/* Discount Component */}

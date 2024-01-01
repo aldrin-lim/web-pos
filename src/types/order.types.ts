@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { ProductSchema, ProductVariantSchema } from './product.types'
 
-const PricingOption = z.object({
-  name: z.string({ required_error: 'Discount name is required' }),
+export const PricingOptionSchema = z.object({
+  name: z.string({ required_error: 'Name is required' }),
   type: z.union([z.literal('fixed'), z.literal('percentage')], {
     required_error: 'Type is required',
   }),
-  amount: z.number({ required_error: 'Amount is required' }),
+  amount: z.coerce.number({ required_error: 'Amount is required' }).min(1),
 })
 
 const OrderItem = z.object({
@@ -18,7 +18,7 @@ const OrderItem = z.object({
     { required_error: 'Product is required' },
   ),
   quantity: z.number({ required_error: 'Quantity is required' }),
-  discounts: z.array(PricingOption),
+  discounts: z.array(PricingOptionSchema),
   gross: z.number({ required_error: 'Gross is required' }),
   net: z.number({ required_error: 'Net is required' }),
 })
@@ -33,4 +33,4 @@ const OrderSchema = z.object({
 
 export type Order = z.infer<typeof OrderSchema>
 export type OrderItem = z.infer<typeof OrderItem>
-export type PricingOption = z.infer<typeof PricingOption>
+export type PricingOption = z.infer<typeof PricingOptionSchema>

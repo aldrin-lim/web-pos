@@ -22,12 +22,14 @@ const OrderItemForm = (props: OrderItemFormProps) => {
   const schema =
     product.allowBackOrder === false
       ? z.object({
-          quantity: z.number(),
+          quantity: z.number().min(1),
         })
       : ProductOrderSchema
 
-  const { setFieldValue, values, setErrors, errors } = useFormik({
-    onSubmit: () => {},
+  const { setFieldValue, values, setErrors, errors, submitForm } = useFormik({
+    onSubmit: () => {
+      onBack()
+    },
     initialValues: {
       quantity,
     },
@@ -69,7 +71,7 @@ const OrderItemForm = (props: OrderItemFormProps) => {
                 }
                 setFieldValue('quantity', +e.target.value)
               }}
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full"
             />
             {errors.quantity && (
               <p className="form-control-error">{errors.quantity}&nbsp;</p>
@@ -93,12 +95,7 @@ const OrderItemForm = (props: OrderItemFormProps) => {
             onClick={onBack}
           />,
           <ToolbarTitle key={2} title="Order" />,
-          <ToolbarButton
-            key={3}
-            disabled={Object.keys(errors).length > 0}
-            label="Done"
-            onClick={onBack}
-          />,
+          <ToolbarButton key={3} label="Done" onClick={submitForm} />,
         ]}
       />
       <div className="flex h-[120px] justify-center overflow-hidden bg-gray-200 align-middle ">
