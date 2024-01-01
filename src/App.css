@@ -51,6 +51,6 @@ html, body {
   }
 
   .sub-screen {
-
+    @apply p-6 pt-0 flex min-h-screen w-full flex-col bg-base-100 gap-4
   }
 }
