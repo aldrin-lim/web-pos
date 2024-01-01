@@ -13,17 +13,26 @@ import ToolbarTitle from 'components/Layout/components/Toolbar/components/Toolba
 type OrderItemFormProps = {
   product: Product
   onBack: () => void
+  quantity: number
 }
 
 const OrderItemForm = (props: OrderItemFormProps) => {
-  const { product, onBack } = props
+  const { product, onBack, quantity } = props
+
+  const schema =
+    product.allowBackOrder === false
+      ? z.object({
+          quantity: z.number(),
+        })
+      : ProductOrderSchema
 
   const { setFieldValue, values, setErrors, errors } = useFormik({
     onSubmit: () => {},
     initialValues: {
-      quantity: 1,
+      quantity,
     },
-    validationSchema: toFormikValidationSchema(ProductOrderSchema),
+    validationSchema: toFormikValidationSchema(schema),
+    enableReinitialize: true,
   })
 
   useEffect(() => {
@@ -46,22 +55,6 @@ const OrderItemForm = (props: OrderItemFormProps) => {
     ) {
       return (
         <>
-          <Toolbar
-            items={[
-              <ToolbarButton
-                key={1}
-                icon={<ChevronLeftIcon className="w-6" />}
-                onClick={onBack}
-              />,
-              <ToolbarTitle key={2} title="Order" />,
-              <ToolbarButton
-                key={3}
-                disabled={Object.keys(errors).length > 0}
-                label="Done"
-                onClick={onBack}
-              />,
-            ]}
-          />
           <div className="flex flex-col gap-1">
             <div className="label">
               <span className="label-text-alt">Quantity</span>
@@ -82,8 +75,6 @@ const OrderItemForm = (props: OrderItemFormProps) => {
               <p className="form-control-error">{errors.quantity}&nbsp;</p>
             )}
           </div>
-          <pre>{JSON.stringify(errors, null, 2)}</pre>
-          <pre>{JSON.stringify(values, null, 2)}</pre>
         </>
       )
     }
@@ -94,6 +85,22 @@ const OrderItemForm = (props: OrderItemFormProps) => {
 
   return (
     <>
+      <Toolbar
+        items={[
+          <ToolbarButton
+            key={1}
+            icon={<ChevronLeftIcon className="w-6" />}
+            onClick={onBack}
+          />,
+          <ToolbarTitle key={2} title="Order" />,
+          <ToolbarButton
+            key={3}
+            disabled={Object.keys(errors).length > 0}
+            label="Done"
+            onClick={onBack}
+          />,
+        ]}
+      />
       <div className="flex h-[120px] justify-center overflow-hidden bg-gray-200 align-middle ">
         <div className={`${image ? 'scale-150' : ''}`}>
           <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
@@ -101,7 +108,6 @@ const OrderItemForm = (props: OrderItemFormProps) => {
       </div>
       <div className="flex flex-row justify-between">
         <MiddleTruncateText maxLength={20} text={product.name} />
-
         {product && (
           <p className="font-bold">
             ₱ {(values.quantity * product.price).toFixed(2)}

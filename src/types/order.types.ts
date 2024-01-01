@@ -12,8 +12,8 @@ const PricingOption = z.object({
 const OrderItem = z.object({
   product: z.union(
     [
-      ProductSchema.partial().required({ id: true }),
-      ProductVariantSchema.partial().required({ id: true }),
+      ProductSchema.partial().required({ id: true, price: true }),
+      ProductVariantSchema.partial().required({ id: true, price: true }),
     ],
     { required_error: 'Product is required' },
   ),

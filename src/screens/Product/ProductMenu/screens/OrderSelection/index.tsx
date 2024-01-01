@@ -23,16 +23,17 @@ enum ActiveScreen {
 type OrderSelectionProps = {
   onBack: () => void
   product: Product
+  quantity?: number
 }
 
 const OrderSelection = (props: OrderSelectionProps) => {
-  const { onBack, product } = props
+  const { onBack, product, quantity = 1 } = props
   const hasVariants = product.variants && product.variants.length > 0
 
   const { values, setErrors, errors } = useFormik({
     onSubmit: () => {},
     initialValues: {
-      quantity: 1,
+      quantity,
       selectedProduct:
         product.variants && product.variants[0] ? product.variants[0] : product,
     },
@@ -64,7 +65,13 @@ const OrderSelection = (props: OrderSelectionProps) => {
       }`}
     >
       <div className="section sub-screen">
-        {!hasVariants && <OrderItemForm onBack={onBack} product={product} />}
+        {!hasVariants && (
+          <OrderItemForm
+            quantity={quantity}
+            onBack={onBack}
+            product={product}
+          />
+        )}
         {hasVariants && (
           <OrderItemWithVariantForm onBack={onBack} product={product} />
         )}

@@ -17,20 +17,31 @@ import ToolbarTitle from 'components/Layout/components/Toolbar/components/Toolba
 type OrderItemWithVariantFormProps = {
   product: Product
   onBack: () => void
+  quantity?: number
 }
 
 const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
-  const { product, onBack } = props
+  const { product, onBack, quantity = 1 } = props
   const hasVariants = product.variants && product.variants.length > 0
+
+  const schema =
+    product.allowBackOrder === false
+      ? z.object({
+          quantity: z.number(),
+          selectedVariant: ProductVariantSchema.refine((v) => v !== null, {
+            message: 'Select a variant first',
+          }),
+        })
+      : ProductOrderSchema
 
   const { setFieldValue, values, setErrors, errors } = useFormik({
     onSubmit: () => {},
     initialValues: {
-      quantity: 1,
+      quantity,
       selectedVariant: null as ProductVariant | null,
     },
     enableReinitialize: true,
-    validationSchema: toFormikValidationSchema(ProductOrderSchema),
+    validationSchema: toFormikValidationSchema(schema),
     validateOnMount: true,
   })
 
@@ -57,23 +68,93 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
 
   useEffect(() => {
     if (selectedVariant) {
-      if (values.quantity > selectedVariant.quantity) {
+      if (
+        values.quantity > selectedVariant.quantity &&
+        product.allowBackOrder === false
+      ) {
         setErrors({
           ...errors,
           quantity: 'Quantity must not be greater than the available',
         })
       }
     }
-  }, [values.quantity, selectedVariant, setErrors, errors])
+  }, [
+    values.quantity,
+    selectedVariant,
+    setErrors,
+    errors,
+    product.allowBackOrder,
+  ])
 
-  // useEffect(() => {
-  //   if (selectedVariant === null) {
-  //     setErrors({
-  //       ...errors,
-  //       selectedVariant: 'Select variant first',
-  //     })
-  //   }
-  // }, [selectedVariant])
+  const renderForm = () => {
+    if (
+      product.allowBackOrder ||
+      (product.allowBackOrder === false && product.quantity > 0)
+    ) {
+      return (
+        <>
+          <h1 className="font-bold">Variants</h1>
+          <div className="flex flex-row flex-wrap gap-4">
+            {variants.map((variant, i) => {
+              return (
+                <button
+                  key={i}
+                  onClick={() => onVariantSelect(variant.id)}
+                  className={`btn w-0 min-w-min ${
+                    selectedVariant && variant.id === selectedVariant.id
+                      ? ' bg-purple-400 text-white'
+                      : 'btn-outline'
+                  }`}
+                >
+                  {variant.name}
+                </button>
+              )
+            })}
+          </div>
+          {errors.selectedVariant && (
+            <p className="form-control-error">Select a variant first</p>
+          )}
+          {selectedVariant?.allowBackOrder === false &&
+            selectedVariant?.quantity === 0 && (
+              <p className="mt-4 w-full text-center text-xl font-bold">
+                Out of stock
+              </p>
+            )}
+
+          <div className="flex flex-col gap-1">
+            <div className="label">
+              <span className="label-text-alt">Quantity</span>
+            </div>
+            <input
+              type="text"
+              disabled={!selectedVariant}
+              placeholder={
+                !selectedVariant ? 'Select a variant first' : 'Quantity'
+              }
+              value={selectedVariant ? values.quantity : ''}
+              onChange={(e) => {
+                if (isNaN(+e.target.value)) {
+                  return
+                }
+                setFieldValue('quantity', +e.target.value)
+              }}
+              className="input input-bordered w-full max-w-xs"
+            />
+            {errors.quantity && (
+              <p className="form-control-error">{errors.quantity}&nbsp;</p>
+            )}
+
+            {selectedVariant && product.allowBackOrder === false && (
+              <>{selectedVariant.quantity} available </>
+            )}
+          </div>
+        </>
+      )
+    }
+    return (
+      <p className="mt-4 w-full text-center text-xl font-bold">Out of stock</p>
+    )
+  }
 
   return (
     <>
@@ -113,56 +194,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
           </p>
         )}
       </div>
-      <h1 className="font-bold">Variants</h1>
-      <div className="flex flex-row flex-wrap gap-4">
-        {variants.map((variant, i) => {
-          return (
-            <button
-              key={i}
-              onClick={() => onVariantSelect(variant.id)}
-              className={`btn w-0 min-w-min ${
-                selectedVariant && variant.id === selectedVariant.id
-                  ? ' bg-purple-400 text-white'
-                  : 'btn-outline'
-              }`}
-            >
-              {variant.name}
-            </button>
-          )
-        })}
-      </div>
-      {errors.selectedVariant && (
-        <p className="form-control-error">Select a variant first</p>
-      )}
-      {selectedVariant?.quantity === 0 && (
-        <p className="mt-4 w-full text-center text-xl font-bold">
-          Out of stock
-        </p>
-      )}
-
-      <div className="flex flex-col gap-1">
-        <div className="label">
-          <span className="label-text-alt">Quantity</span>
-        </div>
-        <input
-          type="text"
-          disabled={!selectedVariant}
-          placeholder={!selectedVariant ? 'Select a variant first' : 'Quantity'}
-          value={selectedVariant ? values.quantity : ''}
-          onChange={(e) => {
-            if (isNaN(+e.target.value)) {
-              return
-            }
-            setFieldValue('quantity', +e.target.value)
-          }}
-          className="input input-bordered w-full max-w-xs"
-        />
-        {errors.quantity && (
-          <p className="form-control-error">{errors.quantity}&nbsp;</p>
-        )}
-
-        {selectedVariant && <>{selectedVariant.quantity} available </>}
-      </div>
+      {renderForm()}
     </>
   )
 }

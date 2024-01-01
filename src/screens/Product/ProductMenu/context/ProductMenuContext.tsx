@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import useAllProductionCollection from 'hooks/useAllProductionCollection'
 import { ReactNode, createContext, useContext, useReducer } from 'react'
+import { Order, OrderItem } from 'types/order.types'
 import { ProductCollection } from 'types/productCollection.types'
 
 export enum ProductMenuActiveScreen {
@@ -18,6 +19,7 @@ interface State {
     isLoading: boolean
     error: unknown
   }
+  order: Order | null
 }
 
 const initialState: State = {
@@ -28,12 +30,16 @@ const initialState: State = {
     isLoading: false,
     error: '',
   },
+  order: null,
 }
 
 export enum ProductMenuActionType {
   UpdateActiveScreen = 'UPDATE_ACTIVE_SCREEN',
   UpdateActiveCollection = 'UPDATE_ACTIVE_COLLECTION',
   UpdateProductCollectionState = 'UPDATE_PRODUCT_COLLECTION_STATE',
+  AddOrderItem = 'ADD_ORDER_ITEM',
+  UpdateOrderItem = 'UPDATE_ORDER_ITEM',
+  DeleteOrderItem = 'DELETE_ORDER_ITEM',
 }
 
 type Action =
@@ -50,6 +56,21 @@ type Action =
   | {
       type: ProductMenuActionType.UpdateProductCollectionState
       payload: State['productCollectionState']
+    }
+  | {
+      type: ProductMenuActionType.AddOrderItem
+      payload: OrderItem
+    }
+  | {
+      type: ProductMenuActionType.UpdateOrderItem
+      payload: {
+        index: number
+        item: OrderItem
+      }
+    }
+  | {
+      type: ProductMenuActionType.DeleteOrderItem
+      payload: number
     }
 
 function reducer(state: State, action: Action): State {
@@ -71,6 +92,51 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         productCollectionState: action.payload,
+      }
+    case ProductMenuActionType.AddOrderItem: {
+      if (state.order === null) {
+        return {
+          ...state,
+          order: {
+            net: 0,
+            gross: 0,
+            orderItems: [action.payload],
+          },
+        }
+      }
+      return {
+        ...state,
+        order: {
+          ...state.order,
+          orderItems: [...state.order.orderItems, action.payload],
+        },
+      }
+    }
+    case ProductMenuActionType.UpdateOrderItem:
+      if (!state.order) {
+        return state
+      }
+      return {
+        ...state,
+        order: {
+          ...state.order,
+          orderItems: state.order.orderItems.map((item, index) =>
+            index === action.payload.index ? action.payload.item : item,
+          ),
+        },
+      }
+    case ProductMenuActionType.DeleteOrderItem:
+      if (!state.order) {
+        return state
+      }
+      return {
+        ...state,
+        order: {
+          ...state.order,
+          orderItems: state.order.orderItems.filter(
+            (_, index) => index !== action.payload,
+          ),
+        },
       }
     default:
       return state
