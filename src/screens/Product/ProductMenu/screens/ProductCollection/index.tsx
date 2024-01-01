@@ -40,7 +40,7 @@ const ProductCollection = (props: ProductCollectionProps) => {
   }
 
   return (
-    <div className="section">
+    <div className="section pb-32">
       <Toolbar
         items={[
           <div key={1} />,
@@ -87,7 +87,7 @@ const ProductCollection = (props: ProductCollectionProps) => {
 
       {!isLoading && (
         <div className="CartButton fixed bottom-10 left-0 right-0 flex justify-center ">
-          <button className="CartButton btn mx-4 flex w-full max-w-md flex-shrink flex-row justify-center gap-4 rounded-md bg-purple-400 p-4 text-white">
+          <button className="CartButton btn mx-4 flex w-full max-w-md flex-shrink flex-row justify-center gap-4 rounded-md bg-purple-400 p-4 text-white shadow-md">
             <div className="mx-auto flex flex-row gap-4">
               <div data-testid className="flex flex-row gap-1">
                 <ShoppingCartIcon className="w-4" />

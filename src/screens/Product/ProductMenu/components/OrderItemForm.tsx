@@ -1,0 +1,121 @@
+import { useEffect } from 'react'
+import { Product } from 'types/product.types'
+import { useFormik } from 'formik'
+import { z } from 'zod'
+import ImageLoader from 'components/ImageLoader'
+import MiddleTruncateText from 'components/MiddleTruncatedText'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
+import Toolbar from 'components/Layout/components/Toolbar'
+import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
+import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
+
+type OrderItemFormProps = {
+  product: Product
+  onBack: () => void
+}
+
+const OrderItemForm = (props: OrderItemFormProps) => {
+  const { product, onBack } = props
+
+  const { setFieldValue, values, setErrors, errors } = useFormik({
+    onSubmit: () => {},
+    initialValues: {
+      quantity: 1,
+    },
+    validationSchema: toFormikValidationSchema(ProductOrderSchema),
+  })
+
+  useEffect(() => {
+    if (product && product.allowBackOrder === false) {
+      if (values.quantity > product?.quantity) {
+        setErrors({
+          ...errors,
+          quantity: 'Quantity must not be greater than the available',
+        })
+      }
+    }
+  }, [values.quantity, setErrors, errors, product])
+
+  const image = product.images && product.images[0]
+
+  const renderForm = () => {
+    if (
+      product.allowBackOrder ||
+      (product.allowBackOrder === false && product.quantity > 0)
+    ) {
+      return (
+        <>
+          <Toolbar
+            items={[
+              <ToolbarButton
+                key={1}
+                icon={<ChevronLeftIcon className="w-6" />}
+                onClick={onBack}
+              />,
+              <ToolbarTitle key={2} title="Order" />,
+              <ToolbarButton
+                key={3}
+                disabled={Object.keys(errors).length > 0}
+                label="Done"
+                onClick={onBack}
+              />,
+            ]}
+          />
+          <div className="flex flex-col gap-1">
+            <div className="label">
+              <span className="label-text-alt">Quantity</span>
+            </div>
+            <input
+              type="text"
+              placeholder="Quantity"
+              value={values.quantity}
+              onChange={(e) => {
+                if (isNaN(+e.target.value)) {
+                  return
+                }
+                setFieldValue('quantity', +e.target.value)
+              }}
+              className="input input-bordered w-full max-w-xs"
+            />
+            {errors.quantity && (
+              <p className="form-control-error">{errors.quantity}&nbsp;</p>
+            )}
+          </div>
+          <pre>{JSON.stringify(errors, null, 2)}</pre>
+          <pre>{JSON.stringify(values, null, 2)}</pre>
+        </>
+      )
+    }
+    return (
+      <p className="mt-4 w-full text-center text-xl font-bold">Out of stock</p>
+    )
+  }
+
+  return (
+    <>
+      <div className="flex h-[120px] justify-center overflow-hidden bg-gray-200 align-middle ">
+        <div className={`${image ? 'scale-150' : ''}`}>
+          <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
+        </div>
+      </div>
+      <div className="flex flex-row justify-between">
+        <MiddleTruncateText maxLength={20} text={product.name} />
+
+        {product && (
+          <p className="font-bold">
+            ₱ {(values.quantity * product.price).toFixed(2)}
+          </p>
+        )}
+      </div>
+
+      {renderForm()}
+    </>
+  )
+}
+
+const ProductOrderSchema = z.object({
+  quantity: z.number().min(1),
+})
+
+export default OrderItemForm
