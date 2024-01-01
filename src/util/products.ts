@@ -121,3 +121,9 @@ export function generateProductVariants(
     variants,
   }
 }
+
+export const isProductVariant = (
+  detail: Product | ProductVariant,
+): detail is ProductVariant => {
+  return (detail as ProductVariant).variantOptions !== undefined
+}

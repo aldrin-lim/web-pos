@@ -9,16 +9,11 @@ export const PricingOptionSchema = z.object({
   amount: z.coerce.number({ required_error: 'Amount is required' }).min(1),
 })
 
-const OrderItem = z.object({
-  product: z.union(
-    [
-      ProductSchema.partial().required({ id: true, price: true }),
-      ProductVariantSchema.partial().required({ id: true, price: true }),
-    ],
-    { required_error: 'Product is required' },
-  ),
+export const OrderItemSchema = z.object({
+  product: ProductSchema,
+  productVariant: ProductVariantSchema.optional(),
   quantity: z.number({ required_error: 'Quantity is required' }),
-  discounts: z.array(PricingOptionSchema),
+  discount: PricingOptionSchema.nullable(),
   gross: z.number({ required_error: 'Gross is required' }),
   net: z.number({ required_error: 'Net is required' }),
 })
@@ -27,10 +22,10 @@ const OrderSchema = z.object({
   gross: z.number({ required_error: 'Gross is required' }),
   net: z.number({ required_error: 'Net is required' }),
   orderItems: z
-    .array(OrderItem)
+    .array(OrderItemSchema)
     .min(1, { message: 'Order items are required' }),
 })
 
 export type Order = z.infer<typeof OrderSchema>
-export type OrderItem = z.infer<typeof OrderItem>
+export type OrderItem = z.infer<typeof OrderItemSchema>
 export type PricingOption = z.infer<typeof PricingOptionSchema>

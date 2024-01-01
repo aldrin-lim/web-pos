@@ -74,10 +74,12 @@ export const BaseProductSchema = z.object({
       invalid_type_error: 'Quantity must be a number',
     })
     .int(),
-  measurement: z.string({
-    required_error: 'Measurement is required',
-    invalid_type_error: 'Measurement must be a string',
-  }),
+  measurement: z
+    .string({
+      required_error: 'Measurement is required',
+      invalid_type_error: 'Measurement must be a string',
+    })
+    .default('pieces'),
   images: z.array(z.string()).optional(),
   category: z
     .string({
@@ -115,13 +117,10 @@ export const ProductVariantSchema = BaseProductSchema.extend({
 })
 
 export const ProductSchema = BaseProductSchema.extend({
-  variants: z
-    .array(ProductVariantSchema)
-    .optional()
-    .refine(uniqueVariantCombinations, {
-      message:
-        'Product variants must have unique combinations of options and values',
-    }),
+  variants: z.array(ProductVariantSchema).refine(uniqueVariantCombinations, {
+    message:
+      'Product variants must have unique combinations of options and values',
+  }),
 })
 
 const PartialBaseProductSchema = BaseProductSchema.partial()

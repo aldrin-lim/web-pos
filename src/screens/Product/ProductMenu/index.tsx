@@ -94,7 +94,13 @@ const ProductMenuComponent = () => {
       >
         {seletectedProductToOrder && (
           <OrderSelection
-            product={seletectedProductToOrder}
+            values={{
+              product: seletectedProductToOrder,
+              quantity: 1,
+              discount: null,
+              gross: seletectedProductToOrder.price,
+              net: seletectedProductToOrder.price,
+            }}
             onBack={goBackToMainScreen}
           />
         )}

@@ -13,15 +13,17 @@ import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
+import { OrderFormValues } from '../screens/OrderSelection'
 
 type OrderItemWithVariantFormProps = {
   product: Product
   onBack: () => void
   quantity?: number
+  onComplete: (values: OrderFormValues) => void
 }
 
 const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
-  const { product, onBack, quantity = 1 } = props
+  const { product, onBack, onComplete, quantity = 1 } = props
   const hasVariants = product.variants && product.variants.length > 0
 
   const schema =
@@ -35,8 +37,16 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
       : ProductOrderSchema
 
   const { setFieldValue, values, setErrors, errors, submitForm } = useFormik({
-    onSubmit: () => {
-      onBack()
+    onSubmit: (value) => {
+      if (value.selectedVariant === null) {
+        console.log('no variant selected')
+        return
+      }
+      onComplete({
+        productVariant: value.selectedVariant,
+        price: value.selectedVariant.price,
+        quantity: value.quantity,
+      })
     },
     initialValues: {
       quantity,
@@ -63,7 +73,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
       if (variant) {
         setFieldValue('selectedVariant', variant)
       }
-      setFieldValue('quantity', 1)
+      setFieldValue('quantity', quantity ?? 1)
     }
   }
 

@@ -9,15 +9,17 @@ import Toolbar from 'components/Layout/components/Toolbar'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
+import { OrderFormValues } from '../screens/OrderSelection'
 
 type OrderItemFormProps = {
   product: Product
   onBack: () => void
   quantity: number
+  onComplete: (values: OrderFormValues) => void
 }
 
 const OrderItemForm = (props: OrderItemFormProps) => {
-  const { product, onBack, quantity } = props
+  const { product, onBack, quantity, onComplete } = props
 
   const schema =
     product.allowBackOrder === false
@@ -27,8 +29,11 @@ const OrderItemForm = (props: OrderItemFormProps) => {
       : ProductOrderSchema
 
   const { setFieldValue, values, setErrors, errors, submitForm } = useFormik({
-    onSubmit: () => {
-      onBack()
+    onSubmit: (value) => {
+      onComplete({
+        price: product.price,
+        quantity: value.quantity,
+      })
     },
     initialValues: {
       quantity,

@@ -34,7 +34,6 @@ const OrderSelectionDiscount = (props: OrderSelectionDiscountProps) => {
     initialValues: values,
     enableReinitialize: true,
     validationSchema: toFormikValidationSchema(PricingOptionSchema),
-    validateOnChange: false,
   })
   const { setFieldValue, getFieldProps, submitForm, errors } = form
   const { type } = form.values

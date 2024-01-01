@@ -1,20 +1,22 @@
-import { useCallback, useEffect, useState } from 'react'
-import {
-  Product,
-  ProductSchema,
-  ProductVariantSchema,
-} from 'types/product.types'
+import { useCallback, useState } from 'react'
+import { ProductVariant } from 'types/product.types'
 import { useFormik } from 'formik'
-import { z } from 'zod'
 import SlidingTransition from 'components/SlidingTransition'
 import OrderSelectionDiscount from './OrderSelectionDiscount'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import OrderItemForm from '../../components/OrderItemForm'
 import OrderItemWithVariantForm from '../../components/OrderItemWithVariantForm'
+import { OrderItem, OrderItemSchema, PricingOption } from 'types/order.types'
+
+type Values = OrderItem
+
+export type OrderFormValues = {
+  price: number
+  quantity: number
+  productVariant?: ProductVariant
+}
 
 // This component lets you pick product to be inlcuded in the main screen of the POS
-// TODO: Break the components down
-// TODO: Check if product has allow selling when out of stock
 enum ActiveScreen {
   None = 'none',
   DiscountList = 'list',
@@ -22,41 +24,63 @@ enum ActiveScreen {
 
 type OrderSelectionProps = {
   onBack: () => void
-  product: Product
-  quantity?: number
+  values: Values
 }
 
 const OrderSelection = (props: OrderSelectionProps) => {
-  const { onBack, product, quantity = 1 } = props
-  const hasVariants = product.variants && product.variants.length > 0
+  const { onBack, values } = props
+  const hasVariants =
+    'variants' in props.values.product &&
+    props.values.product.variants.length > 0
 
-  const { values, setErrors, errors } = useFormik({
+  const [discount, setDiscount] = useState<PricingOption | null>(null)
+
+  const {
+    values: formValues,
+    submitForm,
+    setValues,
+  } = useFormik({
     onSubmit: () => {},
     initialValues: {
-      quantity,
-      selectedProduct:
-        product.variants && product.variants[0] ? product.variants[0] : product,
+      ...values,
+      discount,
     },
-    validationSchema: toFormikValidationSchema(ProductOrderSchema),
+    validationSchema: toFormikValidationSchema(OrderItemSchema),
   })
 
-  const { selectedProduct } = values
+  const { product, quantity } = formValues
 
   const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
   const goBackToOrderSelectionScreen = useCallback(() => {
     setActiveScreen(ActiveScreen.None)
   }, [])
 
-  useEffect(() => {
-    if (selectedProduct) {
-      if (values.quantity > selectedProduct?.quantity) {
-        setErrors({
-          ...errors,
-          quantity: 'Quantity must not be greater than the available',
-        })
-      }
+  const onComplete = (orderFormValue: OrderFormValues) => {
+    let discountAmount = 0
+
+    if (values.discount?.type === 'percentage') {
+      discountAmount = orderFormValue.price * (values.discount.amount / 100)
+    } else {
+      discountAmount = values.discount?.amount || 0
     }
-  }, [values.quantity, selectedProduct, setErrors, errors])
+
+    const price = orderFormValue.price * orderFormValue.quantity
+
+    const net = price - discountAmount
+    const gross = price
+
+    const updatedValues: OrderItem = {
+      ...values,
+      discount,
+      gross,
+      net,
+      product,
+      productVariant: orderFormValue.productVariant,
+      quantity: orderFormValue.quantity,
+    }
+    setValues(updatedValues)
+    submitForm()
+  }
 
   return (
     <div
@@ -67,20 +91,39 @@ const OrderSelection = (props: OrderSelectionProps) => {
       <div className="sub-screen">
         {!hasVariants && (
           <OrderItemForm
+            onComplete={onComplete}
             quantity={quantity}
             onBack={onBack}
             product={product}
           />
         )}
         {hasVariants && (
-          <OrderItemWithVariantForm onBack={onBack} product={product} />
+          <OrderItemWithVariantForm
+            onComplete={onComplete}
+            quantity={quantity}
+            onBack={onBack}
+            product={product}
+          />
         )}
-        <button
-          className="btn btn-primary mt-2"
-          onClick={() => setActiveScreen(ActiveScreen.DiscountList)}
-        >
-          Add Discount
-        </button>
+        {!discount && (
+          <button
+            className="btn btn-primary mt-2"
+            onClick={() => setActiveScreen(ActiveScreen.DiscountList)}
+          >
+            Add Discount
+          </button>
+        )}
+
+        {discount && (
+          <div className="flex flex-row justify-between gap-2">
+            <p>Discount: {discount.name}</p>
+            <p>
+              {discount.type === 'percentage'
+                ? `${discount.amount}%`
+                : `₱ ${discount.amount}`}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Discount Component */}
@@ -89,17 +132,13 @@ const OrderSelection = (props: OrderSelectionProps) => {
         isVisible={activeScreen === ActiveScreen.DiscountList}
         zIndex={11}
       >
-        <OrderSelectionDiscount onBack={goBackToOrderSelectionScreen} />
+        <OrderSelectionDiscount
+          onChange={(discount) => setDiscount(discount)}
+          onBack={goBackToOrderSelectionScreen}
+        />
       </SlidingTransition>
     </div>
   )
 }
-
-const ProductOrVariantSchema = z.union([ProductSchema, ProductVariantSchema])
-
-const ProductOrderSchema = z.object({
-  quantity: z.number().min(1),
-  selectedProduct: ProductOrVariantSchema,
-})
 
 export default OrderSelection
