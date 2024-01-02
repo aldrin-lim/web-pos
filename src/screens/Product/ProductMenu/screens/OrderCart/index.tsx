@@ -9,6 +9,7 @@ import {
   useProductMenuContext,
 } from '../../context/ProductMenuContext'
 import { useQueryClient } from '@tanstack/react-query'
+import { ProductCollection } from 'types/productCollection.types'
 
 enum ActiveScreen {
   None = 'none',
@@ -31,7 +32,15 @@ const OrderCart = (props: OrderCartProps) => {
 
   const clearCart = async () => {
     dispatch({ type: ProductMenuActionType.ClearCart })
-    await queryClient.resetQueries(['productCollections'])
+    const productCollections = (await queryClient.getQueryData([
+      'productCollections',
+    ])) as ProductCollection[]
+    if (productCollections.length > 0) {
+      dispatch({
+        type: ProductMenuActionType.UpdateActiveCollection,
+        payload: productCollections[0],
+      })
+    }
     onBack()
   }
 
