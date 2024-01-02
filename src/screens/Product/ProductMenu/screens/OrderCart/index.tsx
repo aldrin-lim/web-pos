@@ -1,10 +1,14 @@
-import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import { useState } from 'react'
 import CartItem from './components/CartItem'
-import { useProductMenuContext } from '../../context/ProductMenuContext'
+import {
+  ProductMenuActionType,
+  useProductMenuContext,
+} from '../../context/ProductMenuContext'
+import { useQueryClient } from '@tanstack/react-query'
 
 enum ActiveScreen {
   None = 'none',
@@ -18,11 +22,18 @@ type OrderCartProps = {
 const OrderCart = (props: OrderCartProps) => {
   const { onBack } = props
   const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
+  const queryClient = useQueryClient()
 
   const {
     state: { order, productCollectionState },
     dispatch,
   } = useProductMenuContext()
+
+  const clearCart = async () => {
+    dispatch({ type: ProductMenuActionType.ClearCart })
+    await queryClient.resetQueries(['productCollections'])
+    onBack()
+  }
 
   if (!order) {
     return (
@@ -63,8 +74,33 @@ const OrderCart = (props: OrderCartProps) => {
               onClick={onBack}
             />,
             <ToolbarTitle key={2} title="Order Cart" />,
+            <ToolbarButton
+              key={3}
+              icon={<TrashIcon className="w-6" />}
+              onClick={clearCart}
+            />,
           ]}
         />
+        <label htmlFor="my_modal_6" className="btn">
+          open modal
+        </label>
+        <input
+          type="checkbox"
+          hidden
+          id="my_modal_6"
+          className="modal-toggle"
+        />
+        <div className="modal" role="dialog">
+          <div className="modal-box">
+            <h3 className="text-lg font-bold">Hello!</h3>
+            <p className="py-4">This modal works with a hidden checkbox!</p>
+            <div className="modal-action">
+              <label htmlFor="my_modal_6" className="btn">
+                Close!
+              </label>
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col gap-2">
           {/* COST */}
           <div className="TotalCost mb-4 flex flex-row justify-between align-middle text-2xl font-bold">

@@ -46,6 +46,7 @@ export enum ProductMenuActionType {
   AddOrderItem = 'ADD_ORDER_ITEM',
   UpdateOrderItem = 'UPDATE_ORDER_ITEM',
   DeleteOrderItem = 'DELETE_ORDER_ITEM',
+  ClearCart = 'CLEAR_ORDER_CART',
 }
 
 type Action =
@@ -77,6 +78,9 @@ type Action =
   | {
       type: ProductMenuActionType.DeleteOrderItem
       payload: number
+    }
+  | {
+      type: ProductMenuActionType.ClearCart
     }
 
 function reducer(state: State, action: Action): State {
@@ -193,8 +197,6 @@ function reducer(state: State, action: Action): State {
 
       // If the product already exists in the order, update the quantity
       if (existingOrderItemIndex !== -1) {
-        console.log(action.payload)
-        console.log(state.order)
         return {
           ...state,
           productCollectionState: {
@@ -286,6 +288,9 @@ function reducer(state: State, action: Action): State {
           ),
         },
       }
+    case ProductMenuActionType.ClearCart: {
+      return initialState
+    }
     default:
       return state
   }
@@ -319,6 +324,7 @@ export const ProductMenuContextProvider: React.FC<ProductMenuProviderProps> = ({
         payload: productCollections[0],
       })
     }
+    console.log('pasok')
   }, [isLoading, error, productCollections])
 
   return (
