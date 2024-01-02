@@ -193,6 +193,8 @@ function reducer(state: State, action: Action): State {
 
       // If the product already exists in the order, update the quantity
       if (existingOrderItemIndex !== -1) {
+        console.log(action.payload)
+        console.log(state.order)
         return {
           ...state,
           productCollectionState: {
@@ -211,6 +213,8 @@ function reducer(state: State, action: Action): State {
                 ? {
                     ...item,
                     quantity: item.quantity + action.payload.quantity,
+                    gross: item.gross + action.payload.gross,
+                    net: item.net + action.payload.net,
                   }
                 : item,
             ),
