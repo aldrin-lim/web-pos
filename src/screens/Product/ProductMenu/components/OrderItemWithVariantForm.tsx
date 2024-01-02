@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   Product,
   ProductVariant,
@@ -26,6 +26,8 @@ type OrderItemWithVariantFormProps = {
 const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
   const { product, onBack, onComplete, productVariant, quantity = 1 } = props
   const hasVariants = product.variants && product.variants.length > 0
+
+  const quantityInputRef = useRef<HTMLInputElement>(null)
 
   const schema =
     product.allowBackOrder === false
@@ -76,6 +78,10 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
       }
       setFieldValue('quantity', quantity ?? 1)
     }
+    // TODO: Fix this why it only focus on the second time
+    setTimeout(() => {
+      quantityInputRef.current?.focus()
+    }, 100)
   }
 
   useEffect(() => {
@@ -154,6 +160,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
               <span className="label-text-alt">Quantity</span>
             </div>
             <input
+              ref={quantityInputRef}
               type="text"
               disabled={!selectedVariant}
               placeholder={

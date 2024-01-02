@@ -53,14 +53,11 @@ const ProductMenuComponent = () => {
   }
 
   const addOrderItemToCart = (orderItem: OrderItem) => {
-    console.log(orderItem)
     dispatch({
       type: ProductMenuActionType.AddOrderItem,
       payload: orderItem,
     })
   }
-
-  console.log(order)
 
   return (
     <div

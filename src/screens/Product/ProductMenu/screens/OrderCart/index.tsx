@@ -20,7 +20,7 @@ const OrderCart = (props: OrderCartProps) => {
   const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
 
   const {
-    state: { order },
+    state: { order, productCollectionState },
     dispatch,
   } = useProductMenuContext()
 

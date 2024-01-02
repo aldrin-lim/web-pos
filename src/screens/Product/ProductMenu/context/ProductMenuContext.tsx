@@ -1,6 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import useAllProductionCollection from 'hooks/useAllProductionCollection'
-import { ReactNode, createContext, useContext, useReducer } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+} from 'react'
 import { Order, OrderItem } from 'types/order.types'
 import { ProductCollection } from 'types/productCollection.types'
 
@@ -94,17 +100,66 @@ function reducer(state: State, action: Action): State {
         productCollectionState: action.payload,
       }
     case ProductMenuActionType.AddOrderItem: {
+      const productFromCollection =
+        state.productCollectionState.activeCollection?.products.find(
+          (p) => p.id === action.payload.product.id,
+        )
+
+      // Check if the product exists in the active collection
+      if (
+        !productFromCollection ||
+        !state.productCollectionState.activeCollection
+      ) {
+        return state
+      }
+
+      // Subtract the quantity from the product in the active collection
+      const updatedActiveollectionProducts =
+        state.productCollectionState.activeCollection.products.map((p) => {
+          if (p.id === action.payload.product.id) {
+            if (action.payload.productVariant) {
+              return {
+                ...p,
+                variants: p.variants.map((v) => {
+                  if (v.id === action.payload.productVariant?.id) {
+                    return {
+                      ...v,
+                      quantity: v.quantity - action.payload.quantity,
+                    }
+                  }
+                  return v
+                }),
+              }
+            }
+            return {
+              ...p,
+              quantity: p.quantity - action.payload.quantity,
+            }
+          }
+
+          return p
+        })
+
+      // Check if the order is null then create a new order
       if (state.order === null) {
         return {
           ...state,
+          productCollectionState: {
+            ...state.productCollectionState,
+            activeCollection: {
+              ...state.productCollectionState.activeCollection,
+              products: updatedActiveollectionProducts,
+            },
+          },
           order: {
-            net: 0,
-            gross: 0,
+            net: action.payload.net,
+            gross: action.payload.gross,
             orderItems: [action.payload],
           },
         }
       }
 
+      // Check if the product already exists in the order
       const existingOrderItemIndex = state.order.orderItems.findIndex(
         (item) => {
           if (item.productVariant && action.payload.productVariant) {
@@ -117,9 +172,17 @@ function reducer(state: State, action: Action): State {
         },
       )
 
+      // If the product already exists in the order, update the quantity
       if (existingOrderItemIndex !== -1) {
         return {
           ...state,
+          productCollectionState: {
+            ...state.productCollectionState,
+            activeCollection: {
+              ...state.productCollectionState.activeCollection,
+              products: updatedActiveollectionProducts,
+            },
+          },
           order: {
             ...state.order,
             orderItems: state.order.orderItems.map((item, index) =>
@@ -136,6 +199,13 @@ function reducer(state: State, action: Action): State {
 
       return {
         ...state,
+        productCollectionState: {
+          ...state.productCollectionState,
+          activeCollection: {
+            ...state.productCollectionState.activeCollection,
+            products: updatedActiveollectionProducts,
+          },
+        },
         order: {
           ...state.order,
           orderItems: [...state.order.orderItems, action.payload],
@@ -215,19 +285,17 @@ export const ProductMenuContextProvider: React.FC<ProductMenuProviderProps> = ({
 
   const { error, isLoading, productCollections } = useAllProductionCollection()
 
-  const updatedState: State = {
-    ...state,
-    productCollectionState: {
-      ...state.productCollectionState,
-      error,
-      isLoading,
-      productCollections,
-      activeCollection: productCollections[0] ?? null,
-    },
-  }
+  useEffect(() => {
+    if (productCollections.length > 0) {
+      dispatch({
+        type: ProductMenuActionType.UpdateActiveCollection,
+        payload: productCollections[0],
+      })
+    }
+  }, [isLoading, error, productCollections])
 
   return (
-    <ProductMenuContext.Provider value={{ state: updatedState, dispatch }}>
+    <ProductMenuContext.Provider value={{ state, dispatch }}>
       {children}
     </ProductMenuContext.Provider>
   )
