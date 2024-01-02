@@ -29,16 +29,6 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
 
   const quantityInputRef = useRef<HTMLInputElement>(null)
 
-  const schema =
-    product.allowBackOrder === false
-      ? z.object({
-          quantity: z.number().min(1),
-          selectedVariant: ProductVariantSchema.refine((v) => v !== null, {
-            message: 'Select a variant first',
-          }),
-        })
-      : ProductOrderSchema
-
   const { setFieldValue, values, setErrors, errors, submitForm } = useFormik({
     onSubmit: (value) => {
       if (value.selectedVariant === null) {
@@ -56,7 +46,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
       selectedVariant: productVariant ?? null,
     },
     enableReinitialize: true,
-    validationSchema: toFormikValidationSchema(schema),
+    validationSchema: toFormikValidationSchema(ProductOrderSchema),
   })
 
   const { selectedVariant } = values
@@ -86,75 +76,116 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
 
   useEffect(() => {
     if (selectedVariant) {
-      if (
-        values.quantity > selectedVariant.quantity &&
-        product.allowBackOrder === false
-      ) {
-        setErrors({
-          ...errors,
-          quantity: 'Quantity must not be greater than the available',
-        })
+      if (selectedVariant.allowBackOrder === false) {
+        if (values.quantity > selectedVariant.quantity) {
+          setErrors({
+            ...errors,
+            quantity: 'Quantity must not be greater than the available',
+          })
+          return
+        }
       }
     }
-  }, [
-    values.quantity,
-    selectedVariant,
-    setErrors,
-    errors,
-    product.allowBackOrder,
-  ])
+  }, [values.quantity, selectedVariant, setErrors, errors])
 
   const onSubmit = async () => {
     if (selectedVariant) {
-      if (
-        values.quantity > selectedVariant.quantity &&
-        product.allowBackOrder === false
-      ) {
-        setErrors({
-          ...errors,
-          quantity: 'Quantity must not be greater than the available',
-        })
-        return
+      if (selectedVariant.allowBackOrder === false) {
+        if (values.quantity > selectedVariant.quantity) {
+          setErrors({
+            ...errors,
+            quantity: 'Quantity must not be greater than the available',
+          })
+          return
+        }
       }
     }
     submitForm()
   }
 
   const renderForm = () => {
-    if (
-      product.allowBackOrder ||
-      (product.allowBackOrder === false && product.quantity > 0)
-    ) {
+    if (selectedVariant) {
+      if (selectedVariant.allowBackOrder === true) {
+        return (
+          <>
+            {errors.selectedVariant && (
+              <p className="form-control-error">Select a variant first</p>
+            )}
+            <div className="flex flex-col gap-1">
+              <div className="label">
+                <span className="label-text-alt">Quantity</span>
+              </div>
+              <input
+                ref={quantityInputRef}
+                type="text"
+                disabled={!selectedVariant}
+                placeholder={
+                  !selectedVariant ? 'Select a variant first' : 'Quantity'
+                }
+                value={selectedVariant ? values.quantity : ''}
+                onChange={async (e) => {
+                  if (isNaN(+e.target.value)) {
+                    return
+                  }
+                  setFieldValue('quantity', +e.target.value)
+                }}
+                className="input input-bordered w-full"
+              />
+            </div>
+          </>
+        )
+      } else {
+        if (selectedVariant.quantity === 0) {
+          return (
+            <p className="mt-4 w-full text-center text-xl font-bold">
+              Out of stock
+            </p>
+          )
+        } else {
+          return (
+            <>
+              {errors.selectedVariant && (
+                <p className="form-control-error">Select a variant first</p>
+              )}
+              <div className="flex flex-col gap-1">
+                <div className="label">
+                  <span className="label-text-alt">Quantity</span>
+                </div>
+                <input
+                  ref={quantityInputRef}
+                  type="text"
+                  disabled={!selectedVariant}
+                  placeholder={
+                    !selectedVariant ? 'Select a variant first' : 'Quantity'
+                  }
+                  value={selectedVariant ? values.quantity : ''}
+                  onChange={async (e) => {
+                    if (isNaN(+e.target.value)) {
+                      return
+                    }
+                    setFieldValue('quantity', +e.target.value)
+                  }}
+                  className="input input-bordered w-full"
+                />
+                {errors.quantity && (
+                  <p className="form-control-error">{errors.quantity}&nbsp;</p>
+                )}
+
+                {selectedVariant &&
+                  selectedVariant.allowBackOrder === false && (
+                    <>{selectedVariant.quantity} available </>
+                  )}
+              </div>
+            </>
+          )
+        }
+      }
+    } else {
       return (
         <>
-          <h1 className="font-bold">Variants</h1>
-          <div className="flex flex-row flex-wrap gap-4">
-            {variants.map((variant, i) => {
-              return (
-                <button
-                  key={i}
-                  onClick={() => onVariantSelect(variant.id)}
-                  className={`btn w-0 min-w-min ${
-                    selectedVariant && variant.id === selectedVariant.id
-                      ? ' bg-purple-400 text-white'
-                      : 'btn-outline'
-                  }`}
-                >
-                  {variant.name}
-                </button>
-              )
-            })}
-          </div>
           {errors.selectedVariant && (
             <p className="form-control-error">Select a variant first</p>
           )}
-          {selectedVariant?.allowBackOrder === false &&
-            selectedVariant?.quantity === 0 && (
-              <p className="mt-4 w-full text-center text-xl font-bold">
-                Out of stock
-              </p>
-            )}
-
           <div className="flex flex-col gap-1">
             <div className="label">
               <span className="label-text-alt">Quantity</span>
@@ -163,9 +194,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
               ref={quantityInputRef}
               type="text"
               disabled={!selectedVariant}
-              placeholder={
-                !selectedVariant ? 'Select a variant first' : 'Quantity'
-              }
+              placeholder="Select a variant first"
               value={selectedVariant ? values.quantity : ''}
               onChange={async (e) => {
                 if (isNaN(+e.target.value)) {
@@ -175,20 +204,10 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
               }}
               className="input input-bordered w-full"
             />
-            {errors.quantity && (
-              <p className="form-control-error">{errors.quantity}&nbsp;</p>
-            )}
-
-            {selectedVariant && product.allowBackOrder === false && (
-              <>{selectedVariant.quantity} available </>
-            )}
           </div>
         </>
       )
     }
-    return (
-      <p className="mt-4 w-full text-center text-xl font-bold">Out of stock</p>
-    )
   }
 
   return (
@@ -224,13 +243,31 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
           </p>
         )}
       </div>
+      <h1 className="font-bold">Variants</h1>
+      <div className="flex flex-row flex-wrap gap-4">
+        {variants.map((variant, i) => {
+          return (
+            <button
+              key={i}
+              onClick={() => onVariantSelect(variant.id)}
+              className={`btn w-0 min-w-min ${
+                selectedVariant && variant.id === selectedVariant.id
+                  ? ' bg-purple-400 text-white'
+                  : 'btn-outline'
+              }`}
+            >
+              {variant.name}
+            </button>
+          )
+        })}
+      </div>
       {renderForm()}
     </>
   )
 }
 
 const ProductOrderSchema = z.object({
-  quantity: z.number().min(1),
+  quantity: z.number(),
   selectedVariant: ProductVariantSchema.refine((v) => v !== null, {
     message: 'Select a variant first',
   }),

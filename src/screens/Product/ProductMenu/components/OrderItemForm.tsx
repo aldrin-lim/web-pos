@@ -21,13 +21,6 @@ type OrderItemFormProps = {
 const OrderItemForm = (props: OrderItemFormProps) => {
   const { product, onBack, quantity, onComplete } = props
 
-  const schema =
-    product.allowBackOrder === false
-      ? z.object({
-          quantity: z.number().min(1),
-        })
-      : ProductOrderSchema
-
   const { setFieldValue, values, setErrors, errors, submitForm } = useFormik({
     onSubmit: (value) => {
       onComplete({
@@ -38,8 +31,9 @@ const OrderItemForm = (props: OrderItemFormProps) => {
     initialValues: {
       quantity,
     },
-    validationSchema: toFormikValidationSchema(schema),
+    validationSchema: toFormikValidationSchema(ProductOrderSchema),
     enableReinitialize: true,
+    validateOnChange: false,
   })
 
   useEffect(() => {
@@ -123,7 +117,7 @@ const OrderItemForm = (props: OrderItemFormProps) => {
 }
 
 const ProductOrderSchema = z.object({
-  quantity: z.number().min(1),
+  quantity: z.number(),
 })
 
 export default OrderItemForm

@@ -105,6 +105,12 @@ function reducer(state: State, action: Action): State {
           (p) => p.id === action.payload.product.id,
         )
 
+      // Do nothing when quantity is zero
+
+      if (action.payload.quantity === 0) {
+        return state
+      }
+
       // Check if the product exists in the active collection
       if (
         !productFromCollection ||
