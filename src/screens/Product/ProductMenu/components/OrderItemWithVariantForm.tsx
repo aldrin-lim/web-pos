@@ -17,13 +17,14 @@ import { OrderFormValues } from '../screens/OrderSelection'
 
 type OrderItemWithVariantFormProps = {
   product: Product
+  productVariant?: ProductVariant
   onBack: () => void
   quantity?: number
   onComplete: (values: OrderFormValues) => void
 }
 
 const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
-  const { product, onBack, onComplete, quantity = 1 } = props
+  const { product, onBack, onComplete, productVariant, quantity = 1 } = props
   const hasVariants = product.variants && product.variants.length > 0
 
   const schema =
@@ -50,7 +51,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
     },
     initialValues: {
       quantity,
-      selectedVariant: null as ProductVariant | null,
+      selectedVariant: productVariant ?? null,
     },
     enableReinitialize: true,
     validationSchema: toFormikValidationSchema(schema),
@@ -96,6 +97,22 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
     errors,
     product.allowBackOrder,
   ])
+
+  const onSubmit = async () => {
+    if (selectedVariant) {
+      if (
+        values.quantity > selectedVariant.quantity &&
+        product.allowBackOrder === false
+      ) {
+        setErrors({
+          ...errors,
+          quantity: 'Quantity must not be greater than the available',
+        })
+        return
+      }
+    }
+    submitForm()
+  }
 
   const renderForm = () => {
     if (
@@ -143,7 +160,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
                 !selectedVariant ? 'Select a variant first' : 'Quantity'
               }
               value={selectedVariant ? values.quantity : ''}
-              onChange={(e) => {
+              onChange={async (e) => {
                 if (isNaN(+e.target.value)) {
                   return
                 }
@@ -177,7 +194,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
             onClick={onBack}
           />,
           <ToolbarTitle key={2} title="Order" />,
-          <ToolbarButton key={3} label="Done" onClick={submitForm} />,
+          <ToolbarButton key={3} label="Done" onClick={onSubmit} />,
         ]}
       />
       <div className="flex h-[120px] justify-center overflow-hidden bg-gray-200 align-middle ">

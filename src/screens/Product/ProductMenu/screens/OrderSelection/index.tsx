@@ -25,6 +25,7 @@ enum ActiveScreen {
 type OrderSelectionProps = {
   onBack: () => void
   values: Values
+  onComplete?: (values: Values) => void
 }
 
 const OrderSelection = (props: OrderSelectionProps) => {
@@ -40,11 +41,15 @@ const OrderSelection = (props: OrderSelectionProps) => {
     submitForm,
     setValues,
   } = useFormik({
-    onSubmit: () => {},
+    onSubmit: (value) => {
+      props.onComplete && props.onComplete(value)
+      onBack()
+    },
     initialValues: {
       ...values,
       discount,
     },
+    enableReinitialize: true,
     validationSchema: toFormikValidationSchema(OrderItemSchema),
   })
 
@@ -57,14 +62,15 @@ const OrderSelection = (props: OrderSelectionProps) => {
 
   const onComplete = (orderFormValue: OrderFormValues) => {
     let discountAmount = 0
-
-    if (values.discount?.type === 'percentage') {
-      discountAmount = orderFormValue.price * (values.discount.amount / 100)
-    } else {
-      discountAmount = values.discount?.amount || 0
-    }
-
     const price = orderFormValue.price * orderFormValue.quantity
+
+    if (discount) {
+      if (discount.type === 'percentage') {
+        discountAmount = price * (discount.amount / 100)
+      } else {
+        discountAmount = discount.amount || 0
+      }
+    }
 
     const net = price - discountAmount
     const gross = price
@@ -99,6 +105,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
         )}
         {hasVariants && (
           <OrderItemWithVariantForm
+            productVariant={values.productVariant}
             onComplete={onComplete}
             quantity={quantity}
             onBack={onBack}

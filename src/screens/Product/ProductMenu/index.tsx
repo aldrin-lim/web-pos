@@ -12,6 +12,7 @@ import ProductCollection from './screens/ProductCollection'
 import { Product } from 'types/product.types'
 import OrderSelection from './screens/OrderSelection'
 import { ShoppingCartIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { OrderItem } from 'types/order.types'
 
 const ProductMenuComponent = () => {
   const {
@@ -48,6 +49,10 @@ const ProductMenuComponent = () => {
         screen: ProductMenuActiveScreen.OrderSelection,
       },
     })
+  }
+
+  const addOrderItemToCart = (orderItem: OrderItem) => {
+    console.log(orderItem)
   }
 
   return (
@@ -94,6 +99,7 @@ const ProductMenuComponent = () => {
       >
         {seletectedProductToOrder && (
           <OrderSelection
+            onComplete={addOrderItemToCart}
             values={{
               product: seletectedProductToOrder,
               quantity: 1,

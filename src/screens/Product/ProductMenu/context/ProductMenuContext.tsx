@@ -104,6 +104,36 @@ function reducer(state: State, action: Action): State {
           },
         }
       }
+
+      const existingOrderItemIndex = state.order.orderItems.findIndex(
+        (item) => {
+          if (item.productVariant && action.payload.productVariant) {
+            return (
+              item.product.id === action.payload.product.id &&
+              item.productVariant.id === action.payload.productVariant.id
+            )
+          }
+          return item.product.id === action.payload.product.id
+        },
+      )
+
+      if (existingOrderItemIndex !== -1) {
+        return {
+          ...state,
+          order: {
+            ...state.order,
+            orderItems: state.order.orderItems.map((item, index) =>
+              index === existingOrderItemIndex
+                ? {
+                    ...item,
+                    quantity: item.quantity + action.payload.quantity,
+                  }
+                : item,
+            ),
+          },
+        }
+      }
+
       return {
         ...state,
         order: {
