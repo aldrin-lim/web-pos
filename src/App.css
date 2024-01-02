@@ -53,4 +53,15 @@ html, body {
   .sub-screen {
     @apply p-6 pt-0 flex min-h-screen w-full flex-col bg-base-100 gap-4
   }
+
+  .clickable {
+    @apply duration-200 ease-out;
+    animation: button-pop var(--animation-btn, 0.25s) ease-out;
+    transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  }
+  
+  .clickable:active {
+    animation: button-pop 0s ease-out;
+    transform: scale(var(--btn-focus-scale, 0.97));
+  }
 }

@@ -40,7 +40,7 @@ const ProductCollection = (props: ProductCollectionProps) => {
       <Toolbar
         items={[
           <div key={1} />,
-          <ToolbarTitle key={2} title="Product Menu" />,
+          <ToolbarTitle key={2} title="Menu" />,
           <ToolbarButton
             key={3}
             label="Sign out"

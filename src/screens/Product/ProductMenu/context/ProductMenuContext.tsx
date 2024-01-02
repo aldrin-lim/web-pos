@@ -142,19 +142,40 @@ function reducer(state: State, action: Action): State {
         },
       }
     }
-    case ProductMenuActionType.UpdateOrderItem:
+    case ProductMenuActionType.UpdateOrderItem: {
       if (!state.order) {
         return state
       }
-      return {
-        ...state,
-        order: {
-          ...state.order,
-          orderItems: state.order.orderItems.map((item, index) =>
-            index === action.payload.index ? action.payload.item : item,
-          ),
-        },
+      if (action.payload.item.quantity === 0) {
+        return {
+          ...state,
+          order: {
+            ...state.order,
+            orderItems: state.order.orderItems.filter((item) => {
+              if (item.productVariant && action.payload.item.productVariant) {
+                return (
+                  item.product.id === action.payload.item.product.id &&
+                  item.productVariant.id ===
+                    action.payload.item.productVariant.id
+                )
+              }
+              return item.product.id === action.payload.item.product.id
+            }),
+          },
+        }
+      } else {
+        return {
+          ...state,
+          order: {
+            ...state.order,
+            orderItems: state.order.orderItems.map((item, index) =>
+              index === action.payload.index ? action.payload.item : item,
+            ),
+          },
+        }
       }
+    }
+
     case ProductMenuActionType.DeleteOrderItem:
       if (!state.order) {
         return state

@@ -13,10 +13,11 @@ import { Product } from 'types/product.types'
 import OrderSelection from './screens/OrderSelection'
 import { ShoppingCartIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { OrderItem } from 'types/order.types'
+import OrderCart from './screens/OrderCart'
 
 const ProductMenuComponent = () => {
   const {
-    state: { activeScreen },
+    state: { activeScreen, order },
     dispatch,
   } = useProductMenuContext()
 
@@ -53,7 +54,13 @@ const ProductMenuComponent = () => {
 
   const addOrderItemToCart = (orderItem: OrderItem) => {
     console.log(orderItem)
+    dispatch({
+      type: ProductMenuActionType.AddOrderItem,
+      payload: orderItem,
+    })
   }
+
+  console.log(order)
 
   return (
     <div
@@ -69,11 +76,14 @@ const ProductMenuComponent = () => {
       />
       {activeScreen === ProductMenuActiveScreen.None && (
         <div className="CartButton fixed bottom-10 left-0 right-0 flex justify-center ">
-          <button className="CartButton btn mx-4 flex w-full max-w-md flex-shrink flex-row justify-center gap-4 rounded-md bg-purple-400 p-4 text-white shadow-md">
+          <button
+            onClick={() => setActiveScreen(ProductMenuActiveScreen.OrderCart)}
+            className="CartButton btn mx-4 flex w-full max-w-md flex-shrink flex-row justify-center gap-4 rounded-md bg-purple-400 p-4 text-white shadow-md"
+          >
             <div className="mx-auto flex flex-row gap-4">
               <div data-testid className="flex flex-row gap-1">
                 <ShoppingCartIcon className="w-4" />
-                <p>0</p>
+                <p>{order?.orderItems.length ?? 0}</p>
               </div>
               <div className="flex flex-row gap-1">
                 <p>₱ 0</p>
@@ -110,6 +120,14 @@ const ProductMenuComponent = () => {
             onBack={goBackToMainScreen}
           />
         )}
+      </SlidingTransition>
+
+      <SlidingTransition
+        direction="right"
+        isVisible={activeScreen === ProductMenuActiveScreen.OrderCart}
+        zIndex={10}
+      >
+        <OrderCart onBack={goBackToMainScreen} />
       </SlidingTransition>
     </div>
   )

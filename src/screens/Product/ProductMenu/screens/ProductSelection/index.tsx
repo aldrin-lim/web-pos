@@ -6,6 +6,7 @@ import ToolbarButton from 'components/Layout/components/Toolbar/components/Toolb
 import { useCallback, useState } from 'react'
 import SlidingTransition from 'components/SlidingTransition'
 import ProductSelectionList from './ProductSelectionList'
+import { useProductMenuContext } from '../../context/ProductMenuContext'
 
 // This component lets you pick product to be inlcuded in the main screen of the POS
 enum ActiveScreen {
