@@ -69,7 +69,7 @@ const OrderCart = (props: OrderCartProps) => {
           {/* COST */}
           <div className="TotalCost mb-4 flex flex-row justify-between align-middle text-2xl font-bold">
             <p className="">TOTAL</p>
-            <p>₱ 0</p>
+            <p>₱ {order.net.toFixed(2)}</p>
           </div>
           {/* ITEMS */}
           {order.orderItems.map((item, key) => {

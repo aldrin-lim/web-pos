@@ -165,16 +165,29 @@ function reducer(state: State, action: Action): State {
         }
       }
 
+      const gross = state.order.orderItems
+        .map((item) => item.gross)
+        .reduce((a, b) => a + b, 0)
+      const net = state.order.orderItems
+        .map((item) => item.net)
+        .reduce((a, b) => a + b, 0)
+
       // Check if the product already exists in the order
       const existingOrderItemIndex = state.order.orderItems.findIndex(
         (item) => {
           if (item.productVariant && action.payload.productVariant) {
             return (
               item.product.id === action.payload.product.id &&
-              item.productVariant.id === action.payload.productVariant.id
+              item.productVariant.id === action.payload.productVariant.id &&
+              JSON.stringify(item.discount) ===
+                JSON.stringify(action.payload.discount)
             )
           }
-          return item.product.id === action.payload.product.id
+          return (
+            item.product.id === action.payload.product.id &&
+            JSON.stringify(item.discount) ===
+              JSON.stringify(action.payload.discount)
+          )
         },
       )
 
@@ -191,6 +204,8 @@ function reducer(state: State, action: Action): State {
           },
           order: {
             ...state.order,
+            gross: gross + action.payload.gross,
+            net: net + action.payload.net,
             orderItems: state.order.orderItems.map((item, index) =>
               index === existingOrderItemIndex
                 ? {
@@ -214,6 +229,8 @@ function reducer(state: State, action: Action): State {
         },
         order: {
           ...state.order,
+          gross: gross + action.payload.gross,
+          net: net + action.payload.net,
           orderItems: [...state.order.orderItems, action.payload],
         },
       }

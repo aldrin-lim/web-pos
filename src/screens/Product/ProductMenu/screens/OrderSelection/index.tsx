@@ -72,7 +72,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
       }
     }
 
-    const net = price - discountAmount
+    const net = price - discountAmount ?? 0
     const gross = price
 
     const updatedValues: OrderItem = {
