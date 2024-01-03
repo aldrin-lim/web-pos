@@ -27,10 +27,11 @@ type OrderSelectionProps = {
   onBack: () => void
   values: Values
   onComplete?: (values: Values) => void
+  editMode?: boolean
 }
 
 const OrderSelection = (props: OrderSelectionProps) => {
-  const { onBack, values } = props
+  const { onBack, values, editMode = false } = props
   const hasVariants =
     'variants' in props.values.product &&
     props.values.product.variants.length > 0
@@ -111,6 +112,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
             quantity={quantity}
             onBack={onBack}
             product={product}
+            editMode={editMode}
           />
         )}
         {hasVariants && (
@@ -120,6 +122,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
             quantity={quantity}
             onBack={onBack}
             product={product}
+            editMode={editMode}
           />
         )}
 

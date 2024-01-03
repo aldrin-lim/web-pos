@@ -21,10 +21,18 @@ type OrderItemWithVariantFormProps = {
   onBack: () => void
   quantity?: number
   onComplete: (values: OrderFormValues) => void
+  editMode?: boolean
 }
 
 const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
-  const { product, onBack, onComplete, productVariant, quantity = 1 } = props
+  const {
+    product,
+    onBack,
+    onComplete,
+    productVariant,
+    quantity = 1,
+    editMode = false,
+  } = props
   const hasVariants = product.variants && product.variants.length > 0
 
   const quantityInputRef = useRef<HTMLInputElement>(null)
@@ -76,13 +84,25 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
 
   const onSubmit = async () => {
     if (selectedVariant) {
+      const maxQuantityAllowed = quantity + selectedVariant.quantity
+
       if (selectedVariant.allowBackOrder === false) {
-        if (values.quantity > selectedVariant.quantity) {
-          setErrors({
-            ...errors,
-            quantity: 'Quantity must not be greater than the available',
-          })
-          return
+        if (editMode === false) {
+          if (values.quantity > selectedVariant.quantity) {
+            setErrors({
+              ...errors,
+              quantity: 'Quantity must not be greater than the available',
+            })
+            return
+          }
+        } else {
+          if (values.quantity > maxQuantityAllowed) {
+            setErrors({
+              ...errors,
+              quantity: 'Maximum quantity allowed is ' + maxQuantityAllowed,
+            })
+            return
+          }
         }
       }
     }

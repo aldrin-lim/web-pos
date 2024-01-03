@@ -172,6 +172,7 @@ const OrderCart = (props: OrderCartProps) => {
           <OrderSelection
             values={activeOrderItem}
             onBack={goBackToOrderCartScreen}
+            editMode={true}
           />
         )}
       </SlidingTransition>

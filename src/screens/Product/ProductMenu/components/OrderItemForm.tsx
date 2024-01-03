@@ -15,10 +15,11 @@ type OrderItemFormProps = {
   onBack: () => void
   quantity: number
   onComplete: (values: OrderFormValues) => void
+  editMode?: boolean
 }
 
 const OrderItemForm = (props: OrderItemFormProps) => {
-  const { product, onBack, quantity, onComplete } = props
+  const { product, onBack, quantity, onComplete, editMode = false } = props
 
   const { setFieldValue, values, setErrors, errors, submitForm } = useFormik({
     onSubmit: (value) => {
@@ -74,11 +75,13 @@ const OrderItemForm = (props: OrderItemFormProps) => {
 
   const onSubmit = () => {
     if (product && product.allowBackOrder === false) {
-      if (values.quantity > product?.quantity) {
-        setErrors({
-          ...errors,
-          quantity: 'Quantity must not be greater than the available',
-        })
+      if (editMode === false) {
+        if (values.quantity > product?.quantity) {
+          setErrors({
+            ...errors,
+            quantity: 'Quantity must not be greater than the available',
+          })
+        }
       }
     }
     submitForm()
