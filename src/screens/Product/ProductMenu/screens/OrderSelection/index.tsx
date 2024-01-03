@@ -84,6 +84,8 @@ const OrderSelection = (props: OrderSelectionProps) => {
       productVariant: orderFormValue.productVariant,
       quantity: orderFormValue.quantity,
     }
+
+    console.log('updatedValues', updatedValues)
     setValues(updatedValues)
     submitForm()
   }
@@ -112,6 +114,8 @@ const OrderSelection = (props: OrderSelectionProps) => {
             product={product}
           />
         )}
+
+        {/* TODO: Allow editing of saved discount */}
         {!discount && (
           <button
             className="btn btn-primary mt-2"
