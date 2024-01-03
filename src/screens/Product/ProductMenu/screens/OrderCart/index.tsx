@@ -10,10 +10,13 @@ import {
 } from '../../context/ProductMenuContext'
 import { useQueryClient } from '@tanstack/react-query'
 import { ProductCollection } from 'types/productCollection.types'
+import { OrderItem } from 'types/order.types'
+import SlidingTransition from 'components/SlidingTransition'
+import OrderSelection from '../OrderSelection'
 
 enum ActiveScreen {
   None = 'none',
-  DiscountList = 'list',
+  OrderItem = 'orderItem',
 }
 
 type OrderCartProps = {
@@ -24,6 +27,8 @@ const OrderCart = (props: OrderCartProps) => {
   const { onBack } = props
   const [activeScreen, setActiveScreen] = useState(ActiveScreen.None)
   const queryClient = useQueryClient()
+
+  const [activeOrderItem, setActiveOrderItem] = useState<OrderItem | null>(null)
 
   const {
     state: { order, productCollectionState },
@@ -43,6 +48,13 @@ const OrderCart = (props: OrderCartProps) => {
     }
     onBack()
   }
+
+  const goBackToOrderCartScreen = () => {
+    setActiveScreen(ActiveScreen.None)
+  }
+
+  // console.log('productCollectionState', productCollectionState)
+  // console.log('order', order)
 
   if (!order) {
     return (
@@ -66,6 +78,11 @@ const OrderCart = (props: OrderCartProps) => {
         </div>
       </div>
     )
+  }
+
+  const onOrderItemSelect = (value: OrderItem) => {
+    setActiveOrderItem(value)
+    setActiveScreen(ActiveScreen.OrderItem)
   }
 
   return (
@@ -118,10 +135,29 @@ const OrderCart = (props: OrderCartProps) => {
           </div>
           {/* ITEMS */}
           {order.orderItems.map((item, key) => {
-            return <CartItem key={key} {...item} />
+            return (
+              <CartItem
+                onClick={(orderItem) => onOrderItemSelect(orderItem)}
+                orderItem={item}
+                key={key}
+              />
+            )
           })}
         </div>
       </div>
+
+      <SlidingTransition
+        direction="right"
+        isVisible={activeScreen === ActiveScreen.OrderItem}
+        zIndex={10}
+      >
+        {activeOrderItem && (
+          <OrderSelection
+            values={activeOrderItem}
+            onBack={goBackToOrderCartScreen}
+          />
+        )}
+      </SlidingTransition>
     </div>
   )
 }
