@@ -13,6 +13,7 @@ import { ProductCollection } from 'types/productCollection.types'
 import { OrderItem } from 'types/order.types'
 import SlidingTransition from 'components/SlidingTransition'
 import OrderSelection from '../OrderSelection'
+import { Product } from 'types/product.types'
 
 enum ActiveScreen {
   None = 'none',
@@ -31,7 +32,10 @@ const OrderCart = (props: OrderCartProps) => {
   const [activeOrderItem, setActiveOrderItem] = useState<OrderItem | null>(null)
 
   const {
-    state: { order, productCollectionState },
+    state: {
+      order,
+      productCollectionState: { activeCollection },
+    },
     dispatch,
   } = useProductMenuContext()
 
@@ -81,8 +85,21 @@ const OrderCart = (props: OrderCartProps) => {
   }
 
   const onOrderItemSelect = (value: OrderItem) => {
-    setActiveOrderItem(value)
-    setActiveScreen(ActiveScreen.OrderItem)
+    if (activeCollection) {
+      const updatedProduct = activeCollection.products.find(
+        (product) => product.id === value.product.id,
+      )
+      const updatedVariant = updatedProduct?.variants.find(
+        (variant) => variant.id === value.productVariant?.id,
+      )
+      const updateOderItem: OrderItem = {
+        ...value,
+        product: updatedProduct as Product,
+        productVariant: updatedVariant,
+      }
+      setActiveOrderItem(updateOderItem)
+      setActiveScreen(ActiveScreen.OrderItem)
+    }
   }
 
   return (

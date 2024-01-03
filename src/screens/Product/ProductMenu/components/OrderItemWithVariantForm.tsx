@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import {
   Product,
   ProductVariant,
@@ -73,20 +73,6 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
       quantityInputRef.current?.focus()
     }, 100)
   }
-
-  useEffect(() => {
-    if (selectedVariant) {
-      if (selectedVariant.allowBackOrder === false) {
-        if (values.quantity > selectedVariant.quantity) {
-          setErrors({
-            ...errors,
-            quantity: 'Quantity must not be greater than the available',
-          })
-          return
-        }
-      }
-    }
-  }, [values.quantity, selectedVariant, setErrors, errors])
 
   const onSubmit = async () => {
     if (selectedVariant) {

@@ -81,8 +81,16 @@ const OrderSelection = (props: OrderSelectionProps) => {
       discount,
       gross,
       net,
-      product,
-      productVariant: orderFormValue.productVariant,
+      product: {
+        ...product,
+        quantity: product.quantity - orderFormValue.quantity,
+      },
+      productVariant: {
+        ...(orderFormValue.productVariant as ProductVariant),
+        quantity:
+          orderFormValue.productVariant?.quantity ??
+          0 - orderFormValue.quantity,
+      },
       quantity: orderFormValue.quantity,
     }
 

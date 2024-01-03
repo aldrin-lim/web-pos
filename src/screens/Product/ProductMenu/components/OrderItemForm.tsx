@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Product } from 'types/product.types'
 import { useFormik } from 'formik'
 import { z } from 'zod'
@@ -35,17 +34,6 @@ const OrderItemForm = (props: OrderItemFormProps) => {
     enableReinitialize: true,
     validateOnChange: false,
   })
-
-  useEffect(() => {
-    if (product && product.allowBackOrder === false) {
-      if (values.quantity > product?.quantity) {
-        setErrors({
-          ...errors,
-          quantity: 'Quantity must not be greater than the available',
-        })
-      }
-    }
-  }, [values.quantity, setErrors, errors, product])
 
   const image = product.images && product.images[0]
 
@@ -84,6 +72,18 @@ const OrderItemForm = (props: OrderItemFormProps) => {
     )
   }
 
+  const onSubmit = () => {
+    if (product && product.allowBackOrder === false) {
+      if (values.quantity > product?.quantity) {
+        setErrors({
+          ...errors,
+          quantity: 'Quantity must not be greater than the available',
+        })
+      }
+    }
+    submitForm()
+  }
+
   return (
     <>
       <Toolbar
@@ -94,7 +94,7 @@ const OrderItemForm = (props: OrderItemFormProps) => {
             onClick={onBack}
           />,
           <ToolbarTitle key={2} title="Order" />,
-          <ToolbarButton key={3} label="Done" onClick={submitForm} />,
+          <ToolbarButton key={3} label="Done" onClick={onSubmit} />,
         ]}
       />
       <div className="flex h-[120px] justify-center overflow-hidden bg-gray-200 align-middle ">
