@@ -7,6 +7,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import OrderItemForm from '../../components/OrderItemForm'
 import OrderItemWithVariantForm from '../../components/OrderItemWithVariantForm'
 import { OrderItem, OrderItemSchema, PricingOption } from 'types/order.types'
+import { PencilSquareIcon } from '@heroicons/react/24/solid'
 
 type Values = OrderItem
 
@@ -85,7 +86,6 @@ const OrderSelection = (props: OrderSelectionProps) => {
       quantity: orderFormValue.quantity,
     }
 
-    console.log('updatedValues', updatedValues)
     setValues(updatedValues)
     submitForm()
   }
@@ -127,7 +127,13 @@ const OrderSelection = (props: OrderSelectionProps) => {
 
         {discount && (
           <div className="flex flex-row justify-between gap-2">
-            <p>Discount: {discount.name}</p>
+            <p
+              className="flex flex-row gap-2"
+              onClick={() => setActiveScreen(ActiveScreen.DiscountList)}
+            >
+              <PencilSquareIcon className="w-5 text-purple-400" />
+              Discount: {discount.name}
+            </p>
             <p>
               {discount.type === 'percentage'
                 ? `${discount.amount}%`
@@ -146,6 +152,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
         <OrderSelectionDiscount
           onChange={(discount) => setDiscount(discount)}
           onBack={goBackToOrderSelectionScreen}
+          values={discount}
         />
       </SlidingTransition>
     </div>

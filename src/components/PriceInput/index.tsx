@@ -6,13 +6,14 @@ type PriceInputProps = React.DetailedHTMLProps<
 > & {
   value?: number
   onChange: (value: number) => void
+  showDecimal?: boolean
 }
 
 const PriceInput: React.FC<PriceInputProps> = (props) => {
-  const { value = 0, onChange, ...rest } = props
+  const { value = 0, onChange, showDecimal = true, ...rest } = props
   // Initialize the state with the value if it's not zero, else with an empty string
   const [inputValue, setInputValue] = useState<string>(
-    value === 0 ? '' : value.toFixed(2).toString(),
+    value === 0 ? '' : value.toFixed(showDecimal ? 2 : 0).toString(),
   )
 
   useEffect(() => {
@@ -21,7 +22,9 @@ const PriceInput: React.FC<PriceInputProps> = (props) => {
   }, [value])
 
   useEffect(() => {
-    setInputValue(value === 0 ? '0' : value.toFixed(2).toString())
+    setInputValue(
+      value === 0 ? '0' : value.toFixed(showDecimal ? 2 : 0).toString(),
+    )
   }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

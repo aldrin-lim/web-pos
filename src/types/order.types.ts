@@ -6,7 +6,12 @@ export const PricingOptionSchema = z.object({
   type: z.union([z.literal('fixed'), z.literal('percentage')], {
     required_error: 'Type is required',
   }),
-  amount: z.coerce.number({ required_error: 'Amount is required' }).min(1),
+  amount: z.coerce
+    .number({
+      required_error: 'Amount is required',
+      invalid_type_error: 'Amount must be a number',
+    })
+    .min(1),
 })
 
 export const OrderItemSchema = z.object({

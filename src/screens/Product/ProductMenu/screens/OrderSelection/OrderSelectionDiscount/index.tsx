@@ -9,7 +9,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 type OrderSelectionDiscountProps = {
   onBack: () => void
-  values?: Values
+  values?: Values | null
   onChange?: (values: Values) => void
 }
 
@@ -26,12 +26,12 @@ const OrderSelectionDiscount = (props: OrderSelectionDiscountProps) => {
 
   const form = useFormik({
     onSubmit: async (value) => {
-      if (onChange) {
-        await onChange(value)
+      if (onChange && value) {
+        await onChange(value as Values)
       }
       onBack()
     },
-    initialValues: values,
+    initialValues: values || initialValues,
     enableReinitialize: true,
     validationSchema: toFormikValidationSchema(PricingOptionSchema),
   })
@@ -85,6 +85,7 @@ const OrderSelectionDiscount = (props: OrderSelectionDiscountProps) => {
           <div className="flex flex-row justify-center gap-2 align-middle">
             <PriceInput
               {...getFieldProps('amount')}
+              showDecimal={type === 'fixed'}
               onChange={(newValue) => {
                 setFieldValue('amount', newValue)
               }}
