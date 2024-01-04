@@ -36,7 +36,9 @@ const OrderSelection = (props: OrderSelectionProps) => {
     'variants' in props.values.product &&
     props.values.product.variants.length > 0
 
-  const [discount, setDiscount] = useState<PricingOption | null>(null)
+  const [discount, setDiscount] = useState<PricingOption | null>(
+    props.values.discount,
+  )
 
   const {
     values: formValues,
