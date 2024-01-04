@@ -86,15 +86,17 @@ const OrderSelection = (props: OrderSelectionProps) => {
         ...product,
         quantity: product.quantity - orderFormValue.quantity,
       },
-      productVariant: {
-        ...(orderFormValue.productVariant as ProductVariant),
-        quantity:
-          orderFormValue.productVariant?.quantity ??
-          0 - orderFormValue.quantity,
-      },
       quantity: orderFormValue.quantity,
     }
 
+    if (orderFormValue.productVariant) {
+      updatedValues.productVariant = {
+        ...orderFormValue.productVariant,
+        quantity:
+          orderFormValue.productVariant?.quantity ??
+          0 - orderFormValue.quantity,
+      }
+    }
     setValues(updatedValues)
     submitForm()
   }

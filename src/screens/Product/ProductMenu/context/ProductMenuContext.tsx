@@ -164,13 +164,33 @@ function reducer(state: State, action: Action): State {
           updatedActiveCollection.products[productFromCollectionIndex] =
             productToUpdate
         } else {
-          // Subtract the quantity from the product in the active collection
-          productToUpdate.quantity =
-            productToUpdate.quantity - action.payload.quantity
+          const targetProduct = cloneDeep(productFromCollection)
 
-          // Set the updated product to the active collection
-          updatedActiveCollection.products[productFromCollectionIndex] =
-            productToUpdate
+          targetProduct.quantity =
+            targetProduct.quantity - action.payload.quantity
+          return {
+            ...state,
+            productCollectionState: {
+              ...state.productCollectionState,
+              activeCollection: {
+                ...state.productCollectionState.activeCollection,
+                products:
+                  state.productCollectionState.activeCollection.products.map(
+                    (p) => {
+                      if (p.id === targetProduct.id) {
+                        return targetProduct
+                      }
+                      return p
+                    },
+                  ),
+              },
+            },
+            order: {
+              net: action.payload.net,
+              gross: action.payload.gross,
+              orderItems: [action.payload],
+            },
+          }
         }
 
         return {
@@ -221,6 +241,45 @@ function reducer(state: State, action: Action): State {
               targetProduct.variants[targetVariantIndex].quantity -
               action.payload.quantity,
           }
+          return {
+            ...state,
+            productCollectionState: {
+              ...state.productCollectionState,
+              activeCollection: {
+                ...state.productCollectionState.activeCollection,
+                products:
+                  state.productCollectionState.activeCollection.products.map(
+                    (p) => {
+                      if (p.id === targetProduct.id) {
+                        return targetProduct
+                      }
+                      return p
+                    },
+                  ),
+              },
+            },
+            order: {
+              gross: state.order.gross + action.payload.gross,
+              net: state.order.net + action.payload.net,
+              orderItems: state.order.orderItems.map((item, index) =>
+                index === existingOrderItemIndex
+                  ? // If the product already exists in the order, update the quantity
+                    {
+                      ...item,
+                      quantity: item.quantity + action.payload.quantity,
+                      gross: item.gross + action.payload.gross,
+                      net: item.net + action.payload.net,
+                    }
+                  : // If the product does not exist in the order, add the product
+                    item,
+              ),
+            },
+          }
+        } else {
+          const targetProduct = cloneDeep(productFromCollection)
+
+          targetProduct.quantity =
+            targetProduct.quantity - action.payload.quantity
           return {
             ...state,
             productCollectionState: {

@@ -41,7 +41,8 @@ const OrderItemForm = (props: OrderItemFormProps) => {
   const renderForm = () => {
     if (
       product.allowBackOrder ||
-      (product.allowBackOrder === false && product.quantity > 0)
+      (product.allowBackOrder === false && product.quantity > 0) ||
+      editMode === true
     ) {
       return (
         <>
@@ -64,6 +65,9 @@ const OrderItemForm = (props: OrderItemFormProps) => {
             {errors.quantity && (
               <p className="form-control-error">{errors.quantity}&nbsp;</p>
             )}
+            {product.allowBackOrder === false && (
+              <>{product.quantity} available </>
+            )}
           </div>
         </>
       )
@@ -74,13 +78,24 @@ const OrderItemForm = (props: OrderItemFormProps) => {
   }
 
   const onSubmit = () => {
-    if (product && product.allowBackOrder === false) {
+    const maxQuantityAllowed = quantity + product.quantity
+
+    if (product.allowBackOrder === false) {
       if (editMode === false) {
-        if (values.quantity > product?.quantity) {
+        if (values.quantity > product.quantity) {
           setErrors({
             ...errors,
             quantity: 'Quantity must not be greater than the available',
           })
+          return
+        }
+      } else {
+        if (values.quantity > maxQuantityAllowed) {
+          setErrors({
+            ...errors,
+            quantity: 'Maximum quantity allowed is ' + maxQuantityAllowed,
+          })
+          return
         }
       }
     }

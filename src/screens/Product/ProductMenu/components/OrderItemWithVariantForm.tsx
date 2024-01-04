@@ -141,7 +141,7 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
           </>
         )
       } else {
-        if (selectedVariant.quantity === 0) {
+        if (selectedVariant.quantity === 0 && editMode === false) {
           return (
             <p className="mt-4 w-full text-center text-xl font-bold">
               Out of stock

@@ -102,6 +102,10 @@ const OrderCart = (props: OrderCartProps) => {
     }
   }
 
+  const editCartItem = (orderItem: OrderItem) => {
+    console.log(orderItem)
+  }
+
   return (
     <div
       className={`OrderSelection main-screen ${
@@ -170,6 +174,7 @@ const OrderCart = (props: OrderCartProps) => {
       >
         {activeOrderItem && (
           <OrderSelection
+            onComplete={editCartItem}
             values={activeOrderItem}
             onBack={goBackToOrderCartScreen}
             editMode={true}
