@@ -96,6 +96,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
     }
 
     setValues(updatedValues)
+    console.log(updatedValues)
     submitForm()
   }
 
