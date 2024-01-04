@@ -39,13 +39,18 @@ const OrderItemForm = (props: OrderItemFormProps) => {
   const image = product.images && product.images[0]
 
   const renderForm = () => {
-    if (
-      product.allowBackOrder ||
-      (product.allowBackOrder === false && product.quantity > 0) ||
-      editMode === true
-    ) {
-      return (
-        <>
+    // When selling product when out of stock is not allowed
+    if (product.allowBackOrder === false) {
+      // Adding item on the cart
+      if (editMode === false) {
+        if (product.quantity === 0) {
+          return (
+            <p className="mt-4 w-full text-center text-xl font-bold">
+              Out of stock
+            </p>
+          )
+        }
+        return (
           <div className="flex flex-col gap-1">
             <div className="label">
               <span className="label-text-alt">Quantity</span>
@@ -65,16 +70,57 @@ const OrderItemForm = (props: OrderItemFormProps) => {
             {errors.quantity && (
               <p className="form-control-error">{errors.quantity}&nbsp;</p>
             )}
-            {product.allowBackOrder === false && (
-              <>{product.quantity} available </>
-            )}
+
+            <>{product.quantity} available </>
           </div>
-        </>
+        )
+      } else {
+        return (
+          <div className="flex flex-col gap-1">
+            <div className="label">
+              <span className="label-text-alt">Quantity</span>
+            </div>
+            <input
+              type="text"
+              placeholder="Quantity"
+              value={values.quantity}
+              onChange={(e) => {
+                if (isNaN(+e.target.value)) {
+                  return
+                }
+                setFieldValue('quantity', +e.target.value)
+              }}
+              className="input input-bordered w-full"
+            />
+            {errors.quantity && (
+              <p className="form-control-error">{errors.quantity}&nbsp;</p>
+            )}
+
+            <>{product.quantity} available </>
+          </div>
+        )
+      }
+    } else {
+      return (
+        <div className="flex flex-col gap-1">
+          <div className="label">
+            <span className="label-text-alt">Quantity</span>
+          </div>
+          <input
+            type="text"
+            placeholder="Quantity"
+            value={values.quantity}
+            onChange={(e) => {
+              if (isNaN(+e.target.value)) {
+                return
+              }
+              setFieldValue('quantity', +e.target.value)
+            }}
+            className="input input-bordered w-full"
+          />
+        </div>
       )
     }
-    return (
-      <p className="mt-4 w-full text-center text-xl font-bold">Out of stock</p>
-    )
   }
 
   const onSubmit = () => {

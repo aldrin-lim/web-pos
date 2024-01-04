@@ -16,7 +16,7 @@ type OrderItemCardProps = {
 }
 
 const ProductCard = (props: OrderItemCardProps) => {
-  const { name, quantity, image, outOfStock = false } = props
+  const { name, quantity, image } = props
 
   const [isLoading, setIsLoading] = useState(props.isLoading ?? false)
 
@@ -76,11 +76,7 @@ const ProductCard = (props: OrderItemCardProps) => {
         </h2>
 
         <div className="flex flex-row gap-1  text-xs">
-          <span
-            className={`overflow-hidden truncate text-ellipsis ${
-              outOfStock ? 'text-red-400' : ''
-            }`}
-          >
+          <span className={`overflow-hidden truncate text-ellipsis`}>
             {quantity} available
           </span>
         </div>

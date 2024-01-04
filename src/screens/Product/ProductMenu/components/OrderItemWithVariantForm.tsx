@@ -110,13 +110,28 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
   }
 
   const renderForm = () => {
+    // if allowed back order is false
+    //    - show available quantity on add mode
+    //      - validate available quantity, show quantity input
+    //      - show of of stock when nothing is avialable, hide quantity input
+    //    - show available quantity on edit mode
+    //      - validate max quantity
+    // if allowed back order is true
+    //    - no quantity checking
+
     if (selectedVariant) {
-      if (selectedVariant.allowBackOrder === true) {
-        return (
-          <>
-            {errors.selectedVariant && (
-              <p className="form-control-error">Select a variant first</p>
-            )}
+      // When selling product when out of stock is not allowed
+      if (selectedVariant.allowBackOrder === false) {
+        // Adding item on the cart
+        if (editMode === false) {
+          if (selectedVariant.quantity === 0) {
+            return (
+              <p className="mt-4 w-full text-center text-xl font-bold">
+                Out of stock
+              </p>
+            )
+          }
+          return (
             <div className="flex flex-col gap-1">
               <div className="label">
                 <span className="label-text-alt">Quantity</span>
@@ -137,61 +152,45 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
                 }}
                 className="input input-bordered w-full"
               />
+              {errors.quantity && (
+                <p className="form-control-error">{errors.quantity}&nbsp;</p>
+              )}
+
+              <>{selectedVariant.quantity} available </>
             </div>
-          </>
-        )
-      } else {
-        if (selectedVariant.quantity === 0 && editMode === false) {
-          return (
-            <p className="mt-4 w-full text-center text-xl font-bold">
-              Out of stock
-            </p>
           )
         } else {
           return (
-            <>
-              {errors.selectedVariant && (
-                <p className="form-control-error">Select a variant first</p>
-              )}
-              <div className="flex flex-col gap-1">
-                <div className="label">
-                  <span className="label-text-alt">Quantity</span>
-                </div>
-                <input
-                  ref={quantityInputRef}
-                  type="text"
-                  disabled={!selectedVariant}
-                  placeholder={
-                    !selectedVariant ? 'Select a variant first' : 'Quantity'
-                  }
-                  value={selectedVariant ? values.quantity : ''}
-                  onChange={async (e) => {
-                    if (isNaN(+e.target.value)) {
-                      return
-                    }
-                    setFieldValue('quantity', +e.target.value)
-                  }}
-                  className="input input-bordered w-full"
-                />
-                {errors.quantity && (
-                  <p className="form-control-error">{errors.quantity}&nbsp;</p>
-                )}
-
-                {selectedVariant &&
-                  selectedVariant.allowBackOrder === false && (
-                    <>{selectedVariant.quantity} available </>
-                  )}
+            <div className="flex flex-col gap-1">
+              <div className="label">
+                <span className="label-text-alt">Quantity</span>
               </div>
-            </>
+              <input
+                ref={quantityInputRef}
+                type="text"
+                disabled={!selectedVariant}
+                placeholder={
+                  !selectedVariant ? 'Select a variant first' : 'Quantity'
+                }
+                value={selectedVariant ? values.quantity : ''}
+                onChange={async (e) => {
+                  if (isNaN(+e.target.value)) {
+                    return
+                  }
+                  setFieldValue('quantity', +e.target.value)
+                }}
+                className="input input-bordered w-full"
+              />
+              {errors.quantity && (
+                <p className="form-control-error">{errors.quantity}&nbsp;</p>
+              )}
+
+              <>{selectedVariant.quantity} available </>
+            </div>
           )
         }
-      }
-    } else {
-      return (
-        <>
-          {errors.selectedVariant && (
-            <p className="form-control-error">Select a variant first</p>
-          )}
+      } else {
+        return (
           <div className="flex flex-col gap-1">
             <div className="label">
               <span className="label-text-alt">Quantity</span>
@@ -200,7 +199,9 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
               ref={quantityInputRef}
               type="text"
               disabled={!selectedVariant}
-              placeholder="Select a variant first"
+              placeholder={
+                !selectedVariant ? 'Select a variant first' : 'Quantity'
+              }
               value={selectedVariant ? values.quantity : ''}
               onChange={async (e) => {
                 if (isNaN(+e.target.value)) {
@@ -211,7 +212,31 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
               className="input input-bordered w-full"
             />
           </div>
-        </>
+        )
+      }
+    } else {
+      return (
+        <div className="flex flex-col gap-1">
+          <div className="label">
+            <span className="label-text-alt">Quantity</span>
+          </div>
+          <input
+            ref={quantityInputRef}
+            type="text"
+            disabled={!selectedVariant}
+            placeholder={
+              !selectedVariant ? 'Select a variant first' : 'Quantity'
+            }
+            value={selectedVariant ? values.quantity : ''}
+            onChange={async (e) => {
+              if (isNaN(+e.target.value)) {
+                return
+              }
+              setFieldValue('quantity', +e.target.value)
+            }}
+            className="input input-bordered w-full"
+          />
+        </div>
       )
     }
   }
@@ -267,6 +292,9 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
           )
         })}
       </div>
+      {errors.selectedVariant && (
+        <p className="form-control-error">Select a variant first</p>
+      )}
       {renderForm()}
     </>
   )
