@@ -72,8 +72,8 @@ type Action =
   | {
       type: ProductMenuActionType.UpdateOrderItem
       payload: {
-        index: number
-        item: OrderItem
+        original: OrderItem
+        updated: OrderItem
       }
     }
   | {
@@ -387,165 +387,342 @@ function reducer(state: State, action: Action): State {
           },
         },
       }
-
-      // // Subtract the quantity from the product in the active collection
-      // const updatedActiveollectionProducts =
-      //   state.productCollectionState.activeCollection.products.map((p) => {
-      //     if (p.id === action.payload.product.id) {
-      //       if (action.payload.productVariant) {
-      //         return {
-      //           ...p,
-      //           variants: p.variants.map((v) => {
-      //             if (v.id === action.payload.productVariant?.id) {
-      //               return {
-      //                 ...v,
-      //                 quantity: v.quantity - action.payload.quantity,
-      //               }
-      //             }
-      //             return v
-      //           }),
-      //         }
-      //       }
-      //       return {
-      //         ...p,
-      //         quantity: p.quantity - action.payload.quantity,
-      //       }
-      //     }
-
-      //     return p
-      //   })
-
-      // // Check if the order is null then create a new order
-      // if (state.order === null) {
-      //   return {
-      //     ...state,
-      //     productCollectionState: {
-      //       ...state.productCollectionState,
-      //       activeCollection: {
-      //         ...state.productCollectionState.activeCollection,
-      //         products: updatedActiveollectionProducts,
-      //       },
-      //     },
-      //     order: {
-      //       net: action.payload.net,
-      //       gross: action.payload.gross,
-      //       orderItems: [action.payload],
-      //     },
-      //   }
-      // }
-
-      // const gross = state.order.orderItems
-      //   .map((item) => item.gross)
-      //   .reduce((a, b) => a + b, 0)
-      // const net = state.order.orderItems
-      //   .map((item) => item.net)
-      //   .reduce((a, b) => a + b, 0)
-
-      // // // Check if the product already exists in the order
-      // // const existingOrderItemIndex = state.order.orderItems.findIndex(
-      // //   (item) => {
-      // //     if (item.productVariant && action.payload.productVariant) {
-      // //       return (
-      // //         item.product.id === action.payload.product.id &&
-      // //         item.productVariant.id === action.payload.productVariant.id &&
-      // //         JSON.stringify(item.discount) ===
-      // //           JSON.stringify(action.payload.discount)
-      // //       )
-      // //     }
-      // //     return (
-      // //       item.product.id === action.payload.product.id &&
-      // //       JSON.stringify(item.discount) ===
-      // //         JSON.stringify(action.payload.discount)
-      // //     )
-      // //   },
-      // // )
-
-      // // // If the product already exists in the order, update the quantity
-      // // if (existingOrderItemIndex !== -1) {
-      // //   return {
-      // //     ...state,
-      // //     productCollectionState: {
-      // //       ...state.productCollectionState,
-      // //       activeCollection: {
-      // //         ...state.productCollectionState.activeCollection,
-      // //         products: updatedActiveollectionProducts,
-      // //       },
-      // //     },
-      // //     order: {
-      // //       ...state.order,
-      // //       gross: gross + action.payload.gross,
-      // //       net: net + action.payload.net,
-      // //       orderItems: state.order.orderItems.map((item, index) =>
-      // //         index === existingOrderItemIndex
-      // //           ? {
-      // //               ...item,
-      // //               quantity: item.quantity + action.payload.quantity,
-      // //               gross: item.gross + action.payload.gross,
-      // //               net: item.net + action.payload.net,
-      // //             }
-      // //           : item,
-      // //       ),
-      // //     },
-      // //   }
-      // // }
-
-      // return {
-      //   ...state,
-      //   productCollectionState: {
-      //     ...state.productCollectionState,
-      //     activeCollection: {
-      //       ...state.productCollectionState.activeCollection,
-      //       products: updatedActiveollectionProducts,
-      //     },
-      //   },
-      //   order: {
-      //     ...state.order,
-      //     gross: gross + action.payload.gross,
-      //     net: net + action.payload.net,
-      //     orderItems: [...state.order.orderItems, action.payload],
-      //   },
-      // }
     }
     case ProductMenuActionType.UpdateOrderItem: {
-      const productFromCollection =
-        state.productCollectionState.activeCollection?.products.find(
-          (p) => p.id === action.payload.item.product.id,
-        )
+      const { original, updated } = action.payload
 
-      // Check if the product exists in the active collection
-      if (
-        !state.order ||
-        !productFromCollection ||
-        !state.productCollectionState.activeCollection
-      ) {
+      if (!state.order || !state.productCollectionState.activeCollection) {
         return state
       }
 
-      if (action.payload.item.quantity === 0) {
+      // PATH: Remove item from the order if the quantity is zero
+      if (updated.quantity === 0) {
+        // Remove the order item that matches the original from the order
+        const updatedOrderItems = cloneDeep(state.order.orderItems).filter(
+          (item) => {
+            if (item.productVariant && original.productVariant) {
+              return (
+                item.product.id !== original.product.id ||
+                item.productVariant.id !== original.productVariant.id
+              )
+            }
+            return item.product.id !== original.product.id
+          },
+        )
+
+        // Find the product and its variant and add the quantity back
+        const updatedActiveCollection = cloneDeep(
+          state.productCollectionState.activeCollection,
+        )
+
+        const productFromCollectionIndex =
+          updatedActiveCollection.products.findIndex(
+            (p) => p.id === original.product.id,
+          )
+
+        const targetProduct = cloneDeep(
+          updatedActiveCollection.products[productFromCollectionIndex],
+        )
+
+        if (original.productVariant) {
+          // Find the variant and add the quantity back
+          const targetVariantIndex = targetProduct.variants.findIndex(
+            (v) => v.id === original.productVariant?.id,
+          )
+
+          targetProduct.variants[targetVariantIndex] = {
+            ...targetProduct.variants[targetVariantIndex],
+            quantity:
+              targetProduct.variants[targetVariantIndex].quantity +
+              original.quantity,
+          }
+        } else {
+          // Add the quantity back to the product
+          targetProduct.quantity = targetProduct.quantity + original.quantity
+        }
+
+        // Update the product in the active collection
+        updatedActiveCollection.products[productFromCollectionIndex] =
+          targetProduct
+
+        const updatedOrder = {
+          ...state.order,
+          orderItems: updatedOrderItems,
+          // Recompute the gross and net
+          gross: state.order.gross - original.gross,
+          net: state.order.net - original.net,
+        }
+
         return {
           ...state,
-          order: {
-            ...state.order,
-            orderItems: state.order.orderItems.filter((item) => {
-              if (item.productVariant && action.payload.item.productVariant) {
-                return (
-                  item.product.id === action.payload.item.product.id &&
-                  item.productVariant.id ===
-                    action.payload.item.productVariant.id
-                )
-              }
-              return item.product.id === action.payload.item.product.id
-            }),
+          order: updatedOrder,
+          productCollectionState: {
+            ...state.productCollectionState,
+            activeCollection: updatedActiveCollection,
+          },
+        }
+      }
+
+      const isUpdateSameOrderItem =
+        JSON.stringify({ ...original, quantity: undefined }) ===
+        JSON.stringify({ ...updated, quantity: undefined })
+
+      if (isUpdateSameOrderItem) {
+        // STEP 1: Update the order item in the order
+        // Find the order item that matches the original
+        const targetOrderItemIndex = state.order.orderItems.findIndex(
+          (item) => {
+            if (item.productVariant && original.productVariant) {
+              return (
+                item.product.id === original.product.id &&
+                item.productVariant.id === original.productVariant.id &&
+                JSON.stringify(item.discount) ===
+                  JSON.stringify(original.discount)
+              )
+            }
+            return (
+              item.product.id === original.product.id &&
+              JSON.stringify(item.discount) ===
+                JSON.stringify(original.discount)
+            )
+          },
+        )
+
+        const targetOrderItem = cloneDeep(
+          state.order.orderItems[targetOrderItemIndex],
+        )
+
+        // Update the quantity of the order item
+        targetOrderItem.quantity = updated.quantity
+
+        // Update the order item
+        const updatedOrderItems = cloneDeep(state.order.orderItems)
+        updatedOrderItems[targetOrderItemIndex] = targetOrderItem
+
+        // Recompute the gross and net
+        const updatedGross = updatedOrderItems.reduce(
+          (acc, item) => acc + item.gross,
+          0,
+        )
+        const updatedNet = updatedOrderItems.reduce(
+          (acc, item) => acc + item.net,
+          0,
+        )
+
+        // Update the order state
+        const updatedOrder = {
+          ...state.order,
+          orderItems: updatedOrderItems,
+          gross: updatedGross,
+          net: updatedNet,
+        }
+
+        // STEP 2: Update the product and its variant in the active collection
+        // Find the product and its variant
+        const activeCollection = cloneDeep(
+          state.productCollectionState.activeCollection,
+        )
+
+        const productFromCollectionIndex = activeCollection.products.findIndex(
+          (p) => p.id === original.product.id,
+        )
+
+        const targetProduct = cloneDeep(
+          activeCollection.products[productFromCollectionIndex],
+        )
+
+        // Add the quantity back to the product and its variant
+        if (original.productVariant) {
+          // Update the quantity of the product variant in the active collection
+          const targetVariantIndex = targetProduct.variants.findIndex(
+            (v) => v.id === original.productVariant?.id,
+          )
+
+          // If original quantity is greater than updated quantity, add the difference to the product variant
+          if (original.quantity > updated.quantity) {
+            targetProduct.variants[targetVariantIndex] = {
+              ...targetProduct.variants[targetVariantIndex],
+              quantity:
+                targetProduct.variants[targetVariantIndex].quantity +
+                (original.quantity - updated.quantity),
+            }
+          } else {
+            // If original quantity is less than updated quantity, subtract the difference from the product variant
+            targetProduct.variants[targetVariantIndex] = {
+              ...targetProduct.variants[targetVariantIndex],
+              quantity:
+                targetProduct.variants[targetVariantIndex].quantity -
+                (updated.quantity - original.quantity),
+            }
+          }
+        } else {
+          // If original quantity is greater than updated quantity, add the difference to the product
+          if (original.quantity > updated.quantity) {
+            targetProduct.quantity =
+              targetProduct.quantity + (original.quantity - updated.quantity)
+          } else {
+            // If original quantity is less than updated quantity, subtract the difference from the product
+            targetProduct.quantity =
+              targetProduct.quantity - (updated.quantity - original.quantity)
+          }
+        }
+
+        activeCollection.products[productFromCollectionIndex] = targetProduct
+
+        return {
+          ...state,
+          order: updatedOrder,
+          productCollectionState: {
+            ...state.productCollectionState,
+            activeCollection: activeCollection,
           },
         }
       } else {
+        // Replace the original order item with the updated order item
+
+        // STEP 1: Remove the original order item from the order
+        const updatedOrderItems = cloneDeep(state.order.orderItems).filter(
+          (item) => {
+            if (item.productVariant && original.productVariant) {
+              return (
+                item.product.id !== original.product.id ||
+                (item.productVariant.id !== original.productVariant.id &&
+                  JSON.stringify(item.discount) ===
+                    JSON.stringify(original.discount))
+              )
+            }
+            return (
+              item.product.id !== original.product.id &&
+              JSON.stringify(item.discount) ===
+                JSON.stringify(original.discount)
+            )
+          },
+        )
+
+        // STEP 2: Return the quantity of the original order item to the product and its variant in the active collection
+        const updatedActiveCollection = cloneDeep(
+          state.productCollectionState.activeCollection,
+        )
+
+        const originalProductFromCollectionIndex =
+          updatedActiveCollection.products.findIndex(
+            (p) => p.id === original.product.id,
+          )
+
+        const originalProduct = cloneDeep(
+          updatedActiveCollection.products[originalProductFromCollectionIndex],
+        )
+
+        if (original.productVariant) {
+          // Find the variant and add the quantity back
+          const targetVariantIndex = originalProduct.variants.findIndex(
+            (v) => v.id === original.productVariant?.id,
+          )
+
+          originalProduct.variants[targetVariantIndex] = {
+            ...originalProduct.variants[targetVariantIndex],
+            quantity:
+              originalProduct.variants[targetVariantIndex].quantity +
+              original.quantity,
+          }
+        } else {
+          // Add the quantity back to the product
+          originalProduct.quantity =
+            originalProduct.quantity + original.quantity
+        }
+
+        updatedActiveCollection.products[originalProductFromCollectionIndex] =
+          originalProduct
+
+        // STEP 3: Subtract the quantity of the updated order item from the product and its variant in the active collection
+        const updatedProductFromCollectionIndex =
+          updatedActiveCollection.products.findIndex(
+            (p) => p.id === updated.product.id,
+          )
+
+        const updatedProduct = cloneDeep(
+          updatedActiveCollection.products[updatedProductFromCollectionIndex],
+        )
+
+        if (updated.productVariant) {
+          // Find the variant and add the quantity back
+          const targetVariantIndex = updatedProduct.variants.findIndex(
+            (v) => v.id === updated.productVariant?.id,
+          )
+
+          updatedProduct.variants[targetVariantIndex] = {
+            ...updatedProduct.variants[targetVariantIndex],
+            quantity:
+              updatedProduct.variants[targetVariantIndex].quantity -
+              updated.quantity,
+          }
+        } else {
+          // Add the quantity back to the product
+          updatedProduct.quantity = updatedProduct.quantity - updated.quantity
+        }
+
+        updatedActiveCollection.products[updatedProductFromCollectionIndex] =
+          updatedProduct
+
+        // STEP 4: Find if the updated order item already exists in the order
+        const targetOrderItemIndex = state.order.orderItems.findIndex(
+          (item) => {
+            if (item.productVariant && updated.productVariant) {
+              return (
+                item.product.id === updated.product.id &&
+                item.productVariant.id === updated.productVariant.id &&
+                JSON.stringify(item.discount) ===
+                  JSON.stringify(updated.discount)
+              )
+            }
+            return (
+              item.product.id === updated.product.id &&
+              JSON.stringify(item.discount) === JSON.stringify(updated.discount)
+            )
+          },
+        )
+
+        if (targetOrderItemIndex !== -1) {
+          // If the updated order item already exists in the order, update the quantity
+          const targetOrderItem = cloneDeep(
+            state.order.orderItems[targetOrderItemIndex],
+          )
+
+          targetOrderItem.quantity = targetOrderItem.quantity + updated.quantity
+          targetOrderItem.gross = targetOrderItem.gross + updated.gross
+          targetOrderItem.net = targetOrderItem.net + updated.net
+          updatedOrderItems[targetOrderItemIndex] = targetOrderItem
+        } else {
+          // If the updated order item does not exist in the order, add the order item
+          updatedOrderItems.push(updated)
+        }
+
+        // Recompute the gross and net
+
+        const updatedGross = updatedOrderItems.reduce(
+          (acc, item) => acc + item.gross,
+          0,
+        )
+        const updatedNet = updatedOrderItems.reduce(
+          (acc, item) => acc + item.net,
+          0,
+        )
+
+        // Update the order state
+
+        const updatedOrder = {
+          ...state.order,
+          orderItems: updatedOrderItems,
+          gross: updatedGross,
+          net: updatedNet,
+        }
+
         return {
           ...state,
-          order: {
-            ...state.order,
-            orderItems: state.order.orderItems.map((item, index) =>
-              index === action.payload.index ? action.payload.item : item,
-            ),
+          order: updatedOrder,
+          productCollectionState: {
+            ...state.productCollectionState,
+            activeCollection: updatedActiveCollection,
           },
         }
       }
