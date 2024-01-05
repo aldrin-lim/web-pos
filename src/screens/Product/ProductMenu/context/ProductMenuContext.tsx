@@ -802,7 +802,7 @@ export const ProductMenuContextProvider: React.FC<ProductMenuProviderProps> = ({
         },
       })
     }
-  }, [isLoading, error, productCollections, state.productCollectionState])
+  }, [isLoading, error, productCollections])
 
   return (
     <ProductMenuContext.Provider value={{ state, dispatch }}>

@@ -1,5 +1,5 @@
 import './styles.css'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import SlidingTransition from 'components/SlidingTransition'
 import ProductSelection from './screens/ProductSelection'
 import {

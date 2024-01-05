@@ -163,7 +163,6 @@ const OrderCart = (props: OrderCartProps) => {
             editMode={true}
           />
         )}
-        {!activeOrderItem && <p>Something went wrong</p>}
       </SlidingTransition>
     </div>
   )

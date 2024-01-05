@@ -18,7 +18,7 @@
     "convert-units": "^2.3.4",
     "daisyui": "^4.0.7",
     "formik": "^2.4.5",
-    "framer-motion": "^10.16.5",
+    "framer-motion": "^10.17.9",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "match-sorter": "^6.3.1",
