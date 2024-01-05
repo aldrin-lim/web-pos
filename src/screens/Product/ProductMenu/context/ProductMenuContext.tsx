@@ -756,7 +756,10 @@ function reducer(state: State, action: Action): State {
         },
       }
     case ProductMenuActionType.ClearCart: {
-      return initialState
+      return {
+        ...state,
+        order: null,
+      }
     }
     default:
       return state
@@ -785,17 +788,15 @@ export const ProductMenuContextProvider: React.FC<ProductMenuProviderProps> = ({
   const { error, isLoading, productCollections } = useAllProductionCollection()
 
   useEffect(() => {
-    if (productCollections.length > 0) {
-      dispatch({
-        type: ProductMenuActionType.UpdateProductCollectionState,
-        payload: {
-          isLoading,
-          error,
-          productCollections,
-          activeCollection: productCollections[0],
-        },
-      })
-    }
+    dispatch({
+      type: ProductMenuActionType.UpdateProductCollectionState,
+      payload: {
+        isLoading,
+        error,
+        productCollections,
+        activeCollection: productCollections[0],
+      },
+    })
   }, [isLoading, error, productCollections])
 
   return (
