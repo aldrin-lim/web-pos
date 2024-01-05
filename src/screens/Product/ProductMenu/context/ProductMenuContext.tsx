@@ -453,6 +453,17 @@ function reducer(state: State, action: Action): State {
           net: state.order.net - original.net,
         }
 
+        if (updatedOrderItems.length === 0) {
+          return {
+            ...state,
+            order: null,
+            productCollectionState: {
+              ...state.productCollectionState,
+              activeCollection: updatedActiveCollection,
+            },
+          }
+        }
+
         return {
           ...state,
           order: updatedOrder,
