@@ -102,8 +102,11 @@ const OrderCart = (props: OrderCartProps) => {
     }
   }
 
-  const editCartItem = (orderItem: OrderItem) => {
-    console.log(orderItem)
+  const editCartItem = (updated: OrderItem, original: OrderItem) => {
+    dispatch({
+      type: ProductMenuActionType.UpdateOrderItem,
+      payload: { updated, original },
+    })
   }
 
   return (

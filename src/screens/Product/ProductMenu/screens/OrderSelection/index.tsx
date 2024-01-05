@@ -26,7 +26,7 @@ enum ActiveScreen {
 type OrderSelectionProps = {
   onBack: () => void
   values: Values
-  onComplete?: (values: Values) => void
+  onComplete?: (updated: Values, original?: Values) => void
   editMode?: boolean
 }
 
@@ -46,7 +46,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
     setValues,
   } = useFormik({
     onSubmit: (value) => {
-      props.onComplete && props.onComplete(value)
+      props.onComplete && props.onComplete(value, props.values)
       onBack()
     },
     initialValues: {
@@ -99,6 +99,7 @@ const OrderSelection = (props: OrderSelectionProps) => {
           0 - orderFormValue.quantity,
       }
     }
+    console.log('updatedValues', updatedValues)
     setValues(updatedValues)
     submitForm()
   }
