@@ -81,8 +81,6 @@ const OrderCart = (props: OrderCartProps) => {
 
   const editCartItem = (updated: OrderItem, original?: OrderItem) => {
     if (original) {
-      setActiveScreen(ActiveScreen.None)
-      // TODO: Find out why its not sliding back
       dispatch({
         type: ProductMenuActionType.UpdateOrderItem,
         payload: {
@@ -90,6 +88,7 @@ const OrderCart = (props: OrderCartProps) => {
           original,
         },
       })
+      setActiveScreen(ActiveScreen.None)
     }
   }
 

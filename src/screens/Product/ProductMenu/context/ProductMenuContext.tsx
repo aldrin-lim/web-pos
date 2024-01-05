@@ -475,8 +475,9 @@ function reducer(state: State, action: Action): State {
       }
 
       const isUpdateSameOrderItem =
-        JSON.stringify({ ...original, quantity: undefined }) ===
-        JSON.stringify({ ...updated, quantity: undefined })
+        updated.product.id === original.product.id &&
+        updated.productVariant?.id === original.productVariant?.id &&
+        JSON.stringify(updated.discount) === JSON.stringify(original.discount)
 
       if (isUpdateSameOrderItem) {
         // STEP 1: Update the order item in the order
@@ -505,28 +506,12 @@ function reducer(state: State, action: Action): State {
 
         // Update the quantity of the order item
         targetOrderItem.quantity = updated.quantity
+        targetOrderItem.gross = updated.gross
+        targetOrderItem.net = updated.net
 
         // Update the order item
         const updatedOrderItems = cloneDeep(state.order.orderItems)
         updatedOrderItems[targetOrderItemIndex] = targetOrderItem
-
-        // Recompute the gross and net
-        const updatedGross = updatedOrderItems.reduce(
-          (acc, item) => acc + item.gross,
-          0,
-        )
-        const updatedNet = updatedOrderItems.reduce(
-          (acc, item) => acc + item.net,
-          0,
-        )
-
-        // Update the order state
-        const updatedOrder = {
-          ...state.order,
-          orderItems: updatedOrderItems,
-          gross: updatedGross,
-          net: updatedNet,
-        }
 
         // STEP 2: Update the product and its variant in the active collection
         // Find the product and its variant
@@ -579,6 +564,24 @@ function reducer(state: State, action: Action): State {
         }
 
         activeCollection.products[productFromCollectionIndex] = targetProduct
+
+        // Recompute the gross and net
+        const updatedGross = updatedOrderItems.reduce(
+          (acc, item) => acc + item.gross,
+          0,
+        )
+        const updatedNet = updatedOrderItems.reduce(
+          (acc, item) => acc + item.net,
+          0,
+        )
+
+        // Update the order state
+        const updatedOrder = {
+          ...state.order,
+          orderItems: updatedOrderItems,
+          gross: updatedGross,
+          net: updatedNet,
+        }
 
         return {
           ...state,
