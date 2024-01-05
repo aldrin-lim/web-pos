@@ -34,7 +34,7 @@ const initialState: State = {
   productCollectionState: {
     activeCollection: null,
     productCollections: [],
-    isLoading: false,
+    isLoading: true,
     error: '',
   },
   order: null,
@@ -790,15 +790,6 @@ export const ProductMenuContextProvider: React.FC<ProductMenuProviderProps> = ({
           error,
           productCollections,
           activeCollection: productCollections[0],
-        },
-      })
-    } else {
-      dispatch({
-        type: ProductMenuActionType.UpdateProductCollectionState,
-        payload: {
-          ...state.productCollectionState,
-          isLoading,
-          error,
         },
       })
     }

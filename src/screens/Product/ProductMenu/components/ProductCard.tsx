@@ -48,6 +48,7 @@ const ProductCard = (props: OrderItemCardProps) => {
 
   return (
     <div
+      onClick={onClick}
       className={`ProductCard card card-compact relative w-[155px] cursor-pointer justify-self-center border border-gray-300 bg-base-100 ${
         isLoading ? 'opacity-35' : ''
       }`}
@@ -66,7 +67,7 @@ const ProductCard = (props: OrderItemCardProps) => {
           <TrashIcon className="w-5 text-white" />
         </button>
       )}
-      <figure onClick={onClick} className="h-[155px] w-[155px] bg-gray-300">
+      <figure className="h-[155px] w-[155px] bg-gray-300">
         {/* Show image or PhotoIcon based on image load status */}
         <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
       </figure>
