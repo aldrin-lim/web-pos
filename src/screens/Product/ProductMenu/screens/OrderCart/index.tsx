@@ -1,4 +1,8 @@
-import { ChevronLeftIcon, TrashIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowUturnLeftIcon,
+  ChevronLeftIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
@@ -57,30 +61,6 @@ const OrderCart = (props: OrderCartProps) => {
     setActiveScreen(ActiveScreen.None)
   }
 
-  if (!order) {
-    return (
-      <div
-        className={`OrderSelection main-screen ${
-          activeScreen === ActiveScreen.None ? 'h-full' : 'h-screen'
-        }`}
-      >
-        <div className="section sub-screen">
-          <Toolbar
-            items={[
-              <ToolbarButton
-                key={1}
-                icon={<ChevronLeftIcon className="w-6" />}
-                onClick={onBack}
-              />,
-              <ToolbarTitle key={2} title="Order Cart" />,
-            ]}
-          />
-          <p>No items added on the cart yet.</p>
-        </div>
-      </div>
-    )
-  }
-
   const onOrderItemSelect = (value: OrderItem) => {
     if (activeCollection) {
       const updatedProduct = activeCollection.products.find(
@@ -101,9 +81,14 @@ const OrderCart = (props: OrderCartProps) => {
 
   const editCartItem = (updated: OrderItem, original?: OrderItem) => {
     if (original) {
+      setActiveScreen(ActiveScreen.None)
+      // TODO: Find out why its not sliding back
       dispatch({
         type: ProductMenuActionType.UpdateOrderItem,
-        payload: { updated, original },
+        payload: {
+          updated,
+          original,
+        },
       })
     }
   }
@@ -130,42 +115,38 @@ const OrderCart = (props: OrderCartProps) => {
             />,
           ]}
         />
-        <label htmlFor="my_modal_6" className="btn">
-          open modal
-        </label>
-        <input
-          type="checkbox"
-          hidden
-          id="my_modal_6"
-          className="modal-toggle"
-        />
-        <div className="modal" role="dialog">
-          <div className="modal-box">
-            <h3 className="text-lg font-bold">Hello!</h3>
-            <p className="py-4">This modal works with a hidden checkbox!</p>
-            <div className="modal-action">
-              <label htmlFor="my_modal_6" className="btn">
-                Close!
-              </label>
-            </div>
-          </div>
-        </div>
         <div className="flex flex-col gap-2">
           {/* COST */}
-          <div className="TotalCost mb-4 flex flex-row justify-between align-middle text-2xl font-bold">
-            <p className="">TOTAL</p>
-            <p>₱ {order.net.toFixed(2)}</p>
-          </div>
-          {/* ITEMS */}
-          {order.orderItems.map((item, key) => {
-            return (
-              <CartItem
-                onClick={(orderItem) => onOrderItemSelect(orderItem)}
-                orderItem={item}
-                key={key}
-              />
-            )
-          })}
+          {!order && (
+            <div className="mt-10 gap-8 text-center">
+              <p className="text-xl font-bold">No items found in cart</p>
+              <button
+                className="btn btn-primary mt-10 self-center"
+                onClick={onBack}
+              >
+                <ArrowUturnLeftIcon className="w-5" />
+                Go Back to Menu
+              </button>
+            </div>
+          )}
+          {order && (
+            <>
+              <div className="TotalCost mb-4 flex flex-row justify-between align-middle text-2xl font-bold">
+                <p className="">TOTAL</p>
+                <p>₱ {order.net.toFixed(2)}</p>
+              </div>
+              {/* ITEMS */}
+              {order.orderItems.map((item, key) => {
+                return (
+                  <CartItem
+                    onClick={(orderItem) => onOrderItemSelect(orderItem)}
+                    orderItem={item}
+                    key={key}
+                  />
+                )
+              })}
+            </>
+          )}
         </div>
       </div>
 
@@ -182,6 +163,7 @@ const OrderCart = (props: OrderCartProps) => {
             editMode={true}
           />
         )}
+        {!activeOrderItem && <p>Something went wrong</p>}
       </SlidingTransition>
     </div>
   )

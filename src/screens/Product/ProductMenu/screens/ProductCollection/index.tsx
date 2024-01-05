@@ -36,7 +36,7 @@ const ProductCollection = (props: ProductCollectionProps) => {
   }
 
   return (
-    <div className="sub-screen pb-32">
+    <div className="ProductCollection sub-screen pb-32">
       <Toolbar
         items={[
           <div key={1} />,
@@ -56,28 +56,30 @@ const ProductCollection = (props: ProductCollectionProps) => {
       />
       {isLoading && <Skeleton />}
       {!isLoading && (
-        <div className="ProductMenuGrid flex w-full flex-row flex-wrap gap-4">
-          <button
-            className="btn btn-square  mt-1 flex h-[213px] w-[150px] flex-col border-2 border-dashed border-gray-300"
-            onClick={onAddProduct}
-          >
-            <PlusIcon className="w-8 text-success" />
-            Add Product
-          </button>
-          {activeCollection?.products.map((product, index) => (
-            <ProductCard
-              onRemove={async () =>
-                await removeProductFromActiveCollection(product.id)
-              }
-              onClick={async () => {
-                if (onProductClick) {
-                  await onProductClick(product)
+        <div>
+          <div className="ProductMenuGrid grid w-full grid-flow-row-dense grid-cols-2 justify-center gap-4 md:flex md:flex-row md:flex-wrap">
+            <button
+              className="btn btn-square mt-1 flex h-[213px] w-[150px] flex-col justify-self-center border-2 border-dashed border-gray-300"
+              onClick={onAddProduct}
+            >
+              <PlusIcon className="w-8 text-success" />
+              Add Product
+            </button>
+            {activeCollection?.products.map((product, index) => (
+              <ProductCard
+                onRemove={async () =>
+                  await removeProductFromActiveCollection(product.id)
                 }
-              }}
-              key={index}
-              {...product}
-            />
-          ))}
+                onClick={async () => {
+                  if (onProductClick) {
+                    await onProductClick(product)
+                  }
+                }}
+                key={index}
+                {...product}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

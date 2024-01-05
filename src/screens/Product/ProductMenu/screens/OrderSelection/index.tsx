@@ -8,6 +8,7 @@ import OrderItemForm from '../../components/OrderItemForm'
 import OrderItemWithVariantForm from '../../components/OrderItemWithVariantForm'
 import { OrderItem, OrderItemSchema, PricingOption } from 'types/order.types'
 import { PencilSquareIcon } from '@heroicons/react/24/solid'
+import { TrashIcon } from '@heroicons/react/24/outline'
 
 type Values = OrderItem
 
@@ -130,32 +131,33 @@ const OrderSelection = (props: OrderSelectionProps) => {
           />
         )}
 
-        {/* TODO: Allow editing of saved discount */}
-        {!discount && (
-          <button
-            className="btn btn-primary mt-2"
-            onClick={() => setActiveScreen(ActiveScreen.DiscountList)}
-          >
-            Add Discount
-          </button>
-        )}
-
-        {discount && (
-          <div className="flex flex-row justify-between gap-2">
-            <p
-              className="flex flex-row gap-2"
+        <div className="mxa flex flex-col gap-4">
+          {!discount && (
+            <button
+              className="btn btn-primary mt-2 max-w-sm"
               onClick={() => setActiveScreen(ActiveScreen.DiscountList)}
             >
-              <PencilSquareIcon className="w-5 text-purple-400" />
-              Discount: {discount.name}
-            </p>
-            <p>
-              {discount.type === 'percentage'
-                ? `${discount.amount}%`
-                : `₱ ${discount.amount}`}
-            </p>
-          </div>
-        )}
+              Add Discount
+            </button>
+          )}
+
+          {discount && (
+            <div className="flex flex-row justify-between gap-2">
+              <p
+                className="flex flex-row gap-2"
+                onClick={() => setActiveScreen(ActiveScreen.DiscountList)}
+              >
+                <PencilSquareIcon className="w-5 text-purple-400" />
+                Discount: {discount.name}
+              </p>
+              <p>
+                {discount.type === 'percentage'
+                  ? `${discount.amount}%`
+                  : `₱ ${discount.amount}`}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Discount Component */}

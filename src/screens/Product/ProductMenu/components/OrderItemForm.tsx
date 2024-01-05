@@ -5,10 +5,11 @@ import ImageLoader from 'components/ImageLoader'
 import MiddleTruncateText from 'components/MiddleTruncatedText'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import Toolbar from 'components/Layout/components/Toolbar'
-import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, TrashIcon } from '@heroicons/react/24/outline'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import { OrderFormValues } from '../screens/OrderSelection'
+import QuantityInput from 'components/QuantityInput'
 
 type OrderItemFormProps = {
   product: Product
@@ -55,15 +56,12 @@ const OrderItemForm = (props: OrderItemFormProps) => {
             <div className="label">
               <span className="label-text-alt">Quantity</span>
             </div>
-            <input
+            <QuantityInput
               type="text"
               placeholder="Quantity"
               value={values.quantity}
-              onChange={(e) => {
-                if (isNaN(+e.target.value)) {
-                  return
-                }
-                setFieldValue('quantity', +e.target.value)
+              onChange={(newValue) => {
+                setFieldValue('quantity', newValue)
               }}
               className="input input-bordered w-full"
             />
@@ -80,15 +78,12 @@ const OrderItemForm = (props: OrderItemFormProps) => {
             <div className="label">
               <span className="label-text-alt">Quantity</span>
             </div>
-            <input
+            <QuantityInput
               type="text"
               placeholder="Quantity"
               value={values.quantity}
-              onChange={(e) => {
-                if (isNaN(+e.target.value)) {
-                  return
-                }
-                setFieldValue('quantity', +e.target.value)
+              onChange={(newValue) => {
+                setFieldValue('quantity', newValue)
               }}
               className="input input-bordered w-full"
             />
@@ -106,15 +101,12 @@ const OrderItemForm = (props: OrderItemFormProps) => {
           <div className="label">
             <span className="label-text-alt">Quantity</span>
           </div>
-          <input
+          <QuantityInput
             type="text"
             placeholder="Quantity"
             value={values.quantity}
-            onChange={(e) => {
-              if (isNaN(+e.target.value)) {
-                return
-              }
-              setFieldValue('quantity', +e.target.value)
+            onChange={(newValue) => {
+              setFieldValue('quantity', newValue)
             }}
             className="input input-bordered w-full"
           />
@@ -176,6 +168,14 @@ const OrderItemForm = (props: OrderItemFormProps) => {
       </div>
 
       {renderForm()}
+      {editMode && values.quantity === 0 && (
+        <button
+          onClick={onSubmit}
+          className="btn btn-error mt-2 max-w-sm text-white"
+        >
+          Remove Item <TrashIcon className="w-5" />
+        </button>
+      )}
     </>
   )
 }

@@ -48,7 +48,7 @@ const ProductCard = (props: OrderItemCardProps) => {
 
   return (
     <div
-      className={`ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300 bg-base-100 ${
+      className={`ProductCard card card-compact relative w-[155px] cursor-pointer justify-self-center border border-gray-300 bg-base-100 ${
         isLoading ? 'opacity-35' : ''
       }`}
     >

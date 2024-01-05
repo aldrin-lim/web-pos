@@ -9,11 +9,12 @@ import { z } from 'zod'
 import ImageLoader from 'components/ImageLoader'
 import MiddleTruncateText from 'components/MiddleTruncatedText'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import { OrderFormValues } from '../screens/OrderSelection'
+import QuantityInput from 'components/QuantityInput'
 
 type OrderItemWithVariantFormProps = {
   product: Product
@@ -136,19 +137,12 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
               <div className="label">
                 <span className="label-text-alt">Quantity</span>
               </div>
-              <input
-                ref={quantityInputRef}
+              <QuantityInput
                 type="text"
-                disabled={!selectedVariant}
-                placeholder={
-                  !selectedVariant ? 'Select a variant first' : 'Quantity'
-                }
-                value={selectedVariant ? values.quantity : ''}
-                onChange={async (e) => {
-                  if (isNaN(+e.target.value)) {
-                    return
-                  }
-                  setFieldValue('quantity', +e.target.value)
+                placeholder="Quantity"
+                value={values.quantity}
+                onChange={(newValue) => {
+                  setFieldValue('quantity', newValue)
                 }}
                 className="input input-bordered w-full"
               />
@@ -165,19 +159,12 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
               <div className="label">
                 <span className="label-text-alt">Quantity</span>
               </div>
-              <input
-                ref={quantityInputRef}
+              <QuantityInput
                 type="text"
-                disabled={!selectedVariant}
-                placeholder={
-                  !selectedVariant ? 'Select a variant first' : 'Quantity'
-                }
-                value={selectedVariant ? values.quantity : ''}
-                onChange={async (e) => {
-                  if (isNaN(+e.target.value)) {
-                    return
-                  }
-                  setFieldValue('quantity', +e.target.value)
+                placeholder="Quantity"
+                value={values.quantity}
+                onChange={(newValue) => {
+                  setFieldValue('quantity', newValue)
                 }}
                 className="input input-bordered w-full"
               />
@@ -195,19 +182,13 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
             <div className="label">
               <span className="label-text-alt">Quantity</span>
             </div>
-            <input
-              ref={quantityInputRef}
+            <QuantityInput
               type="text"
               disabled={!selectedVariant}
-              placeholder={
-                !selectedVariant ? 'Select a variant first' : 'Quantity'
-              }
-              value={selectedVariant ? values.quantity : ''}
-              onChange={async (e) => {
-                if (isNaN(+e.target.value)) {
-                  return
-                }
-                setFieldValue('quantity', +e.target.value)
+              placeholder="Quantity"
+              value={values.quantity}
+              onChange={(newValue) => {
+                setFieldValue('quantity', newValue)
               }}
               className="input input-bordered w-full"
             />
@@ -220,19 +201,13 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
           <div className="label">
             <span className="label-text-alt">Quantity</span>
           </div>
-          <input
-            ref={quantityInputRef}
+          <QuantityInput
             type="text"
             disabled={!selectedVariant}
-            placeholder={
-              !selectedVariant ? 'Select a variant first' : 'Quantity'
-            }
-            value={selectedVariant ? values.quantity : ''}
-            onChange={async (e) => {
-              if (isNaN(+e.target.value)) {
-                return
-              }
-              setFieldValue('quantity', +e.target.value)
+            placeholder="Quantity"
+            value={values.quantity}
+            onChange={(newValue) => {
+              setFieldValue('quantity', newValue)
             }}
             className="input input-bordered w-full"
           />
@@ -296,6 +271,15 @@ const OrderItemWithVariantForm = (props: OrderItemWithVariantFormProps) => {
         <p className="form-control-error">Select a variant first</p>
       )}
       {renderForm()}
+
+      {editMode && values.quantity === 0 && (
+        <button
+          onClick={onSubmit}
+          className="btn btn-error mt-2 max-w-sm text-white"
+        >
+          Remove Item <TrashIcon className="w-5" />
+        </button>
+      )}
     </>
   )
 }
