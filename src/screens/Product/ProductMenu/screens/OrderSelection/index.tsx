@@ -99,7 +99,6 @@ const OrderSelection = (props: OrderSelectionProps) => {
           0 - orderFormValue.quantity,
       }
     }
-    console.log('updatedValues', updatedValues)
     setValues(updatedValues)
     submitForm()
   }

@@ -57,9 +57,6 @@ const OrderCart = (props: OrderCartProps) => {
     setActiveScreen(ActiveScreen.None)
   }
 
-  // console.log('productCollectionState', productCollectionState)
-  // console.log('order', order)
-
   if (!order) {
     return (
       <div
@@ -102,11 +99,13 @@ const OrderCart = (props: OrderCartProps) => {
     }
   }
 
-  const editCartItem = (updated: OrderItem, original: OrderItem) => {
-    dispatch({
-      type: ProductMenuActionType.UpdateOrderItem,
-      payload: { updated, original },
-    })
+  const editCartItem = (updated: OrderItem, original?: OrderItem) => {
+    if (original) {
+      dispatch({
+        type: ProductMenuActionType.UpdateOrderItem,
+        payload: { updated, original },
+      })
+    }
   }
 
   return (

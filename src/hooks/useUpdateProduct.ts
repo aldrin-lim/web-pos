@@ -37,7 +37,6 @@ const useUpdateProduct = () => {
 
   const updateProduct = async (param: Product) => {
     const validation = UpdateProductSchema.safeParse(param)
-    console.log(param)
 
     if (!validation.success) {
       const error = validation.error.issues[0].message
@@ -46,7 +45,6 @@ const useUpdateProduct = () => {
     }
 
     const requestBody = validation.data
-    console.log('requestBody', requestBody)
     await mutateAsync({ id: requestBody.id, product: requestBody })
   }
 
