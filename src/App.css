@@ -9,9 +9,12 @@ body,
   @apply h-full;
 }
 
+*, html {
+  scroll-behavior: smooth !important;
+}
+
 html {
-  scroll-behavior: smooth;
-  overscroll-behavior: none;
+  /* overscroll-behavior: none; */
 }
 
 html, body {
