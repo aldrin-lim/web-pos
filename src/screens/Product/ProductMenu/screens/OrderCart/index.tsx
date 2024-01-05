@@ -107,11 +107,13 @@ const OrderCart = (props: OrderCartProps) => {
               onClick={onBack}
             />,
             <ToolbarTitle key={2} title="Order Cart" />,
-            <ToolbarButton
-              key={3}
-              icon={<TrashIcon className="w-6" />}
-              onClick={clearCart}
-            />,
+            order && order.orderItems.length > 0 && (
+              <ToolbarButton
+                key={3}
+                icon={<TrashIcon className="w-6" />}
+                onClick={clearCart}
+              />
+            ),
           ]}
         />
         <div className="flex flex-col gap-2">
