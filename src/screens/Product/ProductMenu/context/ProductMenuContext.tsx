@@ -784,11 +784,25 @@ export const ProductMenuContextProvider: React.FC<ProductMenuProviderProps> = ({
   useEffect(() => {
     if (productCollections.length > 0) {
       dispatch({
-        type: ProductMenuActionType.UpdateActiveCollection,
-        payload: productCollections[0],
+        type: ProductMenuActionType.UpdateProductCollectionState,
+        payload: {
+          isLoading,
+          error,
+          productCollections,
+          activeCollection: productCollections[0],
+        },
+      })
+    } else {
+      dispatch({
+        type: ProductMenuActionType.UpdateProductCollectionState,
+        payload: {
+          ...state.productCollectionState,
+          isLoading,
+          error,
+        },
       })
     }
-  }, [isLoading, error, productCollections])
+  }, [isLoading, error, productCollections, state.productCollectionState])
 
   return (
     <ProductMenuContext.Provider value={{ state, dispatch }}>

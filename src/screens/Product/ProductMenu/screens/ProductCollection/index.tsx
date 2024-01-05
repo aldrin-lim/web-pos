@@ -56,30 +56,28 @@ const ProductCollection = (props: ProductCollectionProps) => {
       />
       {isLoading && <Skeleton />}
       {!isLoading && (
-        <div>
-          <div className="ProductMenuGrid grid w-full grid-flow-row-dense grid-cols-2 justify-center gap-4 md:flex md:flex-row md:flex-wrap">
-            <button
-              className="btn btn-square mt-1 flex h-[213px] w-[150px] flex-col justify-self-center border-2 border-dashed border-gray-300"
-              onClick={onAddProduct}
-            >
-              <PlusIcon className="w-8 text-success" />
-              Add Product
-            </button>
-            {activeCollection?.products.map((product, index) => (
-              <ProductCard
-                onRemove={async () =>
-                  await removeProductFromActiveCollection(product.id)
+        <div className="ProductMenuGrid grid w-full grid-flow-row-dense grid-cols-2 justify-center gap-4 md:flex md:flex-row md:flex-wrap">
+          <button
+            className="btn btn-square mt-1 flex h-[213px] w-[150px] flex-col justify-self-center border-2 border-dashed border-gray-300"
+            onClick={onAddProduct}
+          >
+            <PlusIcon className="w-8 text-success" />
+            Add Product
+          </button>
+          {activeCollection?.products.map((product, index) => (
+            <ProductCard
+              onRemove={async () =>
+                await removeProductFromActiveCollection(product.id)
+              }
+              onClick={async () => {
+                if (onProductClick) {
+                  await onProductClick(product)
                 }
-                onClick={async () => {
-                  if (onProductClick) {
-                    await onProductClick(product)
-                  }
-                }}
-                key={index}
-                {...product}
-              />
-            ))}
-          </div>
+              }}
+              key={index}
+              {...product}
+            />
+          ))}
         </div>
       )}
     </div>
@@ -87,11 +85,18 @@ const ProductCollection = (props: ProductCollectionProps) => {
 }
 
 const Skeleton = () => (
-  <div className="ProductMenuGrid flex w-full flex-row flex-wrap gap-4">
-    <div className="skeleton block min-h-[221px] min-w-[155px]" />
-    <div className="skeleton block min-h-[221px] min-w-[155px]" />
-    <div className="skeleton block min-h-[221px] min-w-[155px]" />
-    <div className="skeleton block min-h-[221px] min-w-[155px]" />
+  <div className="ProductMenuGrid grid w-full grid-flow-row-dense grid-cols-2 justify-center gap-4 md:flex md:flex-row md:flex-wrap">
+    <div className="skeleton block min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center" />
+    <div className="skeleton block min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center" />
+    <div className="skeleton block min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center" />
+    <div className="skeleton block min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center" />
+
+    {/* MORE ON LARGER VIEW */}
+
+    <div className="skeleton hidden min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center md:block" />
+    <div className="skeleton hidden min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center md:block" />
+    <div className="skeleton hidden min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center md:block" />
+    <div className="skeleton hidden min-h-[221px] min-w-[155px] max-w-[155px] justify-self-center md:block" />
   </div>
 )
 
