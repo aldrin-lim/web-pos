@@ -11,7 +11,7 @@ type Orientation = 'vertical' | 'horizontal'
 type ProductListProps = {
   orientation?: Orientation
   products: Product[]
-  onItemClick?: (product: Product) => void
+  onClickItem?: (product: Product) => void
   onAddProduct?: () => void
   onHideItem?: (product: Product) => void
 }
