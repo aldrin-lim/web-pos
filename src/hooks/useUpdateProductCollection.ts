@@ -26,8 +26,8 @@ const useUpdateProductCollection = () => {
       })
       setError(error)
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['productCollections'])
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['productCollection', 'default'])
     },
   })
 

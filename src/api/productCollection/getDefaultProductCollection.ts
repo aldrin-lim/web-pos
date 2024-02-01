@@ -8,5 +8,5 @@ export default async () => {
   const result = await httpClient
     .get<unknown, AxiosResponse<ProductCollection>>(url)
     .then((res) => res.data)
-  return result || []
+  return result
 }

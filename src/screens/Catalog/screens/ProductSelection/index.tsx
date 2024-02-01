@@ -14,23 +14,24 @@ import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import './styles.css'
 import ProductList from './components/ProductList'
 import { ComponentProps } from 'react'
-import GetStarted from './components/GetStarted'
 import { Product } from 'types/product.types'
 import SlidingTransition from 'components/SlidingTransition'
 import Inventory from 'components/Inventory'
 import { AnimatePresence } from 'framer-motion'
+import NoSelection from './components/NoSelection'
 
 enum ScreenPath {
   List = `list`,
 }
 
-type ProductOverviewProps = {
+type ProductSelectionProps = {
   onBack: () => void
   onProductSelect?: (product: Product) => void
+  filter: (product: Product) => boolean
 }
 
-const ProductOverview = (props: ProductOverviewProps) => {
-  const { onBack, onProductSelect } = props
+const ProductSelection = (props: ProductSelectionProps) => {
+  const { onBack, onProductSelect, filter } = props
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -38,9 +39,15 @@ const ProductOverview = (props: ProductOverviewProps) => {
 
   const { products, isLoading } = useAllProducts()
 
-  const outOfStocks = products.filter((product) => product.outOfStock === true)
+  const filteredProducts = products.filter(filter)
 
-  const inStocks = products.filter((product) => product.outOfStock === false)
+  const outOfStocks = filteredProducts.filter(
+    (product) => product.outOfStock === true,
+  )
+
+  const inStocks = filteredProducts.filter(
+    (product) => product.outOfStock === false,
+  )
 
   const hasOutOfStockProducts = outOfStocks.length > 0
 
@@ -61,8 +68,8 @@ const ProductOverview = (props: ProductOverviewProps) => {
       return <Skeleton />
     }
 
-    if (products.length === 0) {
-      return <GetStarted />
+    if (filteredProducts.length === 0) {
+      return <NoSelection />
     }
 
     return (
@@ -75,12 +82,14 @@ const ProductOverview = (props: ProductOverviewProps) => {
           orientation={orientation}
         />
 
-        <ProductList
-          onViewAll={showInventory}
-          onProductSelect={viewProduct}
-          products={outOfStocks}
-          orientation={orientation}
-        />
+        {outOfStocks.length > 0 && (
+          <ProductList
+            onViewAll={showInventory}
+            onProductSelect={viewProduct}
+            products={outOfStocks}
+            orientation={orientation}
+          />
+        )}
       </div>
     )
   }
@@ -144,4 +153,4 @@ const Skeleton = () => {
   )
 }
 
-export default ProductOverview
+export default ProductSelection

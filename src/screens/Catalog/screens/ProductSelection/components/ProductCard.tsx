@@ -23,7 +23,7 @@ const ProductCard = (props: ProductCardProps) => {
       className="ProductCard card card-compact relative w-[155px] cursor-pointer justify-self-center border border-gray-300 bg-base-100"
       onClick={() => onClick?.(product)}
     >
-      <figure className="h-[155px] w-[153px] overflow-hidden bg-gray-300">
+      <figure className="h-[155px] w-[153px] overflow-hidden rounded-t-xl bg-gray-300">
         {/* Show image or PhotoIcon based on image load status */}
         <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
       </figure>
