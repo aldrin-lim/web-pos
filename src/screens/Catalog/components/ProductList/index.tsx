@@ -11,7 +11,7 @@ type Orientation = 'vertical' | 'horizontal'
 type ProductListProps = {
   orientation?: Orientation
   products: Product[]
-  onProductSelect?: (product: Product) => void
+  onItemClick?: (product: Product) => void
   onAddProduct?: () => void
   onHideItem?: (product: Product) => void
 }
@@ -24,10 +24,10 @@ const ORIENTATION: Record<Orientation, string> = {
 // List of products from collection
 const ProductList = (props: ProductListProps) => {
   const {
-    onProductSelect,
     products,
     onAddProduct,
     onHideItem,
+    onClickItem,
     orientation = 'horizontal',
   } = props
 
@@ -40,7 +40,7 @@ const ProductList = (props: ProductListProps) => {
               onHide={onHideItem}
               key={product.id}
               product={product}
-              onClick={(product) => onProductSelect?.(product)}
+              onClick={(product) => onClickItem?.(product)}
             />
           ))}
           {onAddProduct && (

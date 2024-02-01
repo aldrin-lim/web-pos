@@ -82,7 +82,7 @@ const Catalog = () => {
       <ProductList
         onAddProduct={showAddProduct}
         onHideItem={removeProductFromCollection}
-        onProductSelect={addProductToroder}
+        onClickItem={addProductToroder}
         products={productCollection.products}
         orientation="vertical"
       />
