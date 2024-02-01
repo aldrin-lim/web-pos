@@ -65,6 +65,10 @@ const Catalog = () => {
     })
   }
 
+  const addProductToroder = (product: Product) => {
+    console.log(product)
+  }
+
   const renderContent = () => {
     if (isLoading) {
       return <Skeleton />
@@ -77,8 +81,8 @@ const Catalog = () => {
     return (
       <ProductList
         onAddProduct={showAddProduct}
-        onRemoveProduct={removeProductFromCollection}
-        // onProductSelect={addProductToCollection}
+        onHideItem={removeProductFromCollection}
+        onProductSelect={addProductToroder}
         products={productCollection.products}
         orientation="vertical"
       />

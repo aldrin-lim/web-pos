@@ -13,7 +13,7 @@ type ProductListProps = {
   products: Product[]
   onProductSelect?: (product: Product) => void
   onAddProduct?: () => void
-  onRemoveProduct?: (product: Product) => void
+  onHideItem?: (product: Product) => void
 }
 
 const ORIENTATION: Record<Orientation, string> = {
@@ -27,7 +27,7 @@ const ProductList = (props: ProductListProps) => {
     onProductSelect,
     products,
     onAddProduct,
-    onRemoveProduct,
+    onHideItem,
     orientation = 'horizontal',
   } = props
 
@@ -37,7 +37,7 @@ const ProductList = (props: ProductListProps) => {
         <div className={ORIENTATION[orientation]}>
           {products.map((product) => (
             <ProductCard
-              onHideProduct={onRemoveProduct}
+              onHide={onHideItem}
               key={product.id}
               product={product}
               onClick={(product) => onProductSelect?.(product)}
