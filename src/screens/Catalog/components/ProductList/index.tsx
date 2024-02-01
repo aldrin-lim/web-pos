@@ -11,9 +11,10 @@ type Orientation = 'vertical' | 'horizontal'
 type ProductListProps = {
   orientation?: Orientation
   products: Product[]
+  onAddProductClick?: () => void
   onClickItem?: (product: Product) => void
-  onAddProduct?: () => void
   onHideItem?: (product: Product) => void
+  onAddItemToOrder?: (product: Product) => void
 }
 
 const ORIENTATION: Record<Orientation, string> = {
@@ -25,9 +26,10 @@ const ORIENTATION: Record<Orientation, string> = {
 const ProductList = (props: ProductListProps) => {
   const {
     products,
-    onAddProduct,
+    onAddProductClick,
     onHideItem,
     onClickItem,
+    onAddItemToOrder,
     orientation = 'horizontal',
   } = props
 
@@ -38,14 +40,15 @@ const ProductList = (props: ProductListProps) => {
           {products.map((product) => (
             <ProductCard
               onHide={onHideItem}
+              onAddToOrder={onAddItemToOrder}
               key={product.id}
               product={product}
               onClick={(product) => onClickItem?.(product)}
             />
           ))}
-          {onAddProduct && (
+          {onAddProductClick && (
             <button
-              onClick={onAddProduct}
+              onClick={onAddProductClick}
               className="btn btn-square mt-1 flex h-[213px] w-[155px] flex-col justify-self-center border-2 border-dashed border-gray-300"
             >
               <PlusIcon className="w-8 text-success" />

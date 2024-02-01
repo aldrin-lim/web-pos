@@ -33,7 +33,7 @@ const Catalog = () => {
   const productIdsInCollection =
     productCollection?.products.map((product) => product.id) ?? []
 
-  const showProductSelection = () => {
+  const showProductSelectionScreen = () => {
     navigate(ScreenPath.AddProduct, { relative: 'route' })
   }
 
@@ -69,6 +69,10 @@ const Catalog = () => {
     console.log(product)
   }
 
+  const showOrderDetailScreen = (product: Product) => {
+    console.log(product)
+  }
+
   const renderContent = () => {
     if (isLoading) {
       return <Skeleton />
@@ -80,7 +84,8 @@ const Catalog = () => {
 
     return (
       <ProductList
-        onAddProduct={showProductSelection}
+        onAddProductClick={showProductSelectionScreen}
+        onAddItemToOrder={showOrderDetailScreen}
         onHideItem={removeProductFromCollection}
         onClickItem={addProductToroder}
         products={productCollection.products}
