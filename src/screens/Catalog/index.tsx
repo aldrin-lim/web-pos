@@ -33,7 +33,7 @@ const Catalog = () => {
   const productIdsInCollection =
     productCollection?.products.map((product) => product.id) ?? []
 
-  const showAddProduct = () => {
+  const showProductSelection = () => {
     navigate(ScreenPath.AddProduct, { relative: 'route' })
   }
 
@@ -80,7 +80,7 @@ const Catalog = () => {
 
     return (
       <ProductList
-        onAddProduct={showAddProduct}
+        onAddProduct={showProductSelection}
         onHideItem={removeProductFromCollection}
         onClickItem={addProductToroder}
         products={productCollection.products}
