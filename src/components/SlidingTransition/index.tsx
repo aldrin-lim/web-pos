@@ -4,7 +4,6 @@ type SlidingDirection = 'left' | 'right' | 'top' | 'bottom'
 
 type SlidingTransitionProps = {
   children: React.ReactNode
-  isVisible: boolean
   zIndex?: number
   direction?: SlidingDirection
 }
@@ -84,7 +83,6 @@ const getAnimation = (direction: SlidingDirection) => {
 
 const SlidingTransition: React.FC<SlidingTransitionProps> = ({
   children,
-  isVisible,
   zIndex = 10,
   direction = 'right',
 }) => {
@@ -92,26 +90,22 @@ const SlidingTransition: React.FC<SlidingTransitionProps> = ({
   const animation = getAnimation(direction)
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          variants={animation}
-          transition={{ duration: 0.5 }}
-          className={`framer absolute min-h-screen w-full bg-base-100 ${
-            animationCompleted ? '' : 'overflow-hidden'
-          }`}
-          onAnimationComplete={() => setAnimationCompleted(true)}
-          style={{
-            zIndex,
-          }}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={animation}
+      transition={{ duration: 0.5 }}
+      className={`framer absolute min-h-screen w-full bg-base-100 ${
+        animationCompleted ? '' : 'overflow-hidden'
+      }`}
+      onAnimationComplete={() => setAnimationCompleted(true)}
+      style={{
+        zIndex,
+      }}
+    >
+      {children}
+    </motion.div>
   )
 }
 

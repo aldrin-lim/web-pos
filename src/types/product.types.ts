@@ -1,50 +1,48 @@
-import { uniqueVariantCombinations } from 'util/products'
+import { PIECES } from 'constants/measurement'
 import { z } from 'zod'
 
-export type ProductVariantAttribute = {
-  option: string
-  values: Array<string>
+export enum MaterialType {
+  Ingredient = 'ingredient',
+  Other = 'other',
 }
 
-export enum ProductType {
-  Material = 'material',
-  Regular = 'regular',
+export enum ProductSoldBy {
+  Pieces = PIECES,
+  Weight = 'weight',
 }
-
-export const OptionSchema = z.object({
-  option: z.string({
-    required_error: 'Variant Option name is required',
-    invalid_type_error: 'Variant Option name must be a string',
-  }),
-  value: z.string({
-    required_error: 'Variant Option value is required',
-    invalid_type_error: 'Variant Option value must be a string',
-  }),
-})
 
 export const ProductBatchSchema = z.object({
-  id: z.string().optional(),
+  id: z.string(),
   name: z.string({
     required_error: 'Name is required',
     invalid_type_error: 'Name must be a string',
   }),
   cost: z.number({
+    coerce: true,
     required_error: 'Cost is required',
     invalid_type_error: 'Cost must be a number',
   }),
+  costPerUnit: z
+    .number({
+      coerce: true,
+      invalid_type_error: 'Cost per Unit must be a number',
+    })
+    .optional(),
   quantity: z.number({
+    coerce: true,
     required_error: 'Quantity is required',
     invalid_type_error: 'Quantity must be a number',
   }),
-  measurement: z.string({
+  unitOfMeasurement: z.string({
     required_error: 'Measurement is required',
     invalid_type_error: 'Measurement must be a number',
   }),
-  expiryDate: z.coerce.date().nullable().optional(),
-  purchasedDate: z.coerce.date().nullable().optional(),
+  expirationDate: z
+    .date({ invalid_type_error: 'Expiration  must be a data', coerce: true })
+    .nullable(),
 })
 
-export const BaseProductSchema = z.object({
+const BaseProduct = z.object({
   id: z.string(),
   name: z.string({
     required_error: 'Name is required',
@@ -56,114 +54,118 @@ export const BaseProductSchema = z.object({
       invalid_type_error: 'Description must be a string',
     })
     .optional(),
-  cost: z.number({
-    required_error: 'Cost is required',
-    invalid_type_error: 'Cost must be a number',
+  profitAmount: z.number({
+    required_error: 'Profit Amount is required',
+    invalid_type_error: 'Profit Amount must be a number',
+    coerce: true,
   }),
-  profit: z.number({
-    required_error: 'Profit is required',
-    invalid_type_error: 'Profit must be a number',
+  profitPercentage: z.number({
+    required_error: 'Profit Percentage is required',
+    invalid_type_error: 'Profit Percentage must be a number',
+    coerce: true,
   }),
   price: z.number({
     required_error: 'Price is required',
     invalid_type_error: 'Price must be a number',
+    coerce: true,
   }),
-  quantity: z
-    .number({
-      required_error: 'Quantity is required',
-      invalid_type_error: 'Quantity must be a number',
-    })
-    .int(),
-  measurement: z
-    .string({
-      required_error: 'Measurement is required',
-      invalid_type_error: 'Measurement must be a string',
-    })
-    .default('pieces'),
-  images: z.array(z.string()).optional(),
+  images: z.array(z.string()),
   category: z
     .string({
       invalid_type_error: 'Category must be a string',
     })
     .optional(),
+  trackStock: z
+    .boolean({
+      required_error: 'Track Stock is required',
+    })
+    .default(false),
+  isBulkCost: z
+    .boolean({
+      required_error: 'Is Bulk Cost is required',
+    })
+    .default(false),
+  soldBy: z.nativeEnum(ProductSoldBy).default(ProductSoldBy.Pieces),
+  forSale: z
+    .boolean({
+      required_error: 'For Sale is required',
+    })
+    .default(true),
+
   allowBackOrder: z
     .boolean({
       invalid_type_error: 'Allow back order must be a boolean',
     })
-    .optional(),
-  productType: z
-    .nativeEnum(ProductType, {
-      required_error: 'Product type is required',
-      invalid_type_error: 'Product type must be a valid enum value',
-    })
-    .default(ProductType.Regular)
-    .optional(),
+    .default(false),
   batches: z
     .array(ProductBatchSchema)
-    .min(1, 'Batches must have at least 1 item')
-    .optional(),
-  expiryDate: z.coerce.date().nullable().optional(),
+    .min(1, 'Batches must have at least 1 item'),
+
+  // Read only
+  outOfStock: z.boolean().default(false),
+  availability: z.string().default(''),
+  totalQuantity: z.number().default(0),
 })
 
-export const ProductVariantSchema = BaseProductSchema.extend({
-  id: z
-    .string({
-      invalid_type_error: 'Product Variant ID must be a string',
-    })
-    .optional(),
-  variantOptions: z
-    .array(OptionSchema)
-    .min(1, 'Variant options must have at least 1 item'),
-})
-
-export const ProductSchema = BaseProductSchema.extend({
-  variants: z.array(ProductVariantSchema).refine(uniqueVariantCombinations, {
-    message:
-      'Product variants must have unique combinations of options and values',
+export const RecipeSchema = z.object({
+  id: z.string({ required_error: 'Recipe id is required' }),
+  name: z.string({
+    required_error: 'Recipe name is required',
+    invalid_type_error: 'Recipe name is must be a string',
   }),
+  price: z.number({
+    coerce: true,
+    required_error: 'Recipe price is required',
+    invalid_type_error: 'Recipe price must be a number',
+  }),
+  profitAmount: z.number({
+    required_error: 'Profit Amount is required',
+    invalid_type_error: 'Profit Amount must be a number',
+    coerce: true,
+  }),
+  profitPercentage: z.number({
+    required_error: 'Profit Percentage is required',
+    invalid_type_error: 'Profit Percentage must be a number',
+    coerce: true,
+  }),
+  description: z.string().optional(),
+  images: z.array(z.string()),
+  cost: z.number(),
+  quantity: z.number(),
+  materials: z
+    .array(
+      // Material
+      z.object({
+        id: z
+          .string({
+            required_error: 'Material id is required',
+            invalid_type_error: 'Material id must be a string',
+          })
+          .optional(),
+        quantity: z.number({
+          required_error: 'Material quantity is required',
+        }),
+        cost: z.number({ required_error: 'Cost is required' }),
+        unitOfMeasurement: z
+          .string({
+            required_error: 'Measurement is required',
+          })
+          .min(1),
+        type: z.nativeEnum(MaterialType).default(MaterialType.Ingredient),
+        product: BaseProduct.extend({
+          activeBatch: ProductBatchSchema.optional(),
+        }),
+      }),
+    )
+    .min(1, 'Materials must have at least 1 item'),
 })
 
-const PartialBaseProductSchema = BaseProductSchema.partial()
-
-type BaseProductType = z.infer<typeof PartialBaseProductSchema>
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function withProductTypeValidation<
-  O extends BaseProductType,
-  T extends z.ZodTypeDef,
-  I,
->(schema: z.ZodType<O, T, I>) {
-  return schema
-    .refine(
-      (data) => {
-        if (data.productType === ProductType.Regular && data.batches) {
-          return false
-        }
-        return true
-      },
-      {
-        message: 'Batches are not allowed when productType is non material',
-      },
-    )
-    .refine(
-      (data) => {
-        if (
-          data.productType === ProductType.Regular &&
-          data.measurement &&
-          !['pieces', 'pcs', 'pc', 'piece'].includes(
-            data.measurement.toLowerCase(),
-          )
-        ) {
-          return false
-        }
-        return true
-      },
-      {
-        message:
-          'Measurement should only be piece(s) for non material products',
-      },
-    )
-}
+const Product = BaseProduct.extend({
+  recipe: RecipeSchema.nullable().optional(),
+  activeBatch: ProductBatchSchema,
+})
+export const ProductSchema = Product
 
 export type Product = z.infer<typeof ProductSchema>
-export type ProductVariant = z.infer<typeof ProductVariantSchema>
+
+export const MaterialSchema = RecipeSchema.shape.materials.element
