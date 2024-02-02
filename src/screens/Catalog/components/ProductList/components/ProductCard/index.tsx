@@ -24,7 +24,7 @@ const ProductCard = (props: ProductCardProps) => {
 
   return (
     <div className="relative  justify-self-center">
-      <div className="absolute right-2 top-2 z-20">
+      <div className="absolute right-2 top-2 z-10">
         <DropdownButton
           buttonClassName="btn-primary btn-circle btn-sm "
           items={[

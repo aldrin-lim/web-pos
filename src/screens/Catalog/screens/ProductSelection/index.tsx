@@ -124,7 +124,7 @@ const ProductSelection = (props: ProductSelectionProps) => {
             element={
               <SlidingTransition>
                 <Inventory
-                  products={products}
+                  products={filteredProducts}
                   onBack={() => navigate(-1)}
                   onProductSelect={viewProduct}
                 />

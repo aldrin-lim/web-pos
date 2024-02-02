@@ -16,6 +16,7 @@ import useGetProductCollection from 'hooks/useGetProductCollection'
 import { Product } from 'types/product.types'
 import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import ProductList from './components/ProductList'
+import { useState } from 'react'
 enum ScreenPath {
   AddProduct = 'add-product',
 }
@@ -23,6 +24,8 @@ enum ScreenPath {
 const Catalog = () => {
   const navigate = useNavigate()
   const location = useLocation()
+
+  const [searchFilter, setSearchFilter] = useState('')
 
   const { isLoading, productCollection } = useGetProductCollection()
 
@@ -83,14 +86,22 @@ const Catalog = () => {
     }
 
     return (
-      <ProductList
-        onAddProductClick={showProductSelectionScreen}
-        onAddItemToOrder={showOrderDetailScreen}
-        onHideItem={removeProductFromCollection}
-        onClickItem={addProductToroder}
-        products={productCollection.products}
-        orientation="vertical"
-      />
+      <div className="flex flex-col gap-4">
+        <input
+          className="input input-bordered w-full "
+          placeholder="Search Product by Name"
+          onChange={(e) => setSearchFilter(e.target.value)}
+        />
+        <ProductList
+          searchFilter={searchFilter}
+          onAddProductClick={showProductSelectionScreen}
+          onAddItemToOrder={showOrderDetailScreen}
+          onHideItem={removeProductFromCollection}
+          onClickItem={addProductToroder}
+          products={productCollection.products}
+          orientation="vertical"
+        />
+      </div>
     )
   }
 
