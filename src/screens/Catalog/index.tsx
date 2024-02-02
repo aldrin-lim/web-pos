@@ -74,6 +74,28 @@ const useCatalog = () => {
     }
   }
 
+  const removeOrder = (product: Product) => {
+    // Find the order based from the input product
+    const order = orders.find((p) => p.product.id === product.id)
+
+    if (!order) {
+      console.error('Order not found')
+      return
+    }
+
+    const quantityUsed = order.quantity
+    const updatedOrder = orders.filter((p) => p.product.id !== order.product.id)
+    setOrder(updatedOrder)
+
+    const updatedProduct = products.map((p) => {
+      if (p.id === order.product.id) {
+        p.totalQuantity += quantityUsed
+      }
+      return p
+    })
+    setProducts(updatedProduct)
+  }
+
   // const updateProductInOrder = (product: Product, quantity: number) => {
   //   // Determine first if its subtracting or adding
   //   const existingOrderIndex = orders.findIndex(
@@ -92,6 +114,7 @@ const useCatalog = () => {
     products,
     orders,
     addProductToOrder,
+    removeOrder,
   }
 }
 
@@ -104,7 +127,8 @@ const Catalog = () => {
 
   const { updateProductCollection, isUpdating } = useUpdateProductCollection()
 
-  const { products, orders, addProductToOrder, isLoading } = useCatalog()
+  const { products, orders, isLoading, addProductToOrder, removeOrder } =
+    useCatalog()
 
   const isMutating = isUpdating
 
@@ -137,10 +161,13 @@ const Catalog = () => {
   }
 
   const addProductToroder = (product: Product) => {
-    addProductToOrder({
-      product,
-      quantity: 1,
-    })
+    if (product.totalQuantity >= 1) {
+      // If there is remainder use the remainder
+      addProductToOrder({
+        product,
+        quantity: 1,
+      })
+    }
   }
 
   const addOrder = (order: Order) => {
@@ -159,6 +186,10 @@ const Catalog = () => {
     })
   }
 
+  const removeProductFromOrder = (product: Product) => {
+    removeOrder(product)
+  }
+
   const renderContent = () => {
     if (isLoading) {
       return <Skeleton />
@@ -174,8 +205,12 @@ const Catalog = () => {
         <ProductList
           searchFilter={searchFilter}
           onAddProductClick={showProductSelectionScreen}
+          // Event handler for item when not selected yet
           onAddItemToOrder={showOrderDetailScreen}
           onHideItem={removeProductFromCollection}
+          // Event handler for item when selected
+
+          onRemoveItemFromOrder={removeProductFromOrder}
           onClickItem={addProductToroder}
           products={products}
           orders={orders}
@@ -187,6 +222,10 @@ const Catalog = () => {
 
   const totalOrderCost = orders.reduce((acc, order) => {
     return acc + order.product.price * order.quantity
+  }, 0)
+
+  const totalOrderLength = orders.reduce((acc, order) => {
+    return acc + order.quantity
   }, 0)
 
   return (
@@ -224,7 +263,7 @@ const Catalog = () => {
             <button className="btn btn-primary w-full ">
               <div className="flex flex-row gap-4">
                 <div className="flex flex-row items-center gap-2">
-                  <ShoppingCartIcon className="w-5" /> {orders.length}
+                  <ShoppingCartIcon className="w-5" /> {totalOrderLength}
                 </div>
                 <div className="flex flex-row items-center gap-2">
                   ₱ {totalOrderCost.toFixed(2)}

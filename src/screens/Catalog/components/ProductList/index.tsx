@@ -15,8 +15,14 @@ type ProductListProps = {
   products: Product[]
   onAddProductClick?: () => void
   onClickItem?: (product: Product) => void
+
+  // Inactive state
   onHideItem?: (product: Product) => void
   onAddItemToOrder?: (product: Product) => void
+
+  // Active state
+  onRemoveItemFromOrder?: (product: Product) => void
+  onModifyItem?: (product: Product) => void
 
   orders: Order[]
   searchFilter?: string
@@ -34,8 +40,11 @@ const ProductList = (props: ProductListProps) => {
     onHideItem,
     onClickItem,
     onAddItemToOrder,
+    onModifyItem,
+    onRemoveItemFromOrder,
     orientation = 'horizontal',
     searchFilter = '',
+    orders,
   } = props
 
   const products = useMemo(() => {
@@ -52,9 +61,12 @@ const ProductList = (props: ProductListProps) => {
         <div className={ORIENTATION[orientation]}>
           {products.map((product) => (
             <ProductCard
+              disableRemove={orders.length > 0}
               active={productIdsFromOrder.includes(product.id)}
               onHide={onHideItem}
               onAddToOrder={onAddItemToOrder}
+              onModifyOrder={onModifyItem}
+              onRemoveFromOrder={onRemoveItemFromOrder}
               key={product.id}
               product={product}
               onClick={(product) => onClickItem?.(product)}

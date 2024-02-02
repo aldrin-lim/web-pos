@@ -9,10 +9,18 @@ type Product = z.infer<typeof ProductSchema>
 type ProductCardProps = {
   product: Product
   onClick?: (product: Product) => void
+
+  // Inactive state
   onHide?: (product: Product) => void
   onAddToOrder?: (product: Product) => void
 
+  // Active state
+  onRemoveFromOrder?: (product: Product) => void
+  onModifyOrder?: (product: Product) => void
+
   active?: boolean
+
+  disableRemove?: boolean
 }
 
 //  Card component for displaying the products from collection
@@ -25,28 +33,46 @@ const ProductCard = (props: ProductCardProps) => {
   const image = product.images?.[0] || ''
 
   const activeStyle = 'bg-primary text-white border-primary'
-  const defaultStyl = 'bg-base-100'
+  const defaultStyle = 'bg-base-100'
+
+  const dropdownMenuItems = active
+    ? [
+        {
+          text: 'Modify order',
+          onClick: () => props.onModifyOrder?.(product),
+        },
+        {
+          text: 'Remove Order',
+          onClick: () => props.onRemoveFromOrder?.(product),
+        },
+      ]
+    : [
+        {
+          text: 'Add to order',
+          onClick: () => props.onAddToOrder?.(product),
+        },
+        {
+          text: 'Hide Product',
+          onClick: () => props.onHide?.(product),
+        },
+      ]
 
   return (
     <div className="relative  justify-self-center">
-      <div className="absolute right-2 top-2 z-10">
-        <DropdownButton
-          buttonClassName="btn-primary btn-circle btn-sm "
-          items={[
-            {
-              text: 'Add to order',
-              onClick: () => props.onAddToOrder?.(product),
-            },
-            {
-              text: 'Hide Product',
-              onClick: () => props.onHide?.(product),
-            },
-          ]}
-        />
+      <div className="absolute top-2 z-10 flex w-full items-center justify-between px-2">
+        <div className="bg-primary/50 p-1 text-sm text-white">
+          ₱{product.price.toFixed(2)}
+        </div>
+        <div>
+          <DropdownButton
+            buttonClassName="btn-primary btn-circle btn-sm "
+            items={dropdownMenuItems}
+          />
+        </div>
       </div>
       <div
         className={`ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300 ${
-          active ? activeStyle : defaultStyl
+          active ? activeStyle : defaultStyle
         }`}
         onClick={() => onClick?.(product)}
       >

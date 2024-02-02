@@ -7,6 +7,7 @@ type DropdownProps = {
     icon?: React.ReactNode
     text: string
     onClick?: () => void
+    disabled?: boolean
   }>
   disabled?: boolean
   buttonClassName?: string
@@ -38,6 +39,9 @@ const DropdownButton = (props: DropdownProps) => {
       {open && (
         <div className="dop menu dropdown-content top-10 flex w-36 flex-col overflow-hidden rounded-md bg-base-100 p-0 shadow">
           {items.map((item, index) => {
+            if (item.disabled) {
+              return null
+            }
             return (
               <DropdownButtonItem key={index} {...item} disabled={disabled} />
             )
