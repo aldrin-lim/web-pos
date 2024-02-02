@@ -1,6 +1,9 @@
+import { useAuth0 } from '@auth0/auth0-react'
+import ArrowLeftOnRectangleIcon from '@heroicons/react/24/outline/ArrowLeftOnRectangleIcon'
 import { Outlet } from 'react-router-dom'
 
 const Layout = () => {
+  const { logout } = useAuth0()
   return (
     <main className="flex w-full flex-col ">
       <div className="drawer">
@@ -21,7 +24,19 @@ const Layout = () => {
               <a>Sidebar Item 1</a>
             </li>
             <li>
-              <a>Sidebar Item 2</a>
+              <button
+                className="btn btn-ghost w-full justify-start px-1 "
+                onClick={async () => {
+                  await logout({
+                    logoutParams: {
+                      returnTo: window.location.origin,
+                    },
+                  })
+                }}
+              >
+                <ArrowLeftOnRectangleIcon className="h-6 w-6" />
+                Sign Out
+              </button>
             </li>
           </ul>
         </div>
