@@ -11,7 +11,7 @@ import { AnimatePresence } from 'framer-motion'
 import Toolbar from 'components/Layout/components/Toolbar'
 
 import logo from '../../../public/logo.svg'
-import { Bars3Icon } from '@heroicons/react/24/solid'
+import { Bars3Icon, ShoppingCartIcon } from '@heroicons/react/24/solid'
 import useGetProductCollection from 'hooks/useGetProductCollection'
 import { Product } from 'types/product.types'
 import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
@@ -150,7 +150,7 @@ const Catalog = () => {
       state: {
         order: {
           product,
-          quantity: 1,
+          quantity: 0,
         },
       },
     })
@@ -182,6 +182,10 @@ const Catalog = () => {
     )
   }
 
+  const totalOrderCost = orders.reduce((acc, order) => {
+    return acc + order.product.price * order.quantity
+  }, 0)
+
   return (
     <>
       <div
@@ -210,6 +214,22 @@ const Catalog = () => {
         />
         {isMutating && <LoadingCover />}
         {renderContent()}
+
+        {/* Cart Button */}
+        <div className="fixed bottom-4 w-full ">
+          <div className="mx-auto max-w-sm md:max-w-md">
+            <button className="btn btn-primary w-full ">
+              <div className="flex flex-row gap-4">
+                <div className="flex flex-row items-center gap-2">
+                  <ShoppingCartIcon className="w-5" /> {orders.length}
+                </div>
+                <div className="flex flex-row items-center gap-2">
+                  ₱ {totalOrderCost.toFixed(2)}
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
       </div>
       <AnimatePresence>
         <Routes location={location} key={isParentScreen.toString()}>

@@ -20,6 +20,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
   const isParentScreen = location.pathname === resolvePath.pathname
   const order = location.state.order as Order
   const [quantity, setQuantity] = useState(order.quantity ?? 0)
+  const [error, setError] = useState('')
 
   if (!order) {
     console.error('Product state is empty')
@@ -27,6 +28,22 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
   }
 
   const product = order.product
+
+  const onAddAToOrderClick = () => {
+    setError('')
+    if (quantity > product.totalQuantity) {
+      setError('Quantity is greater than available stock')
+      return
+    }
+    if (quantity === 0) {
+      setError('Quantity should not be zero')
+      return
+    }
+    onAddToOrder?.({
+      product,
+      quantity,
+    })
+  }
 
   return (
     <>
@@ -53,7 +70,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
             <p>{product.name}</p>
             <p className="font-bold">₱{product.price}</p>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex w-full flex-col gap-2">
             <label>Quantity</label>
             <QuantityInput
               value={quantity}
@@ -66,17 +83,13 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               className="w-full"
             />
             <p>{product.totalQuantity} Available</p>
+            <p className="text-red-400">{error}</p>
           </div>
           <button
-            onClick={() =>
-              onAddToOrder?.({
-                product,
-                quantity,
-              })
-            }
+            onClick={onAddAToOrderClick}
             className="btn btn-primary mt-auto"
           >
-            Add to order{' '}
+            Add to order
           </button>
         </div>
       </div>

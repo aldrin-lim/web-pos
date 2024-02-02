@@ -9,7 +9,7 @@ type QuantityInputProps = React.DetailedHTMLProps<
 const QuantityInput = (props: QuantityInputProps) => {
   const { value = 0, onChange } = props
   return (
-    <div className="join flex max-w-sm border  border-gray-300">
+    <div className="join flex border  border-gray-300">
       <button
         disabled={props.disabled}
         className="join-itm  btn"
