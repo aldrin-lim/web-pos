@@ -137,7 +137,10 @@ const Catalog = () => {
   }
 
   const addProductToroder = (product: Product) => {
-    console.log(product)
+    addProductToOrder({
+      product,
+      quantity: 1,
+    })
   }
 
   const addOrder = (order: Order) => {
