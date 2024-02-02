@@ -2,6 +2,7 @@ import { Product } from 'types/product.types'
 import ProductCard from './components/ProductCard'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import { useMemo } from 'react'
+import { Order } from 'screens/Catalog'
 
 const verticalScrollStyle =
   'grid grid-cols-2 gap-x-4 gap-y-4 overflow-x-auto sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
@@ -17,6 +18,7 @@ type ProductListProps = {
   onHideItem?: (product: Product) => void
   onAddItemToOrder?: (product: Product) => void
 
+  orders: Order[]
   searchFilter?: string
 }
 
@@ -42,12 +44,15 @@ const ProductList = (props: ProductListProps) => {
     )
   }, [props.products, searchFilter])
 
+  const productIdsFromOrder = props.orders.map((order) => order.product.id)
+
   return (
     <div className="flex flex-col gap-4">
       <div className="overflow-x-auto">
         <div className={ORIENTATION[orientation]}>
           {products.map((product) => (
             <ProductCard
+              active={productIdsFromOrder.includes(product.id)}
               onHide={onHideItem}
               onAddToOrder={onAddItemToOrder}
               key={product.id}

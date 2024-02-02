@@ -11,16 +11,21 @@ type ProductCardProps = {
   onClick?: (product: Product) => void
   onHide?: (product: Product) => void
   onAddToOrder?: (product: Product) => void
+
+  active?: boolean
 }
 
 //  Card component for displaying the products from collection
 const ProductCard = (props: ProductCardProps) => {
-  const { product, onClick } = props
+  const { product, onClick, active = false } = props
   const { name, outOfStock, totalQuantity } = product
 
   const { unitOfMeasurement } = product.activeBatch
 
   const image = product.images?.[0] || ''
+
+  const activeStyle = 'bg-primary text-white border-primary'
+  const defaultStyl = 'bg-base-100'
 
   return (
     <div className="relative  justify-self-center">
@@ -40,10 +45,12 @@ const ProductCard = (props: ProductCardProps) => {
         />
       </div>
       <div
-        className="ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300 bg-base-100"
+        className={`ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300 ${
+          active ? activeStyle : defaultStyl
+        }`}
         onClick={() => onClick?.(product)}
       >
-        <figure className="h-[155px] w-[153px] overflow-hidden rounded-t-xl bg-gray-300">
+        <figure className="top-1 h-[155px] w-[153px] overflow-hidden  bg-gray-300">
           {/* Show image or PhotoIcon based on image load status */}
           <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
         </figure>

@@ -16,43 +16,112 @@ import useGetProductCollection from 'hooks/useGetProductCollection'
 import { Product } from 'types/product.types'
 import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import ProductList from './components/ProductList'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import OrderItemDetail from './screens/OrderItemDetail'
 enum ScreenPath {
   AddProduct = 'add-product',
+  OrderItemDetail = 'order-item-detail',
+}
+
+export type Order = {
+  product: Product
+  quantity: number
+  discount?: {
+    name: string
+    type: 'percentage' | 'amount'
+    amount: number
+  }
+}
+
+const useCatalog = () => {
+  // This hooks accepts a list of products
+
+  const { isLoading, productCollection } = useGetProductCollection()
+  const [products, setProducts] = useState<Product[]>([])
+
+  useEffect(() => {
+    if (!isLoading && productCollection?.products) {
+      setProducts(productCollection.products)
+    }
+  }, [isLoading, productCollection])
+
+  const [orders, setOrder] = useState<Array<Order>>([])
+
+  const addProductToOrder = (order: Order) => {
+    // Subtract the quantity from the products
+    const { product, quantity } = order
+
+    const updatedProduct = products.map((p) => {
+      if (p.id === product.id) {
+        p.totalQuantity -= quantity
+      }
+      return p
+    })
+    setProducts(updatedProduct)
+
+    // Increase the quantity of the product in the order
+    const existingOrder = orders.findIndex((p) => p.product.id === product.id)
+    if (existingOrder === -1) {
+      setOrder([...orders, { product, quantity }])
+    } else {
+      const updatedOrder = orders.map((p) => {
+        if (p.product.id === product.id) {
+          p.quantity += quantity
+        }
+        return p
+      })
+      setOrder(updatedOrder)
+    }
+  }
+
+  // const updateProductInOrder = (product: Product, quantity: number) => {
+  //   // Determine first if its subtracting or adding
+  //   const existingOrderIndex = orders.findIndex(
+  //     (p) => p.product.id === product.id,
+  //   )
+  //   if (existingOrderIndex === -1) {
+  //     console.error('Product not found in order')
+  //     return
+  //   }
+
+  //   const existingOrder = orders[existingOrderIndex]
+  // }
+
+  return {
+    isLoading,
+    products,
+    orders,
+    addProductToOrder,
+  }
 }
 
 const Catalog = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const resolvePath = useResolvedPath('')
 
   const [searchFilter, setSearchFilter] = useState('')
 
-  const { isLoading, productCollection } = useGetProductCollection()
-
   const { updateProductCollection, isUpdating } = useUpdateProductCollection()
+
+  const { products, orders, addProductToOrder, isLoading } = useCatalog()
 
   const isMutating = isUpdating
 
-  const productIdsInCollection =
-    productCollection?.products.map((product) => product.id) ?? []
+  const productIdsInCollection = products.map((product) => product.id) ?? []
+  const filter = (product: Product) => {
+    return !productIdsInCollection.includes(product.id)
+  }
+  const isParentScreen = location.pathname === resolvePath.pathname
 
   const showProductSelectionScreen = () => {
     navigate(ScreenPath.AddProduct, { relative: 'route' })
   }
 
-  const resolvePath = useResolvedPath('')
-
-  const isParentScreen = location.pathname === resolvePath.pathname
-
-  const filter = (product: Product) => {
-    return !productIdsInCollection.includes(product.id)
-  }
-
   const addProductToCollection = async (product: Product) => {
     navigate(-1)
 
-    const existingProducts =
-      productCollection?.products.map((p) => ({ id: p.id })) ?? []
+    const existingProducts = products.map((p) => ({ id: p.id })) ?? []
 
     await updateProductCollection({
       products: [...existingProducts, { id: product.id }],
@@ -60,8 +129,7 @@ const Catalog = () => {
   }
 
   const removeProductFromCollection = async (product: Product) => {
-    const existingProducts =
-      productCollection?.products.map((p) => ({ id: p.id })) ?? []
+    const existingProducts = products.map((p) => ({ id: p.id })) ?? []
 
     await updateProductCollection({
       products: existingProducts.filter((p) => p.id !== product.id),
@@ -72,17 +140,25 @@ const Catalog = () => {
     console.log(product)
   }
 
+  const addOrder = (order: Order) => {
+    navigate(-1)
+    addProductToOrder(order)
+  }
+
   const showOrderDetailScreen = (product: Product) => {
-    console.log(product)
+    navigate(`${ScreenPath.OrderItemDetail}`, {
+      state: {
+        order: {
+          product,
+          quantity: 1,
+        },
+      },
+    })
   }
 
   const renderContent = () => {
     if (isLoading) {
       return <Skeleton />
-    }
-
-    if (!productCollection) {
-      return <div>Error</div>
     }
 
     return (
@@ -98,7 +174,8 @@ const Catalog = () => {
           onAddItemToOrder={showOrderDetailScreen}
           onHideItem={removeProductFromCollection}
           onClickItem={addProductToroder}
-          products={productCollection.products}
+          products={products}
+          orders={orders}
           orientation="vertical"
         />
       </div>
@@ -145,6 +222,14 @@ const Catalog = () => {
                   filter={filter}
                   onBack={() => navigate(-1)}
                 />
+              </SlidingTransition>
+            }
+          />
+          <Route
+            path={`${ScreenPath.OrderItemDetail}/*`}
+            element={
+              <SlidingTransition>
+                <OrderItemDetail onAddToOrder={addOrder} />
               </SlidingTransition>
             }
           />
