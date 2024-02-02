@@ -4,6 +4,7 @@ import ToolbarButton from 'components/Layout/components/Toolbar/components/Toolb
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import ProductImages from 'components/ProductImages'
 import QuantityInput from 'components/QuantityInput'
+import { toNumber } from 'lodash'
 import { useState } from 'react'
 import { useLocation, useNavigate, useResolvedPath } from 'react-router-dom'
 import { Order } from 'screens/Catalog'
@@ -19,7 +20,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
   const order = location.state.order as Order
-  const [quantity, setQuantity] = useState(order.quantity ?? 0)
+  const [quantity, setQuantity] = useState(order.quantity.toString())
   const [error, setError] = useState('')
 
   if (!order) {
@@ -31,17 +32,17 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
 
   const onAddAToOrderClick = () => {
     setError('')
-    if (quantity > product.totalQuantity) {
+    if (toNumber(quantity) > product.totalQuantity) {
       setError('Quantity is greater than available stock')
       return
     }
-    if (quantity === 0) {
+    if (toNumber(quantity) === 0) {
       setError('Quantity should not be zero')
       return
     }
     onAddToOrder?.({
       product,
-      quantity,
+      quantity: toNumber(quantity),
     })
   }
 
@@ -75,10 +76,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
             <QuantityInput
               value={quantity}
               onChange={(value) => {
-                const newQuantity = +value
-                if (product.totalQuantity > newQuantity) {
-                  setQuantity(+value)
-                }
+                setQuantity(value ?? '')
               }}
               className="w-full"
             />
@@ -86,6 +84,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
             <p className="text-red-400">{error}</p>
           </div>
           <button
+            disabled={product.totalQuantity === 0}
             onClick={onAddAToOrderClick}
             className="btn btn-primary mt-auto"
           >
