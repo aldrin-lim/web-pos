@@ -5,23 +5,34 @@ import ToolbarTitle from 'components/Layout/components/Toolbar/components/Toolba
 import ProductImages from 'components/ProductImages'
 import QuantityInput from 'components/QuantityInput'
 import { toNumber } from 'lodash'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useLocation, useNavigate, useResolvedPath } from 'react-router-dom'
 import { Order } from 'screens/Catalog'
+import { v4 } from 'uuid'
 
 type OrderItemDetailProps = {
   onAddToOrder?: (order: Order) => void
+  onModifyOrder?: (order: Order) => void
 }
 
 const OrderItemDetail = (props: OrderItemDetailProps) => {
-  const { onAddToOrder } = props
+  const { onAddToOrder, onModifyOrder } = props
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
   const order = location.state.order as Order
+
+  const [initialQuantity] = useState(order.quantity)
   const [quantity, setQuantity] = useState(order.quantity.toString())
   const [error, setError] = useState('')
+
+  const totalQuantity = useMemo(() => {
+    if (location.state.action === 'edit') {
+      return order.product.totalQuantity + initialQuantity
+    }
+    return order.product.totalQuantity
+  }, [order, location.state.action, initialQuantity])
 
   if (!order) {
     console.error('Product state is empty')
@@ -32,18 +43,64 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
 
   const onAddAToOrderClick = () => {
     setError('')
-    if (toNumber(quantity) > product.totalQuantity) {
-      setError('Quantity is greater than available stock')
+
+    if (location.state.action === 'edit') {
+      const originalQuantity = initialQuantity + product.totalQuantity
+
+      if (toNumber(quantity) > originalQuantity) {
+        setError(`Quantity should not exceed ${originalQuantity}`)
+        return
+      }
+
+      onModifyOrder?.({
+        id: order.id,
+        product,
+        quantity: toNumber(quantity),
+      })
+
       return
     }
+
     if (toNumber(quantity) === 0) {
       setError('Quantity should not be zero')
       return
     }
     onAddToOrder?.({
+      id: v4(),
       product,
       quantity: toNumber(quantity),
     })
+  }
+
+  const renderCTA = () => {
+    if (location.state.action === 'edit') {
+      if (toNumber(quantity) === 0) {
+        return (
+          <button
+            onClick={onAddAToOrderClick}
+            className="btn btn-error mt-auto w-full text-white"
+          >
+            Remove order
+          </button>
+        )
+      }
+      return (
+        <button
+          onClick={onAddAToOrderClick}
+          className="btn btn-primary mt-auto w-full"
+        >
+          Modify order
+        </button>
+      )
+    }
+    return (
+      <button
+        onClick={onAddAToOrderClick}
+        className="btn btn-primary mt-auto w-full"
+      >
+        Add to order
+      </button>
+    )
   }
 
   return (
@@ -80,16 +137,10 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               }}
               className="w-full"
             />
-            <p>{product.totalQuantity} Available</p>
+            <p>{totalQuantity} Available</p>
             <p className="text-red-400">{error}</p>
           </div>
-          <button
-            disabled={product.totalQuantity === 0}
-            onClick={onAddAToOrderClick}
-            className="btn btn-primary mt-auto"
-          >
-            Add to order
-          </button>
+          {renderCTA()}
         </div>
       </div>
     </>

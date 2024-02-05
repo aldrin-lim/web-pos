@@ -22,7 +22,7 @@ type ProductListProps = {
 
   // Active state
   onRemoveItemFromOrder?: (product: Product) => void
-  onModifyItem?: (product: Product) => void
+  onModifyItemClick?: (product: Product) => void
 
   orders: Order[]
   searchFilter?: string
@@ -40,7 +40,7 @@ const ProductList = (props: ProductListProps) => {
     onHideItem,
     onClickItem,
     onAddItemToOrder,
-    onModifyItem,
+    onModifyItemClick,
     onRemoveItemFromOrder,
     orientation = 'horizontal',
     searchFilter = '',
@@ -65,7 +65,7 @@ const ProductList = (props: ProductListProps) => {
               active={productIdsFromOrder.includes(product.id)}
               onHide={onHideItem}
               onAddToOrder={onAddItemToOrder}
-              onModifyOrder={onModifyItem}
+              onModifyOrder={onModifyItemClick}
               onRemoveFromOrder={onRemoveItemFromOrder}
               key={product.id}
               product={product}

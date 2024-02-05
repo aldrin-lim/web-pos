@@ -18,12 +18,17 @@ import useUpdateProductCollection from 'hooks/useUpdateProductCollection'
 import ProductList from './components/ProductList'
 import { useEffect, useState } from 'react'
 import OrderItemDetail from './screens/OrderItemDetail'
+
+import { v4 } from 'uuid'
+import { cloneDeep } from 'lodash'
 enum ScreenPath {
   AddProduct = 'add-product',
-  OrderItemDetail = 'order-item-detail',
+  AddOrder = 'add-product-to-order',
+  ModifyOrder = 'modify-order',
 }
 
 export type Order = {
+  id: string
   product: Product
   quantity: number
   discount?: {
@@ -33,6 +38,7 @@ export type Order = {
   }
 }
 
+export type OrderAction = 'add' | 'edit'
 const useCatalog = () => {
   // This hooks accepts a list of products
 
@@ -41,7 +47,7 @@ const useCatalog = () => {
 
   useEffect(() => {
     if (!isLoading && productCollection?.products) {
-      setProducts(productCollection.products)
+      setProducts(cloneDeep(productCollection.products))
     }
   }, [isLoading, productCollection])
 
@@ -62,7 +68,7 @@ const useCatalog = () => {
     // Increase the quantity of the product in the order
     const existingOrder = orders.findIndex((p) => p.product.id === product.id)
     if (existingOrder === -1) {
-      setOrder([...orders, { product, quantity }])
+      setOrder([...orders, { product, quantity, id: v4() }])
     } else {
       const updatedOrder = orders.map((p) => {
         if (p.product.id === product.id) {
@@ -96,6 +102,53 @@ const useCatalog = () => {
     setProducts(updatedProduct)
   }
 
+  const modifyOrder = async (order: Order) => {
+    // If quantity is zero remove the order
+    if (order.quantity === 0) {
+      removeOrder(order.product)
+      return
+    }
+
+    // Find the order
+    const existingOrder = orders.find((o) => o.id === order.id)
+
+    if (!existingOrder) {
+      console.error('Order not found')
+      return
+    }
+
+    // Update the order
+    const updatedOrder = orders.map((o) => {
+      if (o.id === order.id) {
+        o.quantity = order.quantity
+      }
+      return o
+    })
+    setOrder(updatedOrder)
+
+    const originalProduct = productCollection?.products.find(
+      (p) => p.id === order.product.id,
+    )
+
+    if (!originalProduct) {
+      console.error('Product not found')
+      return
+    }
+
+    const updatedProduct = products.map((p) => {
+      if (originalProduct.id === p.id) {
+        console.log(
+          'originalProduct.totalQuantity',
+          originalProduct.totalQuantity,
+        )
+        p.totalQuantity = originalProduct.totalQuantity - order.quantity
+        return p
+      }
+      return p
+    })
+    setProducts(updatedProduct)
+  }
+
   // const updateProductInOrder = (product: Product, quantity: number) => {
   //   // Determine first if its subtracting or adding
   //   const existingOrderIndex = orders.findIndex(
@@ -115,6 +168,7 @@ const useCatalog = () => {
     orders,
     addProductToOrder,
     removeOrder,
+    modifyOrder,
   }
 }
 
@@ -127,8 +181,14 @@ const Catalog = () => {
 
   const { updateProductCollection, isUpdating } = useUpdateProductCollection()
 
-  const { products, orders, isLoading, addProductToOrder, removeOrder } =
-    useCatalog()
+  const {
+    products,
+    orders,
+    isLoading,
+    addProductToOrder,
+    removeOrder,
+    modifyOrder,
+  } = useCatalog()
 
   const isMutating = isUpdating
 
@@ -164,6 +224,7 @@ const Catalog = () => {
     if (product.totalQuantity >= 1) {
       // If there is remainder use the remainder
       addProductToOrder({
+        id: v4(),
         product,
         quantity: 1,
       })
@@ -176,11 +237,11 @@ const Catalog = () => {
   }
 
   const showOrderDetailScreen = (product: Product) => {
-    navigate(`${ScreenPath.OrderItemDetail}`, {
+    navigate(`${ScreenPath.AddOrder}`, {
       state: {
         order: {
           product,
-          quantity: 0,
+          quantity: 1,
         },
       },
     })
@@ -188,6 +249,20 @@ const Catalog = () => {
 
   const removeProductFromOrder = (product: Product) => {
     removeOrder(product)
+  }
+
+  const modifyProductInOrder = (order: Order) => {
+    navigate(-1)
+    modifyOrder(order)
+  }
+
+  const showModifyOrderScreen = (product: Product) => {
+    navigate(`${ScreenPath.ModifyOrder}`, {
+      state: {
+        order: orders.find((p) => p.product.id === product.id),
+        action: 'edit',
+      },
+    })
   }
 
   const renderContent = () => {
@@ -211,6 +286,7 @@ const Catalog = () => {
           // Event handler for item when selected
 
           onRemoveItemFromOrder={removeProductFromOrder}
+          onModifyItemClick={showModifyOrderScreen}
           onClickItem={addProductToroder}
           products={products}
           orders={orders}
@@ -288,10 +364,18 @@ const Catalog = () => {
             }
           />
           <Route
-            path={`${ScreenPath.OrderItemDetail}/*`}
+            path={`${ScreenPath.AddOrder}/*`}
             element={
               <SlidingTransition>
                 <OrderItemDetail onAddToOrder={addOrder} />
+              </SlidingTransition>
+            }
+          />
+          <Route
+            path={`${ScreenPath.ModifyOrder}/*`}
+            element={
+              <SlidingTransition>
+                <OrderItemDetail onModifyOrder={modifyProductInOrder} />
               </SlidingTransition>
             }
           />

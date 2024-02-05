@@ -84,6 +84,7 @@ const ProductSelection = (props: ProductSelectionProps) => {
 
         {outOfStocks.length > 0 && (
           <ProductList
+            outOfStock
             onViewAll={showInventory}
             onProductSelect={viewProduct}
             products={outOfStocks}

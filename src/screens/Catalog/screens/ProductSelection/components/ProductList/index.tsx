@@ -12,6 +12,7 @@ type ProductListProps = {
   products: Product[]
   onProductSelect?: (product: Product) => void
   onViewAll?: () => void
+  outOfStock?: boolean
 }
 
 const ORIENTATION: Record<Orientation, string> = {
@@ -25,13 +26,16 @@ const ProductList = (props: ProductListProps) => {
     onProductSelect,
     products,
     orientation = 'horizontal',
+    outOfStock = false,
   } = props
 
   return (
     <div className="flex flex-col gap-4">
       {onViewAll && (
         <div className="flex w-full flex-row items-center justify-between">
-          <h2 className="font-bold">Available</h2>
+          <h2 className="font-bold">
+            {outOfStock ? 'Out of stock' : 'Available'}
+          </h2>
           <button
             onClick={() => onViewAll?.()}
             className="btn btn-link h-0 min-h-[20px] px-0 text-cyan-400 no-underline disabled:bg-transparent disabled:text-gray-400"
