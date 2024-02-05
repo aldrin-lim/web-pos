@@ -72,7 +72,7 @@ const ProductCard = (props: ProductCardProps) => {
 
   return (
     <div className="relative  justify-self-center">
-      <div className="absolute top-2 z-10 flex w-full items-center justify-between px-2">
+      <div className="absolute top-2 z-[9] flex w-full items-center justify-between px-2">
         <div className="bg-primary/50 p-1 text-sm text-white">
           ₱{product.price.toFixed(2)}
         </div>

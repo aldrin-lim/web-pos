@@ -271,27 +271,31 @@ const Catalog = () => {
     }
 
     return (
-      <div className="flex flex-col gap-4">
-        <input
-          className="input input-bordered w-full "
-          placeholder="Search Product by Name"
-          onChange={(e) => setSearchFilter(e.target.value)}
-        />
-        <ProductList
-          searchFilter={searchFilter}
-          onAddProductClick={showProductSelectionScreen}
-          // Event handler for item when not selected yet
-          onAddItemToOrder={showOrderDetailScreen}
-          onHideItem={removeProductFromCollection}
-          // Event handler for item when selected
+      <div className="relative -top-4 flex flex-col ">
+        <div className="sticky top-[49px]  z-10 w-full bg-base-100 py-2">
+          <input
+            className="input input-bordered  top-14 w-full"
+            placeholder="Search Product by Name"
+            onChange={(e) => setSearchFilter(e.target.value)}
+          />
+        </div>
+        <div className="mt-4">
+          <ProductList
+            searchFilter={searchFilter}
+            onAddProductClick={showProductSelectionScreen}
+            // Event handler for item when not selected yet
+            onAddItemToOrder={showOrderDetailScreen}
+            onHideItem={removeProductFromCollection}
+            // Event handler for item when selected
 
-          onRemoveItemFromOrder={removeProductFromOrder}
-          onModifyItemClick={showModifyOrderScreen}
-          onClickItem={addProductToroder}
-          products={products}
-          orders={orders}
-          orientation="vertical"
-        />
+            onRemoveItemFromOrder={removeProductFromOrder}
+            onModifyItemClick={showModifyOrderScreen}
+            onClickItem={addProductToroder}
+            products={products}
+            orders={orders}
+            orientation="vertical"
+          />
+        </div>
       </div>
     )
   }
@@ -307,9 +311,10 @@ const Catalog = () => {
   return (
     <>
       <div
-        className={['screen pb-9', !isParentScreen ? 'hidden-screen' : ''].join(
-          ' ',
-        )}
+        className={[
+          'screen pb-16',
+          !isParentScreen ? 'hidden-screen' : '',
+        ].join(' ')}
       >
         <Toolbar
           items={[
