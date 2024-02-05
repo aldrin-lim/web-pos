@@ -64,10 +64,12 @@ const ProductCard = (props: ProductCardProps) => {
           ₱{product.price.toFixed(2)}
         </div>
         <div>
-          <DropdownButton
-            buttonClassName="btn-primary btn-circle btn-sm "
-            items={dropdownMenuItems}
-          />
+          {!outOfStock && (
+            <DropdownButton
+              buttonClassName="btn-primary btn-circle btn-sm "
+              items={dropdownMenuItems}
+            />
+          )}
         </div>
       </div>
       <div

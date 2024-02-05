@@ -100,6 +100,7 @@ const ProductImages = (props: ProductImagesProps) => {
           >
             <PhotoIcon className="w-14 " />
             {!readOnly && <span className="text-xs ">Upload</span>}
+            {readOnly && <span className="text-xs ">No Image</span>}
           </button>
         )}
       </div>

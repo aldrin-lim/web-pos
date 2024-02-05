@@ -66,7 +66,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
           ]}
         />
         <div className="flex h-full w-full flex-col gap-4">
-          <ProductImages images={product.images} />
+          <ProductImages readOnly images={product.images} />
           <div className="flex w-full flex-row justify-between gap-3">
             <p>{product.name}</p>
             <p className="font-bold">₱{product.price}</p>
