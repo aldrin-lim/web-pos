@@ -35,8 +35,18 @@ const ProductCard = (props: ProductCardProps) => {
   const activeStyle = 'bg-primary text-white border-primary'
   const defaultStyle = 'bg-base-100'
 
-  const dropdownMenuItems = active
-    ? [
+  const getMenuItems = () => {
+    if (outOfStock) {
+      return [
+        {
+          text: 'Hide Product',
+          onClick: () => props.onHide?.(product),
+        },
+      ]
+    }
+
+    if (active) {
+      return [
         {
           text: 'Modify order',
           onClick: () => props.onModifyOrder?.(product),
@@ -46,16 +56,19 @@ const ProductCard = (props: ProductCardProps) => {
           onClick: () => props.onRemoveFromOrder?.(product),
         },
       ]
-    : [
-        {
-          text: 'Add to order',
-          onClick: () => props.onAddToOrder?.(product),
-        },
-        {
-          text: 'Hide Product',
-          onClick: () => props.onHide?.(product),
-        },
-      ]
+    }
+
+    return [
+      {
+        text: 'Add to order',
+        onClick: () => props.onAddToOrder?.(product),
+      },
+      {
+        text: 'Hide Product',
+        onClick: () => props.onHide?.(product),
+      },
+    ]
+  }
 
   return (
     <div className="relative  justify-self-center">
@@ -64,12 +77,10 @@ const ProductCard = (props: ProductCardProps) => {
           ₱{product.price.toFixed(2)}
         </div>
         <div>
-          {!outOfStock && (
-            <DropdownButton
-              buttonClassName="btn-primary btn-circle btn-sm "
-              items={dropdownMenuItems}
-            />
-          )}
+          <DropdownButton
+            buttonClassName="btn-primary btn-circle btn-sm "
+            items={getMenuItems()}
+          />
         </div>
       </div>
       <div
