@@ -4,11 +4,25 @@ import ToolbarButton from 'components/Layout/components/Toolbar/components/Toolb
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import ProductImages from 'components/ProductImages'
 import QuantityInput from 'components/QuantityInput'
-import { toNumber } from 'lodash'
+import { filter, toNumber } from 'lodash'
 import { useMemo, useState } from 'react'
-import { useLocation, useNavigate, useResolvedPath } from 'react-router-dom'
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useResolvedPath,
+} from 'react-router-dom'
 import { Order } from 'screens/Catalog'
 import { v4 } from 'uuid'
+import Dropdown from './components/Dropdown'
+import SlidingTransition from 'components/SlidingTransition'
+import { AnimatePresence } from 'framer-motion'
+import DiscountDetail from '../DiscountDetail'
+
+enum Screen {
+  DiscountDetail = 'discount-detail',
+}
 
 type OrderItemDetailProps = {
   onAddToOrder?: (order: Order) => void
@@ -118,8 +132,13 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               icon={<ChevronLeftIcon className="w-6" />}
               onClick={() => navigate(-1)}
             />,
-
             <ToolbarTitle key="title" title="Order" />,
+            <Dropdown
+              onDiscountClick={() =>
+                navigate(Screen.DiscountDetail, { state: location.state })
+              }
+              key="3"
+            />,
           ]}
         />
         <div className="flex h-full w-full flex-col gap-4">
@@ -143,6 +162,19 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
           {renderCTA()}
         </div>
       </div>
+
+      <AnimatePresence>
+        <Routes location={location} key={isParentScreen.toString()}>
+          <Route
+            path={`${Screen.DiscountDetail}/*`}
+            element={
+              <SlidingTransition>
+                <DiscountDetail />
+              </SlidingTransition>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </>
   )
 }
