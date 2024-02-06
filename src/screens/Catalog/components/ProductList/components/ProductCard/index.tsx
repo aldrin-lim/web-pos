@@ -16,7 +16,7 @@ type ProductCardProps = {
 
   // Active state
   onRemoveFromOrder?: (product: Product) => void
-  onModifyOrder?: (product: Product) => void
+  onUpdateOrder?: (product: Product) => void
 
   active?: boolean
 
@@ -48,8 +48,8 @@ const ProductCard = (props: ProductCardProps) => {
     if (active) {
       return [
         {
-          text: 'Modify order',
-          onClick: () => props.onModifyOrder?.(product),
+          text: 'Update order',
+          onClick: () => props.onUpdateOrder?.(product),
         },
         {
           text: 'Remove Order',

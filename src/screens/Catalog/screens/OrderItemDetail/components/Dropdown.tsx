@@ -34,7 +34,7 @@ const Dropdown = (props: DropdownProps) => {
             onClick={onDiscountClick}
             className="btn btn-ghost flex flex-row items-center justify-center gap-1 rounded-none "
           >
-            Add Discount
+            Discount
           </button>
         </div>
       )}

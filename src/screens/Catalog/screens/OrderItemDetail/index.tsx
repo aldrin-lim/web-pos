@@ -1,24 +1,27 @@
+/* eslint-disable react/display-name */
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import ProductImages from 'components/ProductImages'
 import QuantityInput from 'components/QuantityInput'
-import { filter, toNumber } from 'lodash'
+import { toNumber } from 'lodash'
 import { useMemo, useState } from 'react'
 import {
+  Navigate,
   Route,
   Routes,
   useLocation,
   useNavigate,
   useResolvedPath,
 } from 'react-router-dom'
-import { Order } from 'screens/Catalog'
+import { Discount, Order } from 'screens/Catalog'
 import { v4 } from 'uuid'
 import Dropdown from './components/Dropdown'
 import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import DiscountDetail from '../DiscountDetail'
+import Big from 'big.js'
 
 enum Screen {
   DiscountDetail = 'discount-detail',
@@ -26,11 +29,11 @@ enum Screen {
 
 type OrderItemDetailProps = {
   onAddToOrder?: (order: Order) => void
-  onModifyOrder?: (order: Order) => void
+  onUpdateOrder?: (order: Order) => void
 }
 
 const OrderItemDetail = (props: OrderItemDetailProps) => {
-  const { onAddToOrder, onModifyOrder } = props
+  const { onAddToOrder, onUpdateOrder } = props
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -39,6 +42,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
 
   const [initialQuantity] = useState(order.quantity)
   const [quantity, setQuantity] = useState(order.quantity.toString())
+  const [discount, setDiscount] = useState<Discount | undefined>(order.discount)
   const [error, setError] = useState('')
 
   const totalQuantity = useMemo(() => {
@@ -48,12 +52,27 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
     return order.product.totalQuantity
   }, [order, location.state.action, initialQuantity])
 
-  if (!order) {
-    console.error('Product state is empty')
-    return <div>Error loading product</div>
-  }
-
   const product = order.product
+
+  const discountAmount = useMemo(() => {
+    if (!discount) {
+      return 0
+    }
+
+    if (discount.type === 'fixed') {
+      return new Big(product.price)
+        .sub(new Big(discount.amount))
+        .round(2)
+        .toFixed(2)
+    }
+
+    // return product.price * (discount.amount / 100) - product.price
+    return new Big(product.price)
+      .times(new Big(discount.amount).div(100))
+      .sub(new Big(product.price))
+      .round(2)
+      .toFixed(2)
+  }, [discount, product])
 
   const onAddAToOrderClick = () => {
     setError('')
@@ -66,10 +85,11 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
         return
       }
 
-      onModifyOrder?.({
+      onUpdateOrder?.({
         id: order.id,
         product,
         quantity: toNumber(quantity),
+        discount,
       })
 
       return
@@ -83,7 +103,13 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
       id: v4(),
       product,
       quantity: toNumber(quantity),
+      discount,
     })
+  }
+
+  const onApplyDiscount = (discount: Discount) => {
+    navigate(-1)
+    setDiscount(discount)
   }
 
   const renderCTA = () => {
@@ -103,7 +129,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
           onClick={onAddAToOrderClick}
           className="btn btn-primary mt-auto w-full"
         >
-          Modify order
+          Update order
         </button>
       )
     }
@@ -144,8 +170,19 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
         <div className="flex h-full w-full flex-col gap-4">
           <ProductImages readOnly images={product.images} />
           <div className="flex w-full flex-row justify-between gap-3">
-            <p>{product.name}</p>
-            <p className="font-bold">₱{product.price}</p>
+            <div className="flex flex-col gap-2">
+              <p>{product.name}</p>
+            </div>
+            <div className="flex flex-col gap-2 text-right">
+              <p
+                className={[discount ? 'line-through' : 'font-bold'].join(' ')}
+              >
+                ₱{product.price}
+              </p>
+              {discount?.amount && (
+                <p className="font-bold">₱{discountAmount}</p>
+              )}
+            </div>
           </div>
           <div className="flex w-full flex-col gap-2">
             <label>Quantity</label>
@@ -169,7 +206,10 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
             path={`${Screen.DiscountDetail}/*`}
             element={
               <SlidingTransition>
-                <DiscountDetail />
+                <DiscountDetail
+                  value={discount}
+                  onApplyDiscount={onApplyDiscount}
+                />
               </SlidingTransition>
             }
           />
@@ -178,5 +218,15 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
     </>
   )
 }
+const withLocationState =
+  (Component: React.FC<OrderItemDetailProps>) =>
+  (props: OrderItemDetailProps) => {
+    const location = useLocation()
+    if (!location.state?.order) {
+      return <Navigate to={'../'} />
+    }
+    return <Component {...props} />
+  }
 
-export default OrderItemDetail
+// eslint-disable-next-line react-refresh/only-export-components
+export default withLocationState(OrderItemDetail)

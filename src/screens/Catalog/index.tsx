@@ -20,22 +20,20 @@ import { useEffect, useState } from 'react'
 import OrderItemDetail from './screens/OrderItemDetail'
 
 import { v4 } from 'uuid'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, toNumber } from 'lodash'
+import Big from 'big.js'
+import { z } from 'zod'
 enum ScreenPath {
   AddProduct = 'add-product',
   AddOrder = 'add-product-to-order',
-  ModifyOrder = 'modify-order',
+  UpdateOrder = 'update-order',
 }
 
 export type Order = {
   id: string
   product: Product
   quantity: number
-  discount?: {
-    name: string
-    type: 'percentage' | 'amount'
-    amount: number
-  }
+  discount?: Discount
 }
 
 export type OrderAction = 'add' | 'edit'
@@ -55,7 +53,7 @@ const useCatalog = () => {
 
   const addProductToOrder = (order: Order) => {
     // Subtract the quantity from the products
-    const { product, quantity } = order
+    const { product, quantity, discount } = order
 
     const updatedProduct = products.map((p) => {
       if (p.id === product.id) {
@@ -68,7 +66,7 @@ const useCatalog = () => {
     // Increase the quantity of the product in the order
     const existingOrder = orders.findIndex((p) => p.product.id === product.id)
     if (existingOrder === -1) {
-      setOrder([...orders, { product, quantity, id: v4() }])
+      setOrder([...orders, { id: v4(), product, quantity, discount }])
     } else {
       const updatedOrder = orders.map((p) => {
         if (p.product.id === product.id) {
@@ -102,7 +100,7 @@ const useCatalog = () => {
     setProducts(updatedProduct)
   }
 
-  const modifyOrder = async (order: Order) => {
+  const updateOrder = async (order: Order) => {
     // If quantity is zero remove the order
     if (order.quantity === 0) {
       removeOrder(order.product)
@@ -120,7 +118,7 @@ const useCatalog = () => {
     // Update the order
     const updatedOrder = orders.map((o) => {
       if (o.id === order.id) {
-        o.quantity = order.quantity
+        return order
       }
       return o
     })
@@ -137,10 +135,6 @@ const useCatalog = () => {
 
     const updatedProduct = products.map((p) => {
       if (originalProduct.id === p.id) {
-        console.log(
-          'originalProduct.totalQuantity',
-          originalProduct.totalQuantity,
-        )
         p.totalQuantity = originalProduct.totalQuantity - order.quantity
         return p
       }
@@ -149,26 +143,13 @@ const useCatalog = () => {
     setProducts(updatedProduct)
   }
 
-  // const updateProductInOrder = (product: Product, quantity: number) => {
-  //   // Determine first if its subtracting or adding
-  //   const existingOrderIndex = orders.findIndex(
-  //     (p) => p.product.id === product.id,
-  //   )
-  //   if (existingOrderIndex === -1) {
-  //     console.error('Product not found in order')
-  //     return
-  //   }
-
-  //   const existingOrder = orders[existingOrderIndex]
-  // }
-
   return {
     isLoading,
     products,
     orders,
     addProductToOrder,
     removeOrder,
-    modifyOrder,
+    updateOrder,
   }
 }
 
@@ -187,7 +168,7 @@ const Catalog = () => {
     isLoading,
     addProductToOrder,
     removeOrder,
-    modifyOrder,
+    updateOrder,
   } = useCatalog()
 
   const isMutating = isUpdating
@@ -251,13 +232,13 @@ const Catalog = () => {
     removeOrder(product)
   }
 
-  const modifyProductInOrder = (order: Order) => {
+  const updateProductInOrder = (order: Order) => {
     navigate(-1)
-    modifyOrder(order)
+    updateOrder(order)
   }
 
-  const showModifyOrderScreen = (product: Product) => {
-    navigate(`${ScreenPath.ModifyOrder}`, {
+  const showUpdateOrderScreen = (product: Product) => {
+    navigate(`${ScreenPath.UpdateOrder}`, {
       state: {
         order: orders.find((p) => p.product.id === product.id),
         action: 'edit',
@@ -289,7 +270,7 @@ const Catalog = () => {
             // Event handler for item when selected
 
             onRemoveItemFromOrder={removeProductFromOrder}
-            onModifyItemClick={showModifyOrderScreen}
+            onUpdateItemClick={showUpdateOrderScreen}
             onClickItem={addProductToroder}
             products={products}
             orders={orders}
@@ -301,12 +282,36 @@ const Catalog = () => {
   }
 
   const totalOrderCost = orders.reduce((acc, order) => {
-    return acc + order.product.price * order.quantity
+    let price = order.product.price
+
+    if (order.discount && order.discount.type === 'fixed') {
+      price = toNumber(
+        new Big(order.product.price)
+          .sub(new Big(order.discount.amount))
+          .round(2)
+          .toFixed(2),
+      )
+    }
+    if (order.discount && order.discount.type === 'percentage') {
+      price = toNumber(
+        new Big(order.product.price)
+          .sub(
+            new Big(order.product.price).times(
+              new Big(order.discount.amount).div(100),
+            ),
+          )
+          .round(2)
+          .toFixed(2),
+      )
+    }
+    return acc + price * order.quantity
   }, 0)
 
   const totalOrderLength = orders.reduce((acc, order) => {
     return acc + order.quantity
   }, 0)
+
+  console.log(orders)
 
   return (
     <>
@@ -377,10 +382,10 @@ const Catalog = () => {
             }
           />
           <Route
-            path={`${ScreenPath.ModifyOrder}/*`}
+            path={`${ScreenPath.UpdateOrder}/*`}
             element={
               <SlidingTransition>
-                <OrderItemDetail onModifyOrder={modifyProductInOrder} />
+                <OrderItemDetail onUpdateOrder={updateProductInOrder} />
               </SlidingTransition>
             }
           />
@@ -413,3 +418,19 @@ const Skeleton = () => {
     </div>
   )
 }
+
+export const DiscountSchema = z.object({
+  name: z.string({}).optional(),
+  type: z.enum(['percentage', 'fixed'], {
+    required_error: 'Discount type is required',
+  }),
+  amount: z
+    .number({
+      required_error: 'Discount amount is required',
+      invalid_type_error: 'Discount amount must be a number',
+      coerce: true,
+    })
+    .positive('Amount must be greater than 0'),
+})
+
+export type Discount = z.infer<typeof DiscountSchema>
