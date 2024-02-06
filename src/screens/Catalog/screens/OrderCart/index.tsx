@@ -6,12 +6,20 @@ import {
   useNavigate,
   useLocation,
   useResolvedPath,
-  Navigate,
+  Route,
+  Routes,
 } from 'react-router-dom'
 import { Order } from 'screens/Catalog'
 import { Product } from 'types/product.types'
 import { formatToPeso } from 'util/currency'
 import OrderCartItem from './OrderCartItem'
+import SlidingTransition from 'components/SlidingTransition'
+import { AnimatePresence } from 'framer-motion'
+import Payment from '../Payment'
+
+enum Screen {
+  Payment = 'payment',
+}
 
 type CartProps = {
   orders: Order[]
@@ -28,8 +36,8 @@ const OrderCart = (props: CartProps) => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
 
-  if (props.orders.length === 0) {
-    return <Navigate to="../" />
+  const showPaymentScreen = () => {
+    navigate(Screen.Payment)
   }
 
   return (
@@ -64,9 +72,23 @@ const OrderCart = (props: CartProps) => {
           </div>
         </div>
         <div className="fixed bottom-4 left-0 right-0 flex flex-col bg-gray-300 px-2">
-          <button className="btn btn-primary">Payment</button>
+          <button onClick={showPaymentScreen} className="btn btn-primary">
+            Payment
+          </button>
         </div>
       </div>
+      <AnimatePresence>
+        <Routes location={location} key={isParentScreen.toString()}>
+          <Route
+            path={`${Screen.Payment}/*`}
+            element={
+              <SlidingTransition>
+                <Payment orders={orders} />
+              </SlidingTransition>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </>
   )
 }

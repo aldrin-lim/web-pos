@@ -351,7 +351,7 @@ const Catalog = () => {
 
         {/* Cart Button */}
         {orders.length > 0 && (
-          <div className="fixed bottom-4 w-full ">
+          <div className="fixed bottom-4 z-10 w-full">
             <div className="mx-auto max-w-sm md:max-w-md">
               <button
                 className="btn btn-primary w-full"
