@@ -2,7 +2,13 @@ import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
-import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom'
+import {
+  useNavigate,
+  useLocation,
+  useResolvedPath,
+  Route,
+  Routes,
+} from 'react-router-dom'
 import { Order } from 'screens/Catalog'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
@@ -16,6 +22,13 @@ import gcash from './assets/gcash.svg'
 import paymaya from './assets/paymaya.svg'
 import { useState } from 'react'
 import CurrencyInput from 'react-currency-input-field'
+import SlidingTransition from 'components/SlidingTransition'
+import { AnimatePresence } from 'framer-motion'
+import PaymentCompleted from './screens/PaymentCompleted'
+
+enum Screen {
+  Completed = 'completed',
+}
 
 type PaymentProps = {
   orders: Order[]
@@ -31,6 +44,12 @@ const paymentMethods = [
 ] as const
 
 type PaymentMethod = (typeof paymentMethods)[number]
+
+export type Payment = {
+  method: PaymentMethod
+  amountReceived: number
+  amountPayable: number
+}
 
 const getPaymentMethodImages = (method: PaymentMethod) => {
   switch (method) {
@@ -204,6 +223,7 @@ const Payment = (props: PaymentProps) => {
 
           {paymentMethod && (
             <button
+              onClick={() => navigate(Screen.Completed)}
               disabled={!amountReceived}
               className="btn btn-primary mt-auto"
             >
@@ -212,6 +232,18 @@ const Payment = (props: PaymentProps) => {
           )}
         </div>
       </div>
+      <AnimatePresence>
+        <Routes location={location} key={isParentScreen.toString()}>
+          <Route
+            path={`${Screen.Completed}/*`}
+            element={
+              <SlidingTransition>
+                <PaymentCompleted />
+              </SlidingTransition>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </>
   )
 }

@@ -25,6 +25,8 @@ import Big from 'big.js'
 import { z } from 'zod'
 import OrderCart from './screens/OrderCart'
 import { formatToPeso } from 'util/currency'
+import { useQueryClient } from '@tanstack/react-query'
+import { AppPath } from 'routes/AppRoutes.types'
 enum ScreenPath {
   AddProduct = 'add-product',
   AddOrder = 'add-product-to-order',
@@ -39,11 +41,13 @@ export type Order = {
   discount?: Discount
 }
 
-export type OrderAction = 'add' | 'edit'
+export type OrderAction = 'add' | 'edit' | 'reset'
 const useCatalog = () => {
   // This hooks accepts a list of products
 
-  const { isLoading, productCollection } = useGetProductCollection()
+  const queryClient = useQueryClient()
+
+  const { isLoading, productCollection, refetch } = useGetProductCollection()
   const [products, setProducts] = useState<Product[]>([])
 
   useEffect(() => {
@@ -146,6 +150,11 @@ const useCatalog = () => {
     setProducts(updatedProduct)
   }
 
+  const resetCatalog = async () => {
+    setOrder([])
+    await queryClient.invalidateQueries(['productCollection', 'default'])
+  }
+
   return {
     isLoading,
     products,
@@ -153,6 +162,7 @@ const useCatalog = () => {
     addProductToOrder,
     removeOrder,
     updateOrder,
+    resetCatalog,
   }
 }
 
@@ -172,6 +182,7 @@ const Catalog = () => {
     addProductToOrder,
     removeOrder,
     updateOrder,
+    resetCatalog,
   } = useCatalog()
 
   const isMutating = isUpdating
@@ -320,6 +331,13 @@ const Catalog = () => {
     return acc + order.quantity
   }, 0)
 
+  useEffect(() => {
+    if (location.state?.action === 'reset') {
+      resetCatalog()
+      navigate(AppPath.Catalog)
+    }
+  }, [location.state, resetCatalog])
+
   return (
     <>
       <div
@@ -419,12 +437,6 @@ const Catalog = () => {
 }
 
 export default Catalog
-
-const LoadingCover = () => (
-  <div className="fixed z-50 flex h-screen w-full justify-center bg-gray-500/60">
-    <span className="loading loading-ring loading-lg text-primary"></span>
-  </div>
-)
 
 const Skeleton = () => {
   return (

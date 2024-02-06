@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import * as API from 'api/productCollection'
 
 const useGetProductCollection = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, error, refetch, isFetching } = useQuery({
     queryKey: ['productCollection', 'default'],
     queryFn: () => API.getDefaultProductCollection(),
     retry: 0,
@@ -12,7 +12,8 @@ const useGetProductCollection = () => {
   return {
     productCollection: data,
     error,
-    isLoading,
+    isLoading: isFetching,
+    refetch,
   }
 }
 
