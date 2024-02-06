@@ -14,6 +14,8 @@ import creditcard from './assets/creditcard.svg'
 import debitcard from './assets/debitcard.svg'
 import gcash from './assets/gcash.svg'
 import paymaya from './assets/paymaya.svg'
+import { useState } from 'react'
+import CurrencyInput from 'react-currency-input-field'
 
 type PaymentProps = {
   orders: Order[]
@@ -75,6 +77,9 @@ const Payment = (props: PaymentProps) => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
 
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null)
+  const [amountReceived, setAmountReceived] = useState<string | undefined>()
+
   const totalOrderAmount = orders.reduce((acc, order) => {
     let price = order.product.price
 
@@ -101,6 +106,13 @@ const Payment = (props: PaymentProps) => {
     return acc + price * order.quantity
   }, 0)
 
+  const onPaymentMethodSelected = (method: PaymentMethod) => {
+    setPaymentMethod(method)
+    setTimeout(() => {
+      document.getElementById('amountReceivedInput')?.focus()
+    }, 100)
+  }
+
   return (
     <>
       <div
@@ -119,7 +131,17 @@ const Payment = (props: PaymentProps) => {
             <ToolbarTitle key="title" title="Payment" />,
           ]}
         />
+
         <div className="flex h-full flex-col gap-4">
+          {paymentMethod && (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <img
+                className="w-[30px]"
+                src={getPaymentMethodImages(paymentMethod)}
+              />
+              <p className="text-lg">{getPaymentMethodName(paymentMethod)}</p>
+            </div>
+          )}
           {/* Heading */}
           <div className="w-full text-center">
             <h1 className="text-2xl">Amount Payable</h1>
@@ -129,24 +151,65 @@ const Payment = (props: PaymentProps) => {
           </div>
 
           {/* Payment methods */}
-          <div className="flex flex-row flex-wrap justify-center gap-2">
-            {paymentMethods.map((method) => {
-              return (
-                <button
-                  key={method}
-                  className="btn btn-outline flex h-auto w-min min-w-[155px] items-center py-6 text-center"
-                >
-                  <div className="flex flex-col items-center justify-center">
-                    <img
-                      className="w-[30px]"
-                      src={getPaymentMethodImages(method)}
-                    />
-                    <p className="text-lg">{getPaymentMethodName(method)}</p>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
+          {!paymentMethod && (
+            <div className="flex flex-row flex-wrap justify-center gap-2">
+              {paymentMethods.map((method) => {
+                return (
+                  <button
+                    onClick={() => onPaymentMethodSelected(method)}
+                    key={method}
+                    className="btn btn-outline flex h-auto w-min min-w-[155px] items-center py-6 text-center"
+                  >
+                    <div className="flex flex-col items-center justify-center">
+                      <img
+                        className="w-[30px]"
+                        src={getPaymentMethodImages(method)}
+                      />
+                      <p className="text-lg">{getPaymentMethodName(method)}</p>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Payment Input */}
+
+          {paymentMethod && (
+            <label className="form-control mt-20 flex w-full flex-col gap-4 text-center">
+              <h1 className="text-2xl">Amount Received</h1>
+              <CurrencyInput
+                id="amountReceivedInput"
+                type="text"
+                tabIndex={2}
+                className="input input-bordered input-lg w-full text-center text-xl"
+                prefix={'₱'}
+                placeholder="P0.00"
+                inputMode="decimal"
+                allowNegativeValue={false}
+                onValueChange={(value) => {
+                  setAmountReceived(value)
+                }}
+              />
+
+              {/* {errors.amount && (
+              <div className="label py-0">
+                <span className="label-text-alt text-xs text-red-400">
+                  {errors.amount}
+                </span>
+              </div>
+            )} */}
+            </label>
+          )}
+
+          {paymentMethod && (
+            <button
+              disabled={!amountReceived}
+              className="btn btn-primary mt-auto"
+            >
+              Pay
+            </button>
+          )}
         </div>
       </div>
     </>
