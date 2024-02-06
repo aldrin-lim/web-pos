@@ -22,6 +22,7 @@ import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import DiscountDetail from '../DiscountDetail'
 import Big from 'big.js'
+import { formatToPeso } from 'util/currency'
 
 enum Screen {
   DiscountDetail = 'discount-detail',
@@ -67,11 +68,9 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
     }
 
     // return product.price * (discount.amount / 100) - product.price
-    return new Big(product.price)
-      .times(new Big(discount.amount).div(100))
-      .sub(new Big(product.price))
-      .round(2)
-      .toFixed(2)
+    return new Big(product.price).sub(
+      new Big(product.price).times(new Big(discount.amount).div(100)),
+    )
   }, [discount, product])
 
   const onAddAToOrderClick = () => {
@@ -177,10 +176,12 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               <p
                 className={[discount ? 'line-through' : 'font-bold'].join(' ')}
               >
-                ₱{product.price}
+                {formatToPeso(product.price)}
               </p>
               {discount?.amount && (
-                <p className="font-bold">₱{discountAmount}</p>
+                <p className="font-bold">
+                  {formatToPeso(toNumber(discountAmount) ?? 0)}
+                </p>
               )}
             </div>
           </div>

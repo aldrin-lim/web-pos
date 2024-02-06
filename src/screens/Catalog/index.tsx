@@ -23,10 +23,13 @@ import { v4 } from 'uuid'
 import { cloneDeep, toNumber } from 'lodash'
 import Big from 'big.js'
 import { z } from 'zod'
+import OrderCart from './screens/OrderCart'
+import { formatToPeso } from 'util/currency'
 enum ScreenPath {
   AddProduct = 'add-product',
   AddOrder = 'add-product-to-order',
   UpdateOrder = 'update-order',
+  OrderCart = 'order-cart',
 }
 
 export type Order = {
@@ -281,7 +284,13 @@ const Catalog = () => {
     )
   }
 
-  const totalOrderCost = orders.reduce((acc, order) => {
+  const showCartScreen = () => {
+    if (orders.length > 0) {
+      navigate(`${ScreenPath.OrderCart}`)
+    }
+  }
+
+  const totalOrderAmount = orders.reduce((acc, order) => {
     let price = order.product.price
 
     if (order.discount && order.discount.type === 'fixed') {
@@ -311,15 +320,12 @@ const Catalog = () => {
     return acc + order.quantity
   }, 0)
 
-  console.log(orders)
-
   return (
     <>
       <div
-        className={[
-          'screen pb-16',
-          !isParentScreen ? 'hidden-screen' : '',
-        ].join(' ')}
+        className={['screen pb-9', !isParentScreen ? 'hidden-screen' : ''].join(
+          ' ',
+        )}
       >
         <Toolbar
           items={[
@@ -344,20 +350,25 @@ const Catalog = () => {
         {renderContent()}
 
         {/* Cart Button */}
-        <div className="fixed bottom-4 w-full ">
-          <div className="mx-auto max-w-sm md:max-w-md">
-            <button className="btn btn-primary w-full ">
-              <div className="flex flex-row gap-4">
-                <div className="flex flex-row items-center gap-2">
-                  <ShoppingCartIcon className="w-5" /> {totalOrderLength}
+        {orders.length > 0 && (
+          <div className="fixed bottom-4 w-full ">
+            <div className="mx-auto max-w-sm md:max-w-md">
+              <button
+                className="btn btn-primary w-full"
+                onClick={showCartScreen}
+              >
+                <div className="flex flex-row gap-4">
+                  <div className="flex flex-row items-center gap-2">
+                    <ShoppingCartIcon className="w-5" /> {totalOrderLength}
+                  </div>
+                  <div className="flex flex-row items-center gap-2">
+                    {formatToPeso(totalOrderAmount)}
+                  </div>
                 </div>
-                <div className="flex flex-row items-center gap-2">
-                  ₱ {totalOrderCost.toFixed(2)}
-                </div>
-              </div>
-            </button>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <AnimatePresence>
         <Routes location={location} key={isParentScreen.toString()}>
@@ -386,6 +397,18 @@ const Catalog = () => {
             element={
               <SlidingTransition>
                 <OrderItemDetail onUpdateOrder={updateProductInOrder} />
+              </SlidingTransition>
+            }
+          />
+          <Route
+            path={`${ScreenPath.OrderCart}/*`}
+            element={
+              <SlidingTransition>
+                <OrderCart
+                  totalAmount={totalOrderAmount}
+                  products={products}
+                  orders={orders}
+                />
               </SlidingTransition>
             }
           />

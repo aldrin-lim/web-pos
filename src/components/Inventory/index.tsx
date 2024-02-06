@@ -7,10 +7,10 @@ import MiddleTruncateText from 'components/MiddleTruncatedText'
 import useMediaQuery, { ScreenSize } from 'hooks/useMediaQuery'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppPath } from 'routes/AppRoutes.types'
 import { Product } from 'types/product.types'
 import { isWithinExpiration } from 'util/data'
 import GetStarted from './components/GetStarted'
+import { formatToPeso } from 'util/currency'
 
 type InventoryProps = {
   showAddProduct?: boolean
@@ -53,7 +53,7 @@ const Inventory = (props: InventoryProps) => {
               if (props.onBack) {
                 props.onBack()
               } else {
-                navigate(AppPath.Products)
+                // navigate(AppPath.Products)
               }
             }}
           />,
@@ -63,7 +63,7 @@ const Inventory = (props: InventoryProps) => {
             <ToolbarButton
               key={'postive'}
               label="postive"
-              onClick={() => navigate(AppPath.AddProduct)}
+              // onClick={() => navigate(AppPath.AddProduct)}
             />
           ),
         ]}
@@ -144,7 +144,7 @@ const Inventory = (props: InventoryProps) => {
                     {product.isBulkCost && (
                       <div className="text-right">
                         <p className="text-base font-medium">
-                          ₱ {product.activeBatch.costPerUnit}{' '}
+                          {formatToPeso(product.activeBatch.costPerUnit ?? 0)}
                         </p>
                         <p className="text-xs">
                           / {product.activeBatch.unitOfMeasurement}
@@ -155,8 +155,7 @@ const Inventory = (props: InventoryProps) => {
                     {!product.isBulkCost && (
                       <div className="text-right">
                         <p className="text-base font-medium">
-                          ₱{' '}
-                          {Intl.NumberFormat().format(product.activeBatch.cost)}
+                          {formatToPeso(product.activeBatch.cost)}
                         </p>
                       </div>
                     )}

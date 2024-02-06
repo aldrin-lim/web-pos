@@ -3,6 +3,7 @@ import ImageLoader from 'components/ImageLoader'
 import { z } from 'zod'
 import { ProductSchema } from 'types/product.types'
 import DropdownButton from 'components/DropdownButton'
+import { formatToPeso } from 'util/currency'
 
 type Product = z.infer<typeof ProductSchema>
 
@@ -74,7 +75,7 @@ const ProductCard = (props: ProductCardProps) => {
     <div className="relative  justify-self-center">
       <div className="absolute top-2 z-[9] flex w-full items-center justify-between px-2">
         <div className="bg-primary/50 p-1 text-sm text-white">
-          ₱{product.price.toFixed(2)}
+          {formatToPeso(product.price)}
         </div>
         <div>
           <DropdownButton
