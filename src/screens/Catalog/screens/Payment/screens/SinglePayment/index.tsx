@@ -14,18 +14,21 @@ import Big from 'big.js'
 import { toNumber } from 'lodash'
 import { formatToPeso } from 'util/currency'
 
-import cash from './assets/cash.svg'
-import banktransfer from './assets/banktransfer.svg'
-import creditcard from './assets/creditcard.svg'
-import debitcard from './assets/debitcard.svg'
-import gcash from './assets/gcash.svg'
-import paymaya from './assets/paymaya.svg'
+import cash from '../../assets/cash.svg'
+import banktransfer from '../../assets/banktransfer.svg'
+import creditcard from '../../assets/creditcard.svg'
+import debitcard from '../../assets/debitcard.svg'
+import gcash from '../../assets/gcash.svg'
+import paymaya from '../../assets/paymaya.svg'
+import { useEffect, useState } from 'react'
+import CurrencyInput from 'react-currency-input-field'
 import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
-import SinglePayment from './screens/SinglePayment'
+import PaymentCompleted from '../PaymentCompleted'
+import { AppPath } from 'routes/AppRoutes.types'
 
 enum Screen {
-  SinglePayment = 'single-payment',
+  Completed = 'completed',
 }
 
 type PaymentProps = {
@@ -88,12 +91,23 @@ export const getPaymentMethodName = (method: PaymentMethod) => {
   }
 }
 
-const Payment = (props: PaymentProps) => {
+const SinglePayment = (props: PaymentProps) => {
   const { orders } = props
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
+
+  const paymentMethod = location.state.paymentMethod as PaymentMethod
+
+  useEffect(() => {
+    if (!location.state?.paymentMethod) {
+      navigate(AppPath.Catalog)
+    }
+  }, [location.state])
+
+  const [amountReceived, setAmountReceived] = useState<string | undefined>()
+  const [change, setChange] = useState<number>(0)
 
   const totalOrderAmount = orders.reduce((acc, order) => {
     let price = order.product.price
@@ -121,6 +135,10 @@ const Payment = (props: PaymentProps) => {
     return acc + price * order.quantity
   }, 0)
 
+  useEffect(() => {
+    setChange(Number(amountReceived) - totalOrderAmount)
+  }, [amountReceived, totalOrderAmount])
+
   return (
     <>
       <div
@@ -141,6 +159,13 @@ const Payment = (props: PaymentProps) => {
         />
 
         <div className="flex h-full flex-col gap-4">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <img
+              className="w-[30px]"
+              src={getPaymentMethodImages(paymentMethod)}
+            />
+            <p className="text-lg">{getPaymentMethodName(paymentMethod)}</p>
+          </div>
           {/* Heading */}
           <div className="flex w-full flex-col gap-2 text-center">
             <h1 className="text-2xl">Amount Payable</h1>
@@ -148,46 +173,51 @@ const Payment = (props: PaymentProps) => {
               {formatToPeso(totalOrderAmount)}
             </p>
           </div>
-
-          {/* Payment methods */}
-          <div className="flex flex-row flex-wrap justify-center gap-2">
-            {paymentMethods.map((method) => {
-              return (
-                <button
-                  onClick={() =>
-                    navigate(Screen.SinglePayment, {
-                      state: { paymentMethod: method },
-                    })
-                  }
-                  key={method}
-                  className="btn btn-outline flex h-auto w-min min-w-[155px] items-center py-6 text-center"
-                >
-                  <div className="flex flex-col items-center justify-center">
-                    <img
-                      className="w-[30px]"
-                      src={getPaymentMethodImages(method)}
-                    />
-                    <p className="text-lg">{getPaymentMethodName(method)}</p>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-          <div className="mt-10 flex flex-col gap-4 text-center ">
-            <h1>OR</h1>
-            <button className="btn btn-outline btn-primary">
-              Split Payment
-            </button>
-          </div>
+          {/* Payment Input */}
+          <label className="form-control mt-20 flex w-full flex-col gap-4 text-center">
+            <h1 className="text-2xl">Amount Received</h1>
+            <CurrencyInput
+              id="amountReceivedInput"
+              type="text"
+              tabIndex={0}
+              className="input input-bordered input-lg w-full text-center text-xl"
+              prefix={'₱'}
+              placeholder="P0.00"
+              inputMode="decimal"
+              allowNegativeValue={false}
+              onValueChange={(value) => {
+                setAmountReceived(value)
+              }}
+            />
+          </label>
+          <button
+            onClick={() =>
+              navigate(Screen.Completed, { state: location.state })
+            }
+            disabled={!amountReceived}
+            className="btn btn-primary mt-auto"
+          >
+            Pay
+          </button>
         </div>
       </div>
       <AnimatePresence>
         <Routes location={location} key={isParentScreen.toString()}>
           <Route
-            path={`${Screen.SinglePayment}/*`}
+            path={`${Screen.Completed}/*`}
             element={
               <SlidingTransition>
-                <SinglePayment orders={orders} />
+                <PaymentCompleted
+                  orders={orders}
+                  payments={[
+                    {
+                      amountPayable: totalOrderAmount,
+                      amountReceived: Number(amountReceived),
+                      change,
+                      method: paymentMethod ?? 'cash',
+                    },
+                  ]}
+                />
               </SlidingTransition>
             }
           />
@@ -197,4 +227,4 @@ const Payment = (props: PaymentProps) => {
   )
 }
 
-export default Payment
+export default SinglePayment
