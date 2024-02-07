@@ -3,18 +3,22 @@ import ToolbarTitle from 'components/Layout/components/Toolbar/components/Toolba
 import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom'
 import { AppPath } from 'routes/AppRoutes.types'
 import { Order } from 'screens/Catalog'
-import { Payment } from '../..'
 import { formatToPeso } from 'util/currency'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
+import { Payment } from '..'
+import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
+import { getPaymentMethodName } from '../../..'
 
 type PaymentCompletedPrpos = {
   orders: Order[]
   payments: Payment[]
+  onPayClick: () => void
 }
 
-const PaymentCompleted = (props: PaymentCompletedPrpos) => {
-  const { orders, payments } = props
+const PaymentSummary = (props: PaymentCompletedPrpos) => {
+  const { orders, payments, onPayClick } = props
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -68,29 +72,42 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
       >
         <Toolbar
           items={[
-            <div key={1} />,
-            <ToolbarTitle key="title" title="Completed" />,
+            <ToolbarButton
+              key={'negative'}
+              icon={<ChevronLeftIcon className="w-6" />}
+              onClick={() => navigate(-1)}
+            />,
+            <ToolbarTitle key="title" title="Split Payment" />,
           ]}
         />
 
         <div className="flex h-full flex-col gap-4">
-          <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl"> Change</h1>
-            <p className="text-4xl font-bold text-primary">
-              {formatToPeso(totalChange)}
-            </p>
-          </div>
-          <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl">Amount </h1>
-            <p className="text-3xl font-bold ">
-              {formatToPeso(totalAmountPayable)}
-            </p>
-          </div>
+          {payments.map((payment, index) => {
+            return (
+              <div key={index} className="mb-2 flex flex-col">
+                <div className="flex w-full flex-row justify-between text-lg font-bold">
+                  <p>
+                    Payment {index + 1} ({getPaymentMethodName(payment.method)})
+                  </p>
+                  <p>{formatToPeso(payment.amountPayable)}</p>
+                </div>
+                <div className="flex w-full flex-row justify-between">
+                  <p>Amount Received</p>
+                  <p>{formatToPeso(payment.amountReceived)}</p>
+                </div>
+                {payment.method === 'cash' && (
+                  <div className="flex w-full flex-row justify-between text-primary">
+                    <p>Change</p>
+                    <p>{formatToPeso(payment.change)}</p>
+                  </div>
+                )}
+              </div>
+            )
+          })}
           <div className="mt-auto flex w-full flex-col gap-4">
-            <button onClick={goBackToCatalog} className="btn btn-primary">
-              New Order
+            <button onClick={onPayClick} className="btn btn-primary">
+              Pay
             </button>
-            <button className="btn btn-outline btn-primary">Receipt</button>
           </div>
         </div>
       </div>
@@ -98,4 +115,4 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
   )
 }
 
-export default PaymentCompleted
+export default PaymentSummary

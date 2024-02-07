@@ -139,6 +139,12 @@ const SinglePayment = (props: PaymentProps) => {
     setChange(Number(amountReceived) - totalOrderAmount)
   }, [amountReceived, totalOrderAmount])
 
+  useEffect(() => {
+    setTimeout(() => {
+      document.getElementById('single-payment-amount-received')?.focus()
+    }, 200)
+  }, [])
+
   return (
     <>
       <div
@@ -177,9 +183,9 @@ const SinglePayment = (props: PaymentProps) => {
           <label className="form-control mt-20 flex w-full flex-col gap-4 text-center">
             <h1 className="text-2xl">Amount Received</h1>
             <CurrencyInput
-              id="amountReceivedInput"
+              id="single-payment-amount-received"
               type="text"
-              tabIndex={0}
+              tabIndex={1}
               className="input input-bordered input-lg w-full text-center text-xl"
               prefix={'₱'}
               placeholder="P0.00"

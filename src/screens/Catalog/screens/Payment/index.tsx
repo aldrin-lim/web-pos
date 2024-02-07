@@ -23,9 +23,11 @@ import paymaya from './assets/paymaya.svg'
 import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import SinglePayment from './screens/SinglePayment'
+import SplitPayment from './screens/SplitPayment'
 
 enum Screen {
   SinglePayment = 'single-payment',
+  SplitPayment = 'split-payment',
 }
 
 type PaymentProps = {
@@ -175,7 +177,10 @@ const Payment = (props: PaymentProps) => {
           </div>
           <div className="mt-10 flex flex-col gap-4 text-center ">
             <h1>OR</h1>
-            <button className="btn btn-outline btn-primary">
+            <button
+              onClick={() => navigate(Screen.SplitPayment)}
+              className="btn btn-outline btn-primary"
+            >
               Split Payment
             </button>
           </div>
@@ -188,6 +193,14 @@ const Payment = (props: PaymentProps) => {
             element={
               <SlidingTransition>
                 <SinglePayment orders={orders} />
+              </SlidingTransition>
+            }
+          />
+          <Route
+            path={`${Screen.SplitPayment}/*`}
+            element={
+              <SlidingTransition>
+                <SplitPayment orders={orders} />
               </SlidingTransition>
             }
           />
