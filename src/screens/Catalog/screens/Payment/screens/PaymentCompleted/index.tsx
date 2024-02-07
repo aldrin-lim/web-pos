@@ -2,8 +2,17 @@ import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom'
 import { AppPath } from 'routes/AppRoutes.types'
+import { Order } from 'screens/Catalog'
+import { Payment } from '../..'
+import { formatToPeso } from 'util/currency'
 
-const PaymentCompleted = () => {
+type PaymentCompletedPrpos = {
+  orders: Order[]
+  payments: Payment[]
+}
+
+const PaymentCompleted = (props: PaymentCompletedPrpos) => {
+  const { orders, payments } = props
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -12,6 +21,14 @@ const PaymentCompleted = () => {
   const goBackToCatalog = () => {
     navigate(AppPath.Catalog, { replace: true, state: { action: 'reset' } })
   }
+
+  const totalAmountPayable = payments.reduce((acc, payment) => {
+    return acc + payment.amountPayable
+  }, 0)
+
+  const totalChange = payments.reduce((acc, payment) => {
+    return acc + payment.change
+  }, 0)
 
   return (
     <>
@@ -29,7 +46,18 @@ const PaymentCompleted = () => {
         />
 
         <div className="flex h-full flex-col gap-4">
-          Completed
+          <div className="flex w-full flex-col gap-2 text-center">
+            <h1 className="text-2xl"> Change</h1>
+            <p className="text-3xl font-bold text-primary">
+              {formatToPeso(totalChange)}
+            </p>
+          </div>
+          <div className="flex w-full flex-col gap-2 text-center">
+            <h1 className="text-2xl">Amount Payable</h1>
+            <p className="text-3xl font-bold text-primary">
+              {formatToPeso(totalAmountPayable)}
+            </p>
+          </div>
           <div className="mt-auto flex w-full flex-col gap-4">
             <button onClick={goBackToCatalog} className="btn btn-primary">
               New Order

@@ -2,15 +2,17 @@ import { PencilIcon } from '@heroicons/react/24/outline'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
 import { useMemo } from 'react'
+import { Navigate } from 'react-router-dom'
 import { Order } from 'screens/Catalog'
 import { formatToPeso } from 'util/currency'
 
 type OrderCartItemProps = {
   order: Order
+  onClick?: () => void
 }
 
 const OrderCartItem = (props: OrderCartItemProps) => {
-  const { order } = props
+  const { order, onClick } = props
   const { discount, quantity, product } = order
   const { price, name } = product
 
@@ -57,7 +59,10 @@ const OrderCartItem = (props: OrderCartItemProps) => {
   }, [discount])
 
   return (
-    <div className="flex flex-row justify-between bg-base-300 p-2 ">
+    <div
+      onClick={onClick}
+      className="flex flex-row justify-between bg-base-300 p-2 "
+    >
       <div className="flex flex-row items-center">
         <button className="btn btn-ghost btn-primary btn-sm">
           <PencilIcon className="w-6 text-primary" />

@@ -8,6 +8,7 @@ import {
   useResolvedPath,
   Route,
   Routes,
+  Navigate,
 } from 'react-router-dom'
 import { Order } from 'screens/Catalog'
 import { Product } from 'types/product.types'
@@ -16,9 +17,11 @@ import OrderCartItem from './OrderCartItem'
 import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import Payment from '../Payment'
+import OrderItemDetail from '../OrderItemDetail'
 
 enum Screen {
   Payment = 'payment',
+  UpdateOrder = 'update-order',
 }
 
 type CartProps = {
@@ -26,6 +29,7 @@ type CartProps = {
   products: Product[]
   onEmptyCart?: () => void
   totalAmount: number
+  updateProductInOrder: (order: Order) => void
 }
 
 const OrderCart = (props: CartProps) => {
@@ -38,6 +42,26 @@ const OrderCart = (props: CartProps) => {
 
   const showPaymentScreen = () => {
     navigate(Screen.Payment)
+  }
+
+  const updateProductInOrder = (order: Order) => {
+    if (order.quantity === 0) {
+      navigate(-1)
+    }
+    props.updateProductInOrder(order)
+  }
+
+  const showUpdateOrderScreen = (order: Order) => {
+    navigate(`${Screen.UpdateOrder}`, {
+      state: {
+        order,
+        action: 'edit',
+      },
+    })
+  }
+
+  if (orders.length === 0) {
+    return <Navigate to="../" />
   }
 
   return (
@@ -67,7 +91,13 @@ const OrderCart = (props: CartProps) => {
           {/* Items */}
           <div className="flex w-full flex-col gap-[2px]">
             {orders.map((order) => {
-              return <OrderCartItem key={order.id} order={order} />
+              return (
+                <OrderCartItem
+                  onClick={() => showUpdateOrderScreen(order)}
+                  key={order.id}
+                  order={order}
+                />
+              )
             })}
           </div>
         </div>
@@ -84,6 +114,17 @@ const OrderCart = (props: CartProps) => {
             element={
               <SlidingTransition>
                 <Payment orders={orders} />
+              </SlidingTransition>
+            }
+          />
+          <Route
+            path={`${Screen.UpdateOrder}/*`}
+            element={
+              <SlidingTransition>
+                <OrderItemDetail
+                  onBack={() => navigate(-1)}
+                  onUpdateOrder={updateProductInOrder}
+                />
               </SlidingTransition>
             }
           />

@@ -31,10 +31,11 @@ enum Screen {
 type OrderItemDetailProps = {
   onAddToOrder?: (order: Order) => void
   onUpdateOrder?: (order: Order) => void
+  onBack?: () => void
 }
 
 const OrderItemDetail = (props: OrderItemDetailProps) => {
-  const { onAddToOrder, onUpdateOrder } = props
+  const { onAddToOrder, onUpdateOrder, onBack } = props
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -155,7 +156,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
             <ToolbarButton
               key={'negative'}
               icon={<ChevronLeftIcon className="w-6" />}
-              onClick={() => navigate(-1)}
+              onClick={onBack}
             />,
             <ToolbarTitle key="title" title="Order" />,
             <Dropdown

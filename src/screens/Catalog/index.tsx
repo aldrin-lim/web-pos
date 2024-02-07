@@ -27,6 +27,7 @@ import OrderCart from './screens/OrderCart'
 import { formatToPeso } from 'util/currency'
 import { useQueryClient } from '@tanstack/react-query'
 import { AppPath } from 'routes/AppRoutes.types'
+import LoadingCover from 'components/LoadingCover'
 enum ScreenPath {
   AddProduct = 'add-product',
   AddOrder = 'add-product-to-order',
@@ -47,7 +48,7 @@ const useCatalog = () => {
 
   const queryClient = useQueryClient()
 
-  const { isLoading, productCollection, refetch } = useGetProductCollection()
+  const { isLoading, productCollection } = useGetProductCollection()
   const [products, setProducts] = useState<Product[]>([])
 
   useEffect(() => {
@@ -406,7 +407,10 @@ const Catalog = () => {
             path={`${ScreenPath.AddOrder}/*`}
             element={
               <SlidingTransition>
-                <OrderItemDetail onAddToOrder={addOrder} />
+                <OrderItemDetail
+                  onBack={() => navigate(-1)}
+                  onAddToOrder={addOrder}
+                />
               </SlidingTransition>
             }
           />
@@ -414,7 +418,10 @@ const Catalog = () => {
             path={`${ScreenPath.UpdateOrder}/*`}
             element={
               <SlidingTransition>
-                <OrderItemDetail onUpdateOrder={updateProductInOrder} />
+                <OrderItemDetail
+                  onBack={() => navigate(-1)}
+                  onUpdateOrder={updateProductInOrder}
+                />
               </SlidingTransition>
             }
           />
@@ -423,6 +430,7 @@ const Catalog = () => {
             element={
               <SlidingTransition>
                 <OrderCart
+                  updateProductInOrder={updateProductInOrder}
                   totalAmount={totalOrderAmount}
                   products={products}
                   orders={orders}

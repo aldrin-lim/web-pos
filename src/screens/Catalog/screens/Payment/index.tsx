@@ -20,7 +20,7 @@ import creditcard from './assets/creditcard.svg'
 import debitcard from './assets/debitcard.svg'
 import gcash from './assets/gcash.svg'
 import paymaya from './assets/paymaya.svg'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CurrencyInput from 'react-currency-input-field'
 import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
@@ -49,6 +49,7 @@ export type Payment = {
   method: PaymentMethod
   amountReceived: number
   amountPayable: number
+  change: number
 }
 
 const getPaymentMethodImages = (method: PaymentMethod) => {
@@ -98,6 +99,7 @@ const Payment = (props: PaymentProps) => {
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null)
   const [amountReceived, setAmountReceived] = useState<string | undefined>()
+  const [change, setChange] = useState<number>(0)
 
   const totalOrderAmount = orders.reduce((acc, order) => {
     let price = order.product.price
@@ -132,6 +134,10 @@ const Payment = (props: PaymentProps) => {
     }, 100)
   }
 
+  useEffect(() => {
+    setChange(Number(amountReceived) - totalOrderAmount)
+  }, [amountReceived, totalOrderAmount])
+
   return (
     <>
       <div
@@ -162,7 +168,7 @@ const Payment = (props: PaymentProps) => {
             </div>
           )}
           {/* Heading */}
-          <div className="w-full text-center">
+          <div className="flex w-full flex-col gap-2 text-center">
             <h1 className="text-2xl">Amount Payable</h1>
             <p className="text-3xl font-bold text-primary">
               {formatToPeso(totalOrderAmount)}
@@ -238,7 +244,17 @@ const Payment = (props: PaymentProps) => {
             path={`${Screen.Completed}/*`}
             element={
               <SlidingTransition>
-                <PaymentCompleted />
+                <PaymentCompleted
+                  orders={orders}
+                  payments={[
+                    {
+                      amountPayable: totalOrderAmount,
+                      amountReceived: Number(amountReceived),
+                      change,
+                      method: paymentMethod ?? 'cash',
+                    },
+                  ]}
+                />
               </SlidingTransition>
             }
           />
