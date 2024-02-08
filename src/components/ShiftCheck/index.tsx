@@ -14,7 +14,7 @@ const ShiftCheck: React.FC<PropsWithChildren> = ({ children }) => {
     )
   }
   // If there's no shift, redirect to the specified route
-  if (shift && shift.status === 'not_opened') {
+  if (shift && shift.status === 'closed') {
     return <Navigate to={AppPath.StartShift} replace />
   }
 

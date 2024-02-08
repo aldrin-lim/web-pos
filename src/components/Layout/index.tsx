@@ -29,6 +29,7 @@ const Layout = () => {
       </div>
     )
   }
+
   return (
     <main className="flex w-full flex-col ">
       <div className="drawer">
@@ -52,10 +53,22 @@ const Layout = () => {
               <p>Store: {user?.businesses[0].name}</p>
               <p>
                 Status:{' '}
-                <span className="font-bold text-neutral-500">Closed </span>
+                <span className="font-bold text-neutral-500">
+                  <span
+                    className={`uppercase ${
+                      shift && shift.status === 'closed'
+                        ? 'text-neutral'
+                        : 'text-green-400'
+                    }`}
+                  >
+                    {shift?.status ?? 'closed'}
+                  </span>{' '}
+                </span>
               </p>
               {shift && shift.status === 'open' && (
-                <p className="text-sm">Shift Start: {shiftStart}</p>
+                <p className="text-sm ">
+                  Shift Start: <span className="">{shiftStart}</span>
+                </p>
               )}
             </div>
             <div className="mt-auto">
@@ -68,6 +81,18 @@ const Layout = () => {
                 >
                   <ArrowsRightLeftIcon className="h-6 w-6" />
                   End Shift
+                </label>
+              )}
+
+              {shift && shift.status === 'closed' && (
+                <label
+                  onClick={() => navigate(AppPath.StartShift)}
+                  htmlFor="my-drawer"
+                  key="1"
+                  className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
+                >
+                  <ArrowsRightLeftIcon className="h-6 w-6" />
+                  Start Shift
                 </label>
               )}
 
