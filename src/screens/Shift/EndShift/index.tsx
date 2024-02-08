@@ -11,6 +11,8 @@ import { toast } from 'react-toastify'
 import { AppPath } from 'routes/AppRoutes.types'
 import useEndShift from 'hooks/useEndShift'
 import { EndShiftValidationSchema } from 'api/shift/endShift'
+import useGetShift from 'hooks/useGetTodayShift'
+import { useEffect } from 'react'
 
 const EndShift = () => {
   const navigate = useNavigate()
@@ -19,6 +21,7 @@ const EndShift = () => {
   const isParentScreen = location.pathname === resolvePath.pathname
 
   const { isEnding, endShift } = useEndShift()
+  const { shift } = useGetShift()
 
   const { user } = useUser()
 
@@ -45,6 +48,12 @@ const EndShift = () => {
         navigate(AppPath.Catalog)
       },
     })
+
+  useEffect(() => {
+    if (shift && shift.status === 'close') {
+      navigate(AppPath.Catalog)
+    }
+  }, [shift])
 
   return (
     <>

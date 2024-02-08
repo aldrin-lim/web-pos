@@ -54,18 +54,22 @@ const Layout = () => {
                 Status:{' '}
                 <span className="font-bold text-neutral-500">Closed </span>
               </p>
-              {shift && <p className="text-sm">Shift Start: {shiftStart}</p>}
+              {shift && shift.status === 'open' && (
+                <p className="text-sm">Shift Start: {shiftStart}</p>
+              )}
             </div>
             <div className="mt-auto">
-              <label
-                onClick={() => navigate(AppPath.EndShift)}
-                htmlFor="my-drawer"
-                key="1"
-                className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
-              >
-                <ArrowsRightLeftIcon className="h-6 w-6" />
-                End Shift
-              </label>
+              {shift && shift.status === 'open' && (
+                <label
+                  onClick={() => navigate(AppPath.EndShift)}
+                  htmlFor="my-drawer"
+                  key="1"
+                  className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
+                >
+                  <ArrowsRightLeftIcon className="h-6 w-6" />
+                  End Shift
+                </label>
+              )}
 
               <button
                 className="btn btn-ghost w-full justify-start px-1 pl-0 "

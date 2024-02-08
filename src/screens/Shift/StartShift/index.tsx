@@ -10,6 +10,9 @@ import { toast } from 'react-toastify'
 import { StartShiftValidationSchema } from 'api/shift/startShift'
 import useStartShift from 'hooks/useStartShift'
 import { AppPath } from 'routes/AppRoutes.types'
+import { getTodayShift } from 'api/shift'
+import { useEffect } from 'react'
+import useGetShift from 'hooks/useGetTodayShift'
 
 const StartShift = () => {
   const navigate = useNavigate()
@@ -18,6 +21,7 @@ const StartShift = () => {
   const isParentScreen = location.pathname === resolvePath.pathname
 
   const { isStarting, startShift } = useStartShift()
+  const { shift } = useGetShift()
 
   const { user } = useUser()
 
@@ -45,6 +49,12 @@ const StartShift = () => {
         navigate(AppPath.Catalog)
       },
     })
+
+  useEffect(() => {
+    if (shift && shift.status === 'open') {
+      navigate(AppPath.Catalog)
+    }
+  }, [shift])
 
   return (
     <>
