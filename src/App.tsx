@@ -8,19 +8,29 @@ import './App.css'
 import 'react-toastify/dist/ReactToastify.css'
 import AppRoutes from './routes/AppRoutes'
 import { ToastContainer } from 'react-toastify'
+import useUser from 'hooks/useUser'
 
 function App() {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+  const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0()
+  const { isLoading: isUserLoading } = useUser()
 
   useEffect(() => {
     themeChange(false)
   }, [])
 
   useMemo(() => {
-    if (isAuthenticated) {
+    if (isLoading === false && isAuthenticated === true) {
       attachToken(getAccessTokenSilently)
     }
-  }, [getAccessTokenSilently, isAuthenticated])
+  }, [isAuthenticated, isLoading])
+
+  if (isUserLoading) {
+    return (
+      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center">
+        <span className="loading loading-ring loading-lg"></span>
+      </div>
+    )
+  }
 
   return (
     <div className="App mx-auto flex w-full" data-theme="">
