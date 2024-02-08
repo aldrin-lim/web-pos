@@ -8,9 +8,9 @@ import CurrencyInput from 'react-currency-input-field'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import useUser from 'hooks/useUser'
 import { toast } from 'react-toastify'
-import { StartShiftValidationSchema } from 'api/shift/startShift'
-import useStartShift from 'hooks/useStartShift'
 import { AppPath } from 'routes/AppRoutes.types'
+import useEndShift from 'hooks/useEndShift'
+import { EndShiftValidationSchema } from 'api/shift/endShift'
 
 const EndShift = () => {
   const navigate = useNavigate()
@@ -18,30 +18,29 @@ const EndShift = () => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
 
-  const { isStarting, startShift } = useStartShift()
+  const { isEnding, endShift } = useEndShift()
 
   const { user } = useUser()
 
   const { values, errors, submitForm, setFieldValue, getFieldProps } =
     useFormik({
       initialValues: {
-        name: '',
         notes: '',
-        openingPettyCash: 0,
-        openedBy: user?.id,
+        closingPettyCash: 0,
+        closedBy: user?.id,
       },
       validateOnBlur: false,
       validateOnChange: false,
-      validationSchema: toFormikValidationSchema(StartShiftValidationSchema),
+      validationSchema: toFormikValidationSchema(EndShiftValidationSchema),
       onSubmit: async (formValues) => {
-        const validation = StartShiftValidationSchema.safeParse(formValues)
+        const validation = EndShiftValidationSchema.safeParse(formValues)
 
         if (!validation.success) {
           toast.error(validation.error.errors[0].message)
           return
         }
 
-        await startShift(validation.data)
+        await endShift(validation.data)
 
         navigate(AppPath.Catalog)
       },
@@ -69,12 +68,12 @@ const EndShift = () => {
         />
         <div className="flex h-full flex-col gap-4">
           <h1>
-            Opening Staff:{' '}
+            Closing Staff:{' '}
             <span className="text-neutral">
               {user?.firstName} {user?.lastName}
             </span>
           </h1>
-          {/* Opening Cash */}
+          {/* Closing Cash */}
           <label className="form-control w-full ">
             <div className="form-control-label  ">
               <span className="label-text-alt text-gray-400">
@@ -82,24 +81,24 @@ const EndShift = () => {
               </span>
             </div>
             <CurrencyInput
-              onBlur={getFieldProps('openingPettyCash').onBlur}
-              name={getFieldProps('openingPettyCash').name}
-              value={getFieldProps('openingPettyCash').value}
+              onBlur={getFieldProps('closingPettyCash').onBlur}
+              name={getFieldProps('closingPettyCash').name}
+              value={getFieldProps('closingPettyCash').value}
               type="text"
               tabIndex={3}
               className="input input-bordered w-full"
               prefix={'₱'}
               onValueChange={(value) => {
-                setFieldValue('openingPettyCash', value)
+                setFieldValue('closingPettyCash', value)
               }}
               inputMode="decimal"
               allowNegativeValue={false}
             />
 
-            {errors.openingPettyCash && (
+            {errors.closingPettyCash && (
               <div className="label py-0">
                 <span className="label-text-alt text-xs text-red-400">
-                  {errors.openingPettyCash}
+                  {errors.closingPettyCash}
                 </span>
               </div>
             )}
