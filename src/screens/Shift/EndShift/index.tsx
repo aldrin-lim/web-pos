@@ -1,5 +1,6 @@
-import { Bars3Icon } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
+import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom'
 import { useFormik } from 'formik'
@@ -11,7 +12,7 @@ import { StartShiftValidationSchema } from 'api/shift/startShift'
 import useStartShift from 'hooks/useStartShift'
 import { AppPath } from 'routes/AppRoutes.types'
 
-const StartShift = () => {
+const EndShift = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -56,14 +57,14 @@ const StartShift = () => {
       >
         <Toolbar
           items={[
-            <label
-              htmlFor="my-drawer"
-              key="1"
-              className="btn btn-link px-0 normal-case text-blue-400 no-underline disabled:bg-transparent disabled:text-gray-400"
-            >
-              <Bars3Icon className="w-6" />
-            </label>,
-            <ToolbarTitle key="title" title="New Shift" />,
+            <ToolbarButton
+              key={'negative'}
+              icon={<ChevronLeftIcon className="w-6" />}
+              onClick={() => {
+                navigate(AppPath.Catalog)
+              }}
+            />,
+            <ToolbarTitle key="title" title="Close Shift" />,
           ]}
         />
         <div className="flex h-full flex-col gap-4">
@@ -76,7 +77,9 @@ const StartShift = () => {
           {/* Opening Cash */}
           <label className="form-control w-full ">
             <div className="form-control-label  ">
-              <span className="label-text-alt text-gray-400">Opening Cash</span>
+              <span className="label-text-alt text-gray-400">
+                Total Cash Counted
+              </span>
             </div>
             <CurrencyInput
               onBlur={getFieldProps('openingPettyCash').onBlur}
@@ -122,7 +125,7 @@ const StartShift = () => {
           </label>
 
           <button onClick={submitForm} className="btn btn-primary mt-auto">
-            Open
+            Close
           </button>
         </div>
       </div>
@@ -130,4 +133,4 @@ const StartShift = () => {
   )
 }
 
-export default StartShift
+export default EndShift

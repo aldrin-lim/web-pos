@@ -5,6 +5,7 @@ import ProtectedRoute from './ProtectedRoutes'
 import Catalog from 'screens/Catalog'
 import ShiftCheck from 'components/ShiftCheck'
 import StartShift from 'screens/Shift/StartShift'
+import EndShift from 'screens/Shift/EndShift'
 
 const AppRoutes = () => (
   <Routes>
@@ -19,6 +20,7 @@ const AppRoutes = () => (
         }
       />
       <Route path={AppPath.StartShift} element={<StartShift />} />
+      <Route path={AppPath.EndShift} element={<EndShift />} />
     </Route>
   </Routes>
 )

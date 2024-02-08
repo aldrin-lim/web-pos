@@ -3,9 +3,11 @@ import ArrowLeftOnRectangleIcon from '@heroicons/react/24/outline/ArrowLeftOnRec
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/solid'
 import useGetShift from 'hooks/useGetTodayShift'
 import useUser from 'hooks/useUser'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { AppPath } from 'routes/AppRoutes.types'
 
 const Layout = () => {
+  const navigate = useNavigate()
   const { logout } = useAuth0()
   const { isLoading, user } = useUser()
   const { shift } = useGetShift()
@@ -54,9 +56,19 @@ const Layout = () => {
               </p>
               {shift && <p className="text-sm">Shift Start: {shiftStart}</p>}
             </div>
-            <div>
+            <div className="mt-auto">
+              <label
+                onClick={() => navigate(AppPath.EndShift)}
+                htmlFor="my-drawer"
+                key="1"
+                className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
+              >
+                <ArrowsRightLeftIcon className="h-6 w-6" />
+                End Shift
+              </label>
+
               <button
-                className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0 "
+                className="btn btn-ghost w-full justify-start px-1 pl-0 "
                 onClick={async () => {
                   await logout({
                     logoutParams: {
@@ -65,23 +77,10 @@ const Layout = () => {
                   })
                 }}
               >
-                <ArrowsRightLeftIcon className="h-6 w-6" />
-                End Shift
+                <ArrowLeftOnRectangleIcon className="h-6 w-6" />
+                Sign Out
               </button>
             </div>
-            <button
-              className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0 "
-              onClick={async () => {
-                await logout({
-                  logoutParams: {
-                    returnTo: window.location.origin,
-                  },
-                })
-              }}
-            >
-              <ArrowLeftOnRectangleIcon className="h-6 w-6" />
-              Sign Out
-            </button>
           </div>
         </div>
       </div>
