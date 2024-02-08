@@ -4,21 +4,14 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
 })
 
-export const attachToken = async (getTokenSilently: () => Promise<string>) =>
-  // eslint-disable-next-line no-async-promise-executor
-  new Promise(async (resolve, reject) => {
-    try {
-      const token = await getTokenSilently()
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      // TODO: This is a hack since axios doesn't support async interceptors
-      setTimeout(() => {
-        resolve(true)
-      }, 100)
-    } catch (e) {
-      console.error('Failed to retrieve token', e)
-      reject(e)
-    }
-  })
+export const attachToken = async (getTokenSilently: () => Promise<string>) => {
+  try {
+    const token = await getTokenSilently()
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  } catch (e) {
+    console.error('Failed to retrieve token', e)
+  }
+}
 
 axiosInstance.interceptors.request.use(
   (config) => config,
