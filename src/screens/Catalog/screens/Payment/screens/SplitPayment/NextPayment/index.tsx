@@ -29,6 +29,8 @@ import { Payment, PaymentSchema } from '..'
 import { useEffect } from 'react'
 import PaymentSummary from '../PaymentSummary'
 import PaymentCompleted from '../../PaymentCompleted'
+import useFulfillOrder from 'hooks/useFulfillOrder'
+import useGetShift from 'hooks/useGetTodayShift'
 
 enum Screen {
   Summary = 'summary',
@@ -95,6 +97,9 @@ const NextPayment = (props: PaymentProps) => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
 
+  const { fulfillOrder, isLoading } = useFulfillOrder()
+  const { shift } = useGetShift()
+
   useEffect(() => {
     if (!location.state) {
       navigate(-1)
@@ -148,9 +153,17 @@ const NextPayment = (props: PaymentProps) => {
 
   const remainingPayable = totalOrderAmount - previousPayment.amountPayable
 
-  const onPay = () => {
+  const fulfillOrders = async () => {
+    const payload = {
+      orders,
+      payments: [previousPayment, values],
+      shiftId: shift?.id,
+    }
+
+    await fulfillOrder(payload)
     navigate(Screen.Completed, {
       state: location.state,
+      replace: true,
     })
   }
 
@@ -315,7 +328,8 @@ const NextPayment = (props: PaymentProps) => {
             element={
               <SlidingTransition>
                 <PaymentSummary
-                  onPayClick={onPay}
+                  isLoading={isLoading}
+                  onPayClick={fulfillOrders}
                   orders={orders}
                   payments={[previousPayment, values]}
                 />

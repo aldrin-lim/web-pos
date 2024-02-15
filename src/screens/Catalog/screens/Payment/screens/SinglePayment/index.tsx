@@ -26,6 +26,8 @@ import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import PaymentCompleted from '../PaymentCompleted'
 import { AppPath } from 'routes/AppRoutes.types'
+import useFulfillOrder from 'hooks/useFulfillOrder'
+import useGetShift from 'hooks/useGetTodayShift'
 
 enum Screen {
   Completed = 'completed',
@@ -100,6 +102,9 @@ const SinglePayment = (props: PaymentProps) => {
 
   const paymentMethod = location.state.paymentMethod as PaymentMethod
 
+  const { fulfillOrder, isLoading } = useFulfillOrder()
+  const { shift } = useGetShift()
+
   useEffect(() => {
     if (!location.state?.paymentMethod) {
       navigate(AppPath.Catalog)
@@ -144,6 +149,23 @@ const SinglePayment = (props: PaymentProps) => {
       document.getElementById('single-payment-amount-received')?.focus()
     }, 200)
   }, [])
+
+  const fulfillOrders = async () => {
+    const payload = {
+      orders,
+      payments: [
+        {
+          amountPayable: totalOrderAmount,
+          amountReceived: Number(amountReceived),
+          change,
+          method: paymentMethod ?? 'cash',
+        },
+      ],
+      shiftId: shift?.id,
+    }
+    await fulfillOrder(payload)
+    navigate(Screen.Completed, { state: location.state, replace: true })
+  }
 
   return (
     <>
@@ -197,10 +219,8 @@ const SinglePayment = (props: PaymentProps) => {
             />
           </label>
           <button
-            onClick={() =>
-              navigate(Screen.Completed, { state: location.state })
-            }
-            disabled={!amountReceived}
+            onClick={fulfillOrders}
+            disabled={!amountReceived || isLoading}
             className="btn btn-primary mt-auto"
           >
             Pay
