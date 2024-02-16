@@ -1,6 +1,10 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import ArrowLeftOnRectangleIcon from '@heroicons/react/24/outline/ArrowLeftOnRectangleIcon'
-import { ArrowsRightLeftIcon } from '@heroicons/react/24/solid'
+import {
+  ArrowsRightLeftIcon,
+  BookmarkSquareIcon,
+  ClipboardDocumentListIcon,
+} from '@heroicons/react/24/outline'
 import useGetShift from 'hooks/useGetTodayShift'
 import useUser from 'hooks/useUser'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -71,12 +75,26 @@ const Layout = () => {
                 </p>
               )}
             </div>
-            <div className="mt-auto">
+            <div className="mt-0">
+              <label
+                onClick={() => navigate(AppPath.EndShift)}
+                htmlFor="my-drawer"
+                className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
+              >
+                <BookmarkSquareIcon className="h-6 w-6" />
+                Catalog
+              </label>
+              <label
+                onClick={() => navigate(AppPath.EndShift)}
+                htmlFor="my-drawer"
+                className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
+              >
+                <ClipboardDocumentListIcon className="h-6 w-6" />Z Report
+              </label>
               {shift && shift.status === 'open' && (
                 <label
                   onClick={() => navigate(AppPath.EndShift)}
                   htmlFor="my-drawer"
-                  key="1"
                   className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
                 >
                   <ArrowsRightLeftIcon className="h-6 w-6" />
@@ -88,7 +106,6 @@ const Layout = () => {
                 <label
                   onClick={() => navigate(AppPath.StartShift)}
                   htmlFor="my-drawer"
-                  key="1"
                   className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
                 >
                   <ArrowsRightLeftIcon className="h-6 w-6" />

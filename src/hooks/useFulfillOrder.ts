@@ -4,7 +4,6 @@ import { FulFillOrderValidationSchema } from 'api/order/fulfillOrder'
 import axios from 'axios'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { z } from 'zod'
 
 const useFulfillOrder = () => {
   const queryClient = useQueryClient()
@@ -37,6 +36,7 @@ const useFulfillOrder = () => {
 
     if (!validation.success) {
       const error = validation.error.issues[0].message
+      console.error(validation.error)
       setError(error)
       return
     }

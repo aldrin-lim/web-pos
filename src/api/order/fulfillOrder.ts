@@ -35,6 +35,7 @@ export const FulFillOrderValidationSchema = z.object({
           }),
           amount: z.number({
             required_error: 'Discount amount is required',
+            coerce: true,
           }),
           name: z.string().optional(),
         })

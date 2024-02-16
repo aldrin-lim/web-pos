@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import * as API from 'api/shift'
 
-const useGetShift = () => {
+const useGetTodayShift = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['shift', 'today'],
     queryFn: API.getTodayShift,
@@ -16,4 +16,4 @@ const useGetShift = () => {
   }
 }
 
-export default useGetShift
+export default useGetTodayShift
