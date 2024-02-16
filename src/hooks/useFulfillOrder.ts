@@ -27,10 +27,6 @@ const useFulfillOrder = () => {
       setError(error)
     },
     onSuccess: async () => {
-      toast.success('Order made! ', {
-        autoClose: 1000,
-        theme: 'colored',
-      })
       await queryClient.invalidateQueries(['productCollection'])
       await queryClient.invalidateQueries(['products'])
     },
