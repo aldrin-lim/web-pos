@@ -43,7 +43,7 @@ const useFulfillOrder = () => {
 
     const requestBody = validation.data
 
-    await mutateAsync(requestBody)
+    return await mutateAsync(requestBody)
   }
 
   return {

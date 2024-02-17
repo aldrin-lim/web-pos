@@ -6,6 +6,7 @@ import ShiftCheck from 'components/ShiftCheck'
 import StartShift from 'screens/Shift/StartShift'
 import EndShift from 'screens/Shift/EndShift'
 import ZReport from 'screens/Report/ZReport'
+import Receipt from 'screens/Report/Receipt'
 
 const AppRoutes = () => (
   <Routes>
@@ -23,6 +24,7 @@ const AppRoutes = () => (
       <Route path={AppPath.EndShift} element={<EndShift />} />
       <Route path={AppPath.Report}>
         <Route path={AppPath.ZReport} element={<ZReport />} />
+        <Route path={AppPath.Receipt} element={<Receipt />} />
       </Route>
     </Route>
   </Routes>

@@ -5,8 +5,7 @@ import { AppPath } from 'routes/AppRoutes.types'
 import { Order } from 'screens/Catalog'
 import { Payment } from '../..'
 import { formatToPeso } from 'util/currency'
-import Big from 'big.js'
-import { toNumber } from 'lodash'
+import useGetTodayShift from 'hooks/useGetTodayShift'
 
 type PaymentCompletedPrpos = {
   orders: Order[]
@@ -20,6 +19,10 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
 
+  const { isLoading, shift } = useGetTodayShift()
+
+  const orderId = location.state.orderId
+
   const goBackToCatalog = () => {
     navigate(AppPath.Catalog, { replace: true, state: { action: 'reset' } })
   }
@@ -32,31 +35,9 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
     return acc + payment.change
   }, 0)
 
-  const totalOrderAmount = orders.reduce((acc, order) => {
-    let price = order.product.price
-
-    if (order.discount && order.discount.type === 'fixed') {
-      price = toNumber(
-        new Big(order.product.price)
-          .sub(new Big(order.discount.amount))
-          .round(2)
-          .toFixed(2),
-      )
-    }
-    if (order.discount && order.discount.type === 'percentage') {
-      price = toNumber(
-        new Big(order.product.price)
-          .sub(
-            new Big(order.product.price).times(
-              new Big(order.discount.amount).div(100),
-            ),
-          )
-          .round(2)
-          .toFixed(2),
-      )
-    }
-    return acc + price * order.quantity
-  }, 0)
+  const showReceipt = () => {
+    navigate(AppPath.Receipt, { state: { orderId, shiftId: shift?.id } })
+  }
 
   return (
     <>
@@ -90,7 +71,12 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
             <button onClick={goBackToCatalog} className="btn btn-primary">
               New Order
             </button>
-            <button className="btn btn-outline btn-primary">Receipt</button>
+            <button
+              onClick={showReceipt}
+              className="btn btn-outline btn-primary"
+            >
+              Receipt
+            </button>
           </div>
         </div>
       </div>

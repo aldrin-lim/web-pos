@@ -56,11 +56,14 @@ const ShiftSchema = z.object({
   updatedAt: z.string(),
 })
 
-const OrderSchema = z.object({
+export const OrderSchema = z.object({
   id: z.string(),
   status: z.enum(['pending', 'completed', 'cancelled']),
   orderItems: z.array(OrderItemSchema),
   shift: ShiftSchema,
+  totalGross: z.number(),
+  totalDiscount: z.number(),
+  totalNet: z.number(),
 })
 
 const PaymentSchema = z.object({
@@ -78,7 +81,7 @@ const PaymentSchema = z.object({
   change: z.number(),
 })
 
-const SaleSchema = z.object({
+export const SaleSchema = z.object({
   id: z.string(),
   totalAmount: z.number(),
   totalDiscount: z.number(),

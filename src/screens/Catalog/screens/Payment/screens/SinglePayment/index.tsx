@@ -164,9 +164,14 @@ const SinglePayment = (props: PaymentProps) => {
       shiftId: shift?.id,
     }
 
-    console.log(payload)
-    await fulfillOrder(payload)
-    navigate(Screen.Completed, { state: location.state, replace: true })
+    const order = await fulfillOrder(payload)
+    navigate(Screen.Completed, {
+      state: {
+        ...location.state,
+        orderId: order?.id,
+      },
+      replace: true,
+    })
   }
 
   return (

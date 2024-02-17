@@ -1,9 +1,20 @@
+import { AxiosResponse } from 'axios'
+import { OrderSchema, SaleSchema } from 'types/report.types'
 import { httpClient } from 'util/http'
 import { z } from 'zod'
 
-export default async (param: FulFillOrderValidationSchema) => {
+const FulFillOrderReponseSchema = OrderSchema.extend({
+  sale: SaleSchema.omit({ order: true }),
+})
+
+export default async (
+  param: FulFillOrderValidationSchema,
+): Promise<z.infer<typeof FulFillOrderReponseSchema>> => {
   const result = await httpClient
-    .post<FulFillOrderValidationSchema>(`/orders/fulfill`, param)
+    .post<
+      FulFillOrderValidationSchema,
+      AxiosResponse<z.infer<typeof FulFillOrderReponseSchema>>
+    >(`/orders/fulfill`, param)
     .then((res) => res.data)
   return result
 }

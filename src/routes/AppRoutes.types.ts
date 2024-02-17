@@ -4,4 +4,5 @@ export enum AppPath {
   EndShift = '/shift/end',
   Report = '/report',
   ZReport = '/report/z',
+  Receipt = '/report/receipt',
 }
