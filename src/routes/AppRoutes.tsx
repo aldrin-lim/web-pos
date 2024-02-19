@@ -27,6 +27,7 @@ const AppRoutes = () => (
         <Route path={AppPath.Receipt} element={<Receipt />} />
       </Route>
     </Route>
+    <Route path="*" element={<Navigate to="/" />} />
   </Routes>
 )
 
