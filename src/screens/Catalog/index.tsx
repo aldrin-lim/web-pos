@@ -190,7 +190,7 @@ const Catalog = () => {
 
   const productIdsInCollection = products.map((product) => product.id) ?? []
   const filter = (product: Product) => {
-    return !productIdsInCollection.includes(product.id)
+    return !productIdsInCollection.includes(product.id) && product.forSale
   }
   const isParentScreen = location.pathname === resolvePath.pathname
 

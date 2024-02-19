@@ -76,14 +76,16 @@ const Layout = () => {
               )}
             </div>
             <div className="mt-0">
-              <label
-                onClick={() => navigate(AppPath.EndShift)}
-                htmlFor="my-drawer"
-                className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
-              >
-                <BookmarkSquareIcon className="h-6 w-6" />
-                Catalog
-              </label>
+              {shift && shift.status === 'open' && (
+                <label
+                  onClick={() => navigate(AppPath.Catalog)}
+                  htmlFor="my-drawer"
+                  className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
+                >
+                  <BookmarkSquareIcon className="h-6 w-6" />
+                  Catalog
+                </label>
+              )}
               <label
                 onClick={() => navigate(AppPath.EndShift)}
                 htmlFor="my-drawer"
