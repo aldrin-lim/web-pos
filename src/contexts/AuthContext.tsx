@@ -6,7 +6,9 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react'
+import { useAuth0 } from '@auth0/auth0-react'
+import { httpClient } from 'util/http'
+import LoadingCover from 'components/LoadingCover'
 export interface AuthUser {
   name?: string
   email?: string
@@ -34,18 +36,22 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [error, setError] = useState<Error | null>(null)
   const {
     isAuthenticated,
-    isLoading: auth0Loading,
+    isLoading: isAuth0Loading,
     getAccessTokenSilently,
     user: auth0User,
     error: auth0Error,
     loginWithRedirect,
+    logout,
   } = useAuth0()
+
+  const [isStateLoading, setIsStateLoading] = useState(true)
 
   useEffect(() => {
     const getAccessTokenAndUser = async () => {
       try {
-        if (isAuthenticated) {
+        if (isAuth0Loading === false && isAuthenticated) {
           const token = await getAccessTokenSilently()
+
           setAccessToken(token)
           setUser(
             auth0User
@@ -56,12 +62,34 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
                 }
               : null,
           )
-        } else {
-          // Log out the user from the application if not authenticated
-          // You can specify a returnTo URL in the logout method
-          await loginWithRedirect({
-            authorizationParams: {
-              redirect_uri: window.location.origin,
+
+          await new Promise((resolve) => {
+            httpClient.defaults.headers.common['Authorization'] =
+              `Bearer ${token}`
+
+            httpClient.interceptors.response.use(
+              (config) => config,
+              (error) => {
+                if (error.response && error.response.status === 401) {
+                  logout({})
+                }
+                // Optionally handle other error statuses or log errors.
+
+                return Promise.reject(error)
+              },
+            )
+            setTimeout(() => {
+              setIsStateLoading(false)
+              resolve(null)
+              // TODO: Fix this hacky way of setting the loading state
+            }, 100)
+          })
+        }
+
+        if (isAuth0Loading === false && isAuthenticated === false) {
+          loginWithRedirect({
+            appState: {
+              returnTo: window.location.pathname,
             },
           })
         }
@@ -75,27 +103,22 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
 
     getAccessTokenAndUser()
-  }, [isAuthenticated, getAccessTokenSilently, auth0User, loginWithRedirect])
+  }, [isAuthenticated, isAuth0Loading])
 
   if (auth0Error) {
     setError(auth0Error)
   }
 
-  const isLoading = auth0Loading || accessToken === null || user === null
+  const isLoading = isAuth0Loading || isStateLoading
+
+  if (isLoading) {
+    return <LoadingCover />
+  }
 
   return (
-    <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      }}
-    >
-      <AuthContext.Provider value={{ accessToken, user, isLoading, error }}>
-        {children}
-      </AuthContext.Provider>
-    </Auth0Provider>
+    <AuthContext.Provider value={{ accessToken, user, isLoading, error }}>
+      {children}
+    </AuthContext.Provider>
   )
 }
 

@@ -4,9 +4,8 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
 })
 
-export const attachToken = async (getTokenSilently: () => Promise<string>) => {
+export const attachToken = async (token: string) => {
   try {
-    const token = await getTokenSilently()
     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`
   } catch (e) {
     console.error('Failed to retrieve token', e)
