@@ -24,14 +24,14 @@ const useCreateProduct = () => {
         }
       }
       toast.error(errorMessage, {
-        autoClose: 3000,
+        autoClose: 500,
         theme: 'colored',
       })
       setError(error)
     },
     onSuccess: async (data) => {
       toast.success('Product successfully created! ', {
-        autoClose: 2000,
+        autoClose: 500,
         theme: 'colored',
       })
       await queryClient.invalidateQueries(['product', data.id])

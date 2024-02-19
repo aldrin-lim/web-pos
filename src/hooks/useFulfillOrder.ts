@@ -20,7 +20,7 @@ const useFulfillOrder = () => {
         }
       }
       toast.error(errorMessage, {
-        autoClose: 1000,
+        autoClose: 500,
         theme: 'colored',
       })
       setError(error)

@@ -19,13 +19,13 @@ const useDeleteProduct = () => {
         }
       }
       toast.error(errorMessage, {
-        autoClose: 3000,
+        autoClose: 500,
         theme: 'colored',
       })
     },
     onSuccess: () => {
       toast.success('Product successfully deleted ', {
-        autoClose: 2000,
+        autoClose: 500,
         theme: 'colored',
       })
     },

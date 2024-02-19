@@ -18,7 +18,7 @@ const useStartShift = () => {
         }
       }
       toast.error(errorMessage, {
-        autoClose: 3000,
+        autoClose: 500,
         theme: 'colored',
       })
       setError(error)
