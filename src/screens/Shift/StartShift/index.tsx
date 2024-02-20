@@ -60,7 +60,7 @@ const StartShift = () => {
     <>
       <div
         className={[
-          'screen h-full pb-9',
+          'screen h-full',
           !isParentScreen ? 'hidden-screen' : '',
         ].join(' ')}
       >
