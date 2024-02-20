@@ -75,7 +75,7 @@ const ProductList = (props: ProductListProps) => {
           {onAddProductClick && (
             <button
               onClick={onAddProductClick}
-              className="btn btn-square mt-1 flex h-[213px] w-[155px] flex-col justify-self-center border-2 border-dashed border-gray-300"
+              className="btn btn-square mt-1 flex h-[208px] w-[153px] flex-col justify-self-center border-2 border-dashed border-gray-300"
             >
               <PlusIcon className="w-8 text-success" />
               Add Product
