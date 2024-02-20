@@ -134,7 +134,7 @@ const Inventory = (props: InventoryProps) => {
                             maxLength={getTruncateSize(currentBreakpoint)}
                           />
                         </h1>
-                        {product.outOfStock === false ? (
+                        {product.trackStock && product.outOfStock === false ? (
                           <p className="text-xs">{product.availability}</p>
                         ) : (
                           <p className="text-xs text-red-500">Out of stock</p>
