@@ -160,9 +160,12 @@ const NextPayment = (props: PaymentProps) => {
       shiftId: shift?.id,
     }
 
-    await fulfillOrder(payload)
+    const order = await fulfillOrder(payload)
     navigate(Screen.Completed, {
-      state: location.state,
+      state: {
+        ...location.state,
+        orderId: order?.id,
+      },
       replace: true,
     })
   }
@@ -170,7 +173,7 @@ const NextPayment = (props: PaymentProps) => {
   useEffect(() => {
     setTimeout(() => {
       document.getElementById('split-payment-2-amount-payable')?.focus()
-    }, 200)
+    }, 100)
   }, [])
 
   return (
