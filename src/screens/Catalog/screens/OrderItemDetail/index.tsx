@@ -151,7 +151,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
           !isParentScreen ? 'hidden-screen' : '',
         ].join(' ')}
       >
-        {/* <Toolbar
+        <Toolbar
           items={[
             <ToolbarButton
               key={'negative'}
@@ -166,7 +166,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               key="3"
             />,
           ]}
-        /> */}
+        />
         <div className="flex h-full w-full flex-col gap-4">
           <ProductImages readOnly images={product.images} />
           <div className="flex w-full flex-row justify-between gap-3">
