@@ -10,7 +10,7 @@ export const ShiftSchema = z.object({
   openingPettyCash: z.number(),
   closingPettyCash: z.number(),
   startTime: z.string(),
-  endTime: z.string(),
+  closedTime: z.string(),
   status: z.string(),
   business: BusinessSchema,
   openedBy: UserSchema.optional(),

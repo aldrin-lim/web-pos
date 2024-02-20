@@ -86,13 +86,6 @@ const Layout = () => {
                   Catalog
                 </label>
               )}
-              <label
-                onClick={() => navigate(AppPath.ZReport)}
-                htmlFor="my-drawer"
-                className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
-              >
-                <ClipboardDocumentListIcon className="h-6 w-6" />Z Report
-              </label>
               {shift && shift.status === 'open' && (
                 <label
                   onClick={() => navigate(AppPath.EndShift)}

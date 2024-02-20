@@ -25,29 +25,32 @@ const EndShift = () => {
 
   const { user } = useUser()
 
-  const { values, errors, submitForm, setFieldValue, getFieldProps } =
-    useFormik({
-      initialValues: {
-        notes: '',
-        closingPettyCash: 0,
-        closedBy: user?.id,
-      },
-      validateOnBlur: false,
-      validateOnChange: false,
-      validationSchema: toFormikValidationSchema(EndShiftValidationSchema),
-      onSubmit: async (formValues) => {
-        const validation = EndShiftValidationSchema.safeParse(formValues)
+  const { errors, submitForm, setFieldValue, getFieldProps } = useFormik({
+    initialValues: {
+      notes: '',
+      closingPettyCash: 0,
+      closedBy: user?.id,
+    },
+    validateOnBlur: false,
+    validateOnChange: false,
+    validationSchema: toFormikValidationSchema(EndShiftValidationSchema),
+    onSubmit: async (formValues) => {
+      const validation = EndShiftValidationSchema.safeParse(formValues)
 
-        if (!validation.success) {
-          toast.error(validation.error.errors[0].message)
-          return
-        }
+      if (!validation.success) {
+        toast.error(validation.error.errors[0].message)
+        return
+      }
 
-        await endShift(validation.data)
+      await endShift(validation.data)
 
-        navigate(AppPath.Catalog)
-      },
-    })
+      navigate(AppPath.ZReport, {
+        state: {
+          shiftId: shift?.id,
+        },
+      })
+    },
+  })
 
   useEffect(() => {
     if (shift && shift.status === 'close') {
@@ -97,6 +100,7 @@ const EndShift = () => {
               tabIndex={3}
               className="input input-bordered w-full"
               prefix={'₱'}
+              disabled={isEnding}
               onValueChange={(value) => {
                 setFieldValue('closingPettyCash', value)
               }}
@@ -120,6 +124,7 @@ const EndShift = () => {
             </div>
             <textarea
               {...getFieldProps('notes')}
+              disabled={isEnding}
               className="textarea textarea-bordered"
             />
 
@@ -132,7 +137,11 @@ const EndShift = () => {
             )}
           </label>
 
-          <button onClick={submitForm} className="btn btn-primary mt-auto">
+          <button
+            disabled={isEnding}
+            onClick={submitForm}
+            className="btn btn-primary mt-auto"
+          >
             Close
           </button>
         </div>

@@ -50,8 +50,8 @@ const ShiftSchema = z.object({
       lastName: z.string(),
     })
     .optional(),
-  startTime: z.string(),
-  endTime: z.string(),
+  openedTime: z.string(),
+  closedTime: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
 })

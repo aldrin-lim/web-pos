@@ -1,20 +1,19 @@
 import LoadingCover from 'components/LoadingCover'
 import useGetShiftReport from 'hooks/useGetShiftReport'
-import useGetTodayShift from 'hooks/useGetTodayShift'
 import moment from 'moment'
 import { useMemo } from 'react'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getPaymentMethodName } from 'screens/Catalog/screens/Payment'
 import { formatToPeso } from 'util/currency'
 
 const ZReport = () => {
-  const { isLoading: isGetTodayShiftLoading, shift: todayShift } =
-    useGetTodayShift()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const shiftId = location.state?.shiftId
 
-  const { isLoading: isGetShiftReporting, report } = useGetShiftReport(
-    todayShift?.id,
-  )
+  const { isLoading: isGetShiftReporting, report } = useGetShiftReport(shiftId)
 
-  const isLoading = isGetTodayShiftLoading || isGetShiftReporting
+  const isLoading = isGetShiftReporting
 
   const paymentsRecievedPerMethod = useMemo(() => {
     const paymentDetails = (report?.sales ?? []).reduce(
@@ -72,6 +71,10 @@ const ZReport = () => {
     return products
   }, [report?.sales])
 
+  if (!shiftId) {
+    return <Navigate replace to={'/'} />
+  }
+
   if (isLoading) {
     return <LoadingCover />
   }
@@ -83,7 +86,7 @@ const ZReport = () => {
   const { shift, sales } = report
 
   // 14:46:23 to hh:mm:ss am/pm using moment
-  const openingStartTime = moment(shift.startTime, 'HH:mm:ss')
+  const openingStartTime = moment(shift.openedTime, 'HH:mm:ss')
   const openingDate = moment(shift.createdAt)
     .hours(openingStartTime.hours())
     .minutes(openingStartTime.minutes())
@@ -91,7 +94,7 @@ const ZReport = () => {
 
   const opening = openingDate.format('MMM. d, yyyy @ hh:mm:ss A')
 
-  const closingStartTime = moment(shift.endTime, 'HH:mm:ss')
+  const closingStartTime = moment(shift.closedTime, 'HH:mm:ss')
   const closingDate = moment(shift.updatedAt)
     .hours(closingStartTime.hours())
     .minutes(closingStartTime.minutes())
@@ -130,6 +133,11 @@ const ZReport = () => {
 
   return (
     <div className="min-h-screen w-full ">
+      <div className="flex flex-col items-end pr-6 pt-2">
+        <a onClick={() => navigate('/')} className="">
+          Close
+        </a>
+      </div>
       <div className="mx-auto flex h-full max-w-md flex-col gap-10 bg-base-100 p-6">
         <div className="item flex flex-col gap-1">
           <h1 className="border-b-2 border-black pb-4 text-center text-2xl uppercase">
