@@ -204,6 +204,11 @@ const SplitPayment = (props: PaymentProps) => {
               <h1>Payment 1</h1>
               {/* Amount Payable */}
               <label className="form-control w-full ">
+                <div className="form-control-label  ">
+                  <span className="label-text-alt text-gray-400">
+                    Amount Payable
+                  </span>
+                </div>
                 <CurrencyInput
                   id="split-payment-1-amount-payable"
                   type="text"
