@@ -35,7 +35,7 @@ const Layout = () => {
   }
 
   return (
-    <main className="flex w-full flex-col ">
+    <main className="flex w-full flex-col">
       <div className="drawer">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">

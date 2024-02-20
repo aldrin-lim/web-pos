@@ -118,7 +118,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
         return (
           <button
             onClick={onAddAToOrderClick}
-            className="btn btn-error mt-auto w-full text-white"
+            className="btn btn-error mb-9 mt-auto w-full text-white"
           >
             Remove order
           </button>
@@ -127,7 +127,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
       return (
         <button
           onClick={onAddAToOrderClick}
-          className="btn btn-primary mt-auto w-full"
+          className="btn btn-primary mb-9 mt-auto w-full"
         >
           Update order
         </button>
@@ -136,7 +136,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
     return (
       <button
         onClick={onAddAToOrderClick}
-        className="btn btn-primary mt-auto w-full"
+        className="btn btn-primary mb-9 mt-auto w-full"
       >
         Add to order
       </button>
@@ -147,7 +147,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
     <>
       <div
         className={[
-          'screen h-full pb-9',
+          'screen h-full',
           !isParentScreen ? 'hidden-screen' : '',
         ].join(' ')}
       >

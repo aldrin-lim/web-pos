@@ -131,7 +131,7 @@ const StartShift = () => {
             )}
           </label>
 
-          <button onClick={submitForm} className="btn btn-primary mt-auto">
+          <button onClick={submitForm} className="btn btn-primary mb-9 mt-auto">
             Open
           </button>
         </div>

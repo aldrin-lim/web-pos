@@ -22,7 +22,7 @@ html, body {
 }
 
 .App {
-  @apply w-full bg-base-100;
+  @apply w-full bg-base-100 h-full;
 }
 
 @layer base {
