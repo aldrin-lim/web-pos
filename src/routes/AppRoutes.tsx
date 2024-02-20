@@ -7,6 +7,7 @@ import StartShift from 'screens/Shift/StartShift'
 import EndShift from 'screens/Shift/EndShift'
 import ZReport from 'screens/Report/ZReport'
 import Receipt from 'screens/Report/Receipt'
+import SignoutScreen from 'components/SignoutScreen'
 
 const AppRoutes = () => (
   <Routes>
@@ -27,6 +28,8 @@ const AppRoutes = () => (
         <Route path={AppPath.Receipt} element={<Receipt />} />
       </Route>
     </Route>
+    <Route path={AppPath.Signout} element={<SignoutScreen />} />
+
     <Route path="*" element={<Navigate to="/" />} />
   </Routes>
 )
