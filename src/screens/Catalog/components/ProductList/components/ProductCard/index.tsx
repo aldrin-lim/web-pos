@@ -72,7 +72,7 @@ const ProductCard = (props: ProductCardProps) => {
   }
 
   return (
-    <div className="relative  justify-self-center">
+    <div className="relative w-[153px] justify-self-center">
       <div className="absolute top-2 z-[9] flex w-full items-center justify-between px-2">
         <div className="bg-primary/50 p-1 text-sm text-white">
           {formatToPeso(product.price)}
@@ -85,12 +85,12 @@ const ProductCard = (props: ProductCardProps) => {
         </div>
       </div>
       <div
-        className={`ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300 ${
+        className={` card card-compact relative w-[155px] cursor-pointer border border-gray-300 ${
           active ? activeStyle : defaultStyle
         }`}
         onClick={() => onClick?.(product)}
       >
-        <figure className="top-1 h-[155px] w-[153px] overflow-hidden  bg-gray-300">
+        <figure className="top-1  h-[155px] w-[153px] overflow-hidden  bg-gray-300">
           {/* Show image or PhotoIcon based on image load status */}
           <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
         </figure>
@@ -122,7 +122,7 @@ const ProductCard = (props: ProductCardProps) => {
             </div>
           )}
           {/* TODO: Fix this via css */}
-          {!product.trackStock && (
+          {!product?.recipe && !product.trackStock && (
             <div className="flex flex-row gap-1  text-xs">
               <span
                 className={`overflow-hidden truncate text-ellipsis ${
