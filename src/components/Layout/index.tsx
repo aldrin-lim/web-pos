@@ -87,7 +87,7 @@ const Layout = () => {
                 </label>
               )}
               <label
-                onClick={() => navigate(AppPath.EndShift)}
+                onClick={() => navigate(AppPath.ZReport)}
                 htmlFor="my-drawer"
                 className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
               >
