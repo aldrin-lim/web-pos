@@ -110,6 +110,18 @@ const ProductCard = (props: ProductCardProps) => {
               </span>
             </div>
           )}
+          {/* TODO: Fix this via css */}
+          {!product.trackStock && (
+            <div className="flex flex-row gap-1  text-xs">
+              <span
+                className={`overflow-hidden truncate text-ellipsis ${
+                  outOfStock ? 'text-red-400' : ''
+                }`}
+              >
+                &nbsp;
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
