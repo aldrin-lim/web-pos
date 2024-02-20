@@ -80,7 +80,7 @@ const ProductImages = (props: ProductImagesProps) => {
           maxLength={5}
           disabled={images.length >= 5}
         />
-        {showAddImageButton && (
+        {readOnly === false && showAddImageButton && (
           <button
             disabled={props.disabled}
             className={`btn btn-square mt-1 flex h-[100px] w-[100px] flex-col border-2 border-dashed border-gray-300`}
@@ -89,7 +89,7 @@ const ProductImages = (props: ProductImagesProps) => {
             <PlusIcon className="w-8 text-success" />
           </button>
         )}
-        {showInitialImageButton && (
+        {images.length === 0 && showInitialImageButton && (
           <button
             className={`btn btn-square mt-1 flex flex-col`}
             onClick={onClick}
