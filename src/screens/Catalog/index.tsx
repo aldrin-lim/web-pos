@@ -268,12 +268,8 @@ const Catalog = () => {
 
     return (
       <div className="relative -top-4 flex flex-col ">
-        <div className="sticky top-[49px]  z-10 w-full bg-base-100 py-2">
-          <input
-            className="input input-bordered  top-14 w-full"
-            placeholder="Search Product by Name"
-            onChange={(e) => setSearchFilter(e.target.value)}
-          />
+        <div className="mt-2 p-2">
+          <h1 className="font-bold">Product Catalog </h1>
         </div>
         <div className="mt-4">
           <ProductList
