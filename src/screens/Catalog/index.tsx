@@ -172,8 +172,6 @@ const Catalog = () => {
   const location = useLocation()
   const resolvePath = useResolvedPath('')
 
-  const [searchFilter, setSearchFilter] = useState('')
-
   const { updateProductCollection, isUpdating } = useUpdateProductCollection()
 
   const {
@@ -292,7 +290,6 @@ const Catalog = () => {
         </div>
         <div className="mt-4">
           <ProductList
-            searchFilter={searchFilter}
             onAddProductClick={showProductSelectionScreen}
             // Event handler for item when not selected yet
             onAddItemToOrder={showOrderDetailScreen}

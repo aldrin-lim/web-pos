@@ -1,4 +1,3 @@
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import { XCircleIcon } from '@heroicons/react/24/solid'
 import { useQueryClient } from '@tanstack/react-query'
 import LoadingCover from 'components/LoadingCover'
@@ -7,8 +6,8 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { User } from 'types/user.type'
 import { formatToPeso } from 'util/currency'
 import ShareButton from './components/ShareButton'
-import { AppPath } from 'routes/AppRoutes.types'
 import { useRef } from 'react'
+import moment from 'moment'
 
 const Receipt = () => {
   const location = useLocation()
@@ -48,26 +47,36 @@ const Receipt = () => {
   }
 
   return (
-    <div className="h-full  w-full print:max-w-screen-sm">
+    <div className="h-screen  w-full print:max-w-screen-sm">
       <div className="flex flex-row justify-between print:hidden">
-        <ShareButton elementToShare={ref.current} />
-        <button className="btn btn-ghost flex flex-row items-center gap-1">
+        <ShareButton
+          fileName={`receipt-${order?.orderNo}.png`}
+          elementToShare={ref.current}
+        />
+        <button
+          onClick={() => navigate('/')}
+          className="btn btn-ghost flex flex-row items-center gap-1"
+        >
           <XCircleIcon className="w-6" />
         </button>
       </div>
-      <div ref={ref} className="h-full w-full bg-base-100">
-        <div className="mx-auto flex h-full max-w-sm flex-col gap-2 p-4">
+      <div ref={ref} className="h-screen w-full bg-base-100">
+        <div className="mx-auto flex h-[calc(100%-48px)] max-w-sm flex-col gap-2 p-4">
           <div>
             <h1 className="text-center text-lg font-bold">
               {user.businesses[0].name}
             </h1>
             <h2 className="text-center">{user.businesses[0].address}</h2>
           </div>
-          <div className="mt-4 flex flex-col gap-1">
-            <div className="">Receipt #: 0000001</div>
+          <div className=" flex flex-col gap-1">
+            <div className="">Receipt #: {order?.orderNo}</div>
             <div className="">
               Staff: {user.firstName} {user.lastName}
             </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            {order?.createdAt &&
+              moment(order.createdAt).format('MMM DD YYYY, h:mm:ss a')}
           </div>
 
           <div className=" w-full border-b-2 border-dotted border-black pt-2" />
@@ -96,6 +105,18 @@ const Receipt = () => {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="flex w-full flex-col gap-2">
+            <div className="col-span-12 grid grid-cols-12 gap-2">
+              <div className="col-span-4">Discount</div>
+              <div className="col-span-3 text-right">&nbsp;</div>
+              <div className="col-span-2 text-right">&nbsp;</div>
+              <div className="col-span-3 text-right">
+                {order?.totalDiscount &&
+                  order?.totalGross &&
+                  formatToPeso(order.totalGross - order.totalDiscount)}
+              </div>
+            </div>
           </div>
 
           <div className=" w-full border-b-2  border-black pt-2" />

@@ -1,12 +1,13 @@
 import * as htmlToImage from 'html-to-image'
-import { ShareIcon } from '@heroicons/react/24/solid'
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 
 type ShareButtonProps = {
   elementToShare?: HTMLDivElement | null
+  fileName?: string
 }
 
 const ShareButton = (props: ShareButtonProps) => {
-  const { elementToShare } = props
+  const { elementToShare, fileName } = props
 
   const shareScreenshot = async () => {
     if (!elementToShare) return null
@@ -16,28 +17,12 @@ const ShareButton = (props: ShareButtonProps) => {
 
       // Convert dataUrl to Blob for sharing
       const blob = await (await fetch(dataUrl)).blob()
-      const data = {
-        files: [
-          new File([blob], 'file.png', {
-            type: blob.type,
-          }),
-        ],
-        title: 'Screenshot',
-        text: 'Check out this screenshot!',
-      }
 
-      // Download blob
-      // const url = URL.createObjectURL(blob)
-      // const a = document.createElement('a')
-      // a.href = url
-      // a.download = 'screenshot.png'
-      // a.click()
-
-      if (!navigator.canShare(data)) {
-        alert("Can't share data")
-        return
-      }
-      await navigator.share(data)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName || 'receipt.png'
+      a.click()
     } catch (error) {
       alert(error)
       console.error('Could not share the screenshot', error)
@@ -49,8 +34,8 @@ const ShareButton = (props: ShareButtonProps) => {
       onClick={shareScreenshot}
       className="btn btn-ghost flex flex-row items-center gap-3"
     >
-      <ShareIcon className="w-4" />
-      Send Receipt
+      <ArrowDownTrayIcon className="w-4" />
+      Download Receipt
     </button>
   )
 }
