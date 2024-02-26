@@ -20,9 +20,9 @@ const ZReport = () => {
       (acc, sale) => {
         sale.payments.forEach((payment) => {
           if (acc[payment.method]) {
-            acc[payment.method] += payment.amountReceived
+            acc[payment.method] += payment.amountReceived - payment.change
           } else {
-            acc[payment.method] = payment.amountReceived
+            acc[payment.method] = payment.amountReceived - payment.change
           }
         })
 

@@ -6,8 +6,9 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { User } from 'types/user.type'
 import { formatToPeso } from 'util/currency'
 import ShareButton from './components/ShareButton'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import moment from 'moment'
+import { toNumber } from 'lodash'
 
 const Receipt = () => {
   const location = useLocation()
@@ -26,6 +27,13 @@ const Receipt = () => {
     orderId as string,
     shiftId as string,
   )
+
+  const discount = useMemo(() => {
+    if (order?.totalDiscount && order?.totalGross) {
+      return order.totalGross - order.totalDiscount
+    }
+    return 0
+  }, [order?.totalDiscount, order?.totalGross])
 
   const isLoading = isGetOrderLoading
 
@@ -106,18 +114,19 @@ const Receipt = () => {
               </div>
             ))}
           </div>
-          <div className="flex w-full flex-col gap-2">
-            <div className="col-span-12 grid grid-cols-12 gap-2">
-              <div className="col-span-4">Discount</div>
-              <div className="col-span-3 text-right">&nbsp;</div>
-              <div className="col-span-2 text-right">&nbsp;</div>
-              <div className="col-span-3 text-right">
-                {order?.totalDiscount &&
-                  order?.totalGross &&
-                  formatToPeso(order.totalGross - order.totalDiscount)}
+
+          {!!discount && discount > 0 && (
+            <div className="flex w-full flex-col gap-2">
+              <div className="col-span-12 grid grid-cols-12 gap-2">
+                <div className="col-span-4">Discount</div>
+                <div className="col-span-3 text-right">&nbsp;</div>
+                <div className="col-span-2 text-right">&nbsp;</div>
+                <div className="col-span-3 text-right">
+                  {formatToPeso(discount)}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className=" w-full border-b-2  border-black pt-2" />
 
