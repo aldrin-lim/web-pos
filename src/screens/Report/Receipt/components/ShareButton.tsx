@@ -16,9 +16,15 @@ const ShareButton = (props: ShareButtonProps) => {
 
       // Convert dataUrl to Blob for sharing
       const blob = await (await fetch(dataUrl)).blob()
-      const filesArray = [
-        new File([blob], 'screenshot.png', { type: blob.type }),
-      ]
+      const data = {
+        files: [
+          new File([blob], 'file.png', {
+            type: blob.type,
+          }),
+        ],
+        title: 'Screenshot',
+        text: 'Check out this screenshot!',
+      }
 
       // Download blob
       // const url = URL.createObjectURL(blob)
@@ -27,15 +33,11 @@ const ShareButton = (props: ShareButtonProps) => {
       // a.download = 'screenshot.png'
       // a.click()
 
-      if (navigator.canShare && navigator.canShare({ files: filesArray })) {
-        await navigator.share({
-          files: filesArray,
-          title: 'Screenshot',
-          text: 'Check out this screenshot!',
-        })
-      } else {
-        alert("This browser doesn't support sharing files.")
+      if (!navigator.canShare(data)) {
+        alert("Can't share data")
+        return
       }
+      await navigator.share(data)
     } catch (error) {
       alert(error)
       console.error('Could not share the screenshot', error)
