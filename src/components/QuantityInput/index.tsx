@@ -6,10 +6,12 @@ type QuantityInputProps = {
   className: string
   value?: string
   onChange?: (string?: string) => void
+  onAdd?: (string?: string) => void
+  onSubtract?: (string?: string) => void
 }
 
 const QuantityInput = (props: QuantityInputProps) => {
-  const { value = 0, onChange } = props
+  const { value = 0, onChange, onAdd, onSubtract } = props
   return (
     <div className="join flex  border  border-gray-300">
       <button
@@ -19,6 +21,7 @@ const QuantityInput = (props: QuantityInputProps) => {
           if (toNumber(value) > 0) {
             onChange && onChange(`${+value - 1}`)
           }
+          onSubtract && onSubtract(`${+value - 1}`)
         }}
       >
         -
@@ -40,6 +43,7 @@ const QuantityInput = (props: QuantityInputProps) => {
         className="btn join-item"
         onClick={() => {
           onChange && onChange(`${+value + 1}`)
+          onAdd && onAdd(`${+value + 1}`)
         }}
       >
         +

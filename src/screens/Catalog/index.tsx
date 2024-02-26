@@ -217,14 +217,33 @@ const Catalog = () => {
   }
 
   const addProductToroder = (product: Product) => {
-    if (product.totalQuantity >= 1) {
-      // If there is remainder use the remainder
-      addProductToOrder({
-        id: v4(),
-        product,
-        quantity: 1,
-      })
+    const isTracked =
+      product.trackStock === true ||
+      (product.recipe && product.trackStock === false)
+
+    if (isTracked) {
+      if (product.allowBackOrder === false && product.totalQuantity >= 1) {
+        addProductToOrder({
+          id: v4(),
+          product,
+          quantity: 1,
+        })
+      }
+      if (product.allowBackOrder === true) {
+        addProductToOrder({
+          id: v4(),
+          product,
+          quantity: 1,
+        })
+      }
+      return
     }
+    addProductToOrder({
+      id: v4(),
+      product,
+      quantity: 1,
+    })
+    // If product isnt being tracked negative is allowed
   }
 
   const addOrder = (order: Order) => {

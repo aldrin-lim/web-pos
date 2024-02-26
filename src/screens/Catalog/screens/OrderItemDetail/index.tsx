@@ -23,6 +23,8 @@ import { AnimatePresence } from 'framer-motion'
 import DiscountDetail from '../DiscountDetail'
 import Big from 'big.js'
 import { formatToPeso } from 'util/currency'
+import { useQueryClient } from '@tanstack/react-query'
+import { ProductCollection } from 'types/productCollection.types'
 
 enum Screen {
   DiscountDetail = 'discount-detail',
@@ -41,18 +43,47 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
   const order = location.state.order as Order
+  const queryClient = useQueryClient()
 
   const [initialQuantity] = useState(order.quantity)
   const [quantity, setQuantity] = useState(order.quantity.toString())
   const [discount, setDiscount] = useState<Discount | undefined>(order.discount)
   const [error, setError] = useState('')
 
+  const originalTotalQuantity = useMemo(() => {
+    const productCollection = queryClient.getQueryData([
+      'productCollection',
+      'default',
+    ]) as ProductCollection
+
+    if (!productCollection) {
+      return 0
+    }
+
+    const product = productCollection.products.find(
+      (product) => product.id === order.product.id,
+    )
+
+    if (!product) {
+      return 0
+    }
+
+    return product.totalQuantity
+  }, [order.product.id, queryClient])
+
   const totalQuantity = useMemo(() => {
     if (location.state.action === 'edit') {
-      return order.product.totalQuantity + initialQuantity
+      return new Big(originalTotalQuantity).minus(new Big(quantity)).toString()
     }
-    return order.product.totalQuantity
-  }, [order, location.state.action, initialQuantity])
+    return new Big(order.product.totalQuantity)
+      .minus(new Big(quantity))
+      .toString()
+  }, [
+    location.state.action,
+    order.product.totalQuantity,
+    quantity,
+    originalTotalQuantity,
+  ])
 
   const product = order.product
 
@@ -79,8 +110,23 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
 
     if (location.state.action === 'edit') {
       const originalQuantity = initialQuantity + product.totalQuantity
+      const tracked =
+        product.trackStock === true ||
+        (product.trackStock === false && !!product.recipe)
 
-      if (toNumber(quantity) > originalQuantity) {
+      if (!tracked) {
+        onUpdateOrder?.({
+          id: order.id,
+          product,
+          quantity: toNumber(quantity),
+          discount,
+        })
+      }
+
+      if (
+        product.allowBackOrder === false &&
+        toNumber(quantity) > originalQuantity
+      ) {
         setError(`Quantity should not exceed ${originalQuantity}`)
         return
       }
@@ -190,12 +236,44 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
             <label>Quantity</label>
             <QuantityInput
               value={quantity}
-              onChange={(value) => {
-                setQuantity(value ?? '')
+              onAdd={(value) => {
+                if (location.state.action !== 'edit') {
+                  if (+quantity < order.product.totalQuantity) {
+                    setQuantity(value ?? '')
+                    return
+                  }
+                  if (!product.recipe && product.trackStock === false) {
+                    setQuantity(value ?? '')
+                    return
+                  }
+                  if (product.trackStock === true && product.allowBackOrder) {
+                    setQuantity(value ?? '')
+                    return
+                  }
+                }
+                if (+quantity < originalTotalQuantity) {
+                  setQuantity(value ?? '')
+                  return
+                }
+
+                if (!product.recipe && product.trackStock === false) {
+                  setQuantity(value ?? '')
+                  return
+                }
+                if (product.trackStock === true && product.allowBackOrder) {
+                  setQuantity(value ?? '')
+                  return
+                }
+              }}
+              onSubtract={(value) => {
+                if (+quantity > 0) {
+                  setQuantity(value ?? '')
+                }
               }}
               className="w-full"
             />
-            <p>{totalQuantity} Available</p>
+            {product.trackStock === true && <p>{totalQuantity} Available</p>}
+            {product.recipe && <p>{totalQuantity} Available</p>}
             <p className="text-red-400">{error}</p>
           </div>
           {renderCTA()}

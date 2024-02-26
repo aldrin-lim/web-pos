@@ -11,6 +11,7 @@ export default mergeConfig(viteConfig, {
   test: {},
   define: process.env.NODE_ENV === 'development' ? { global: 'window' } : {},
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
         entryFileNames: `[name].` + hash + `.js`,

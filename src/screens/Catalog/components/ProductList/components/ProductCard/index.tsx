@@ -99,6 +99,12 @@ const ProductCard = (props: ProductCardProps) => {
             /{unitAbbrevationsToLabel(unitOfMeasurement)}
           </div>
         )}
+        <div>
+          <DropdownButton
+            buttonClassName="btn-primary btn-circle btn-sm "
+            items={getMenuItems()}
+          />
+        </div>
       </div>
       <div
         className={` card card-compact relative w-[155px] cursor-pointer border border-gray-300 ${
