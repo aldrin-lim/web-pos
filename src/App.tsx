@@ -6,13 +6,20 @@ import 'react-toastify/dist/ReactToastify.css'
 import AppRoutes from './routes/AppRoutes'
 import { ToastContainer } from 'react-toastify'
 import useUser from 'hooks/useUser'
+import * as Sentry from '@sentry/react'
 
 function App() {
   useUser()
 
+  const { user } = useUser()
+
   useEffect(() => {
     themeChange(false)
   }, [])
+
+  useEffect(() => {
+    user?.email && Sentry.setUser({ email: user.email })
+  }, [user])
 
   return (
     <div className="App mx-auto flex w-full" data-theme="">
