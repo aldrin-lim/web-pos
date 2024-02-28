@@ -31,15 +31,15 @@ const ZReport = () => {
       {} as Record<string, number>,
     )
 
-    // Rename keys to human readable
+    const formattedPaymentDetails: Record<string, string> = {}
+
     for (const key in paymentDetails) {
-      paymentDetails[getPaymentMethodName(key)] = formatToPeso(
+      formattedPaymentDetails[getPaymentMethodName(key)] = formatToPeso(
         paymentDetails[key],
       )
-      delete paymentDetails[key]
     }
 
-    return paymentDetails
+    return formattedPaymentDetails
   }, [report?.sales])
 
   const productsSold = useMemo(() => {

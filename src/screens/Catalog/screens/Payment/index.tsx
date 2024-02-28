@@ -43,7 +43,7 @@ const paymentMethods = [
   'paymaya',
 ] as const
 
-type PaymentMethod = (typeof paymentMethods)[number]
+export type PaymentMethod = (typeof paymentMethods)[number]
 
 export type Payment = {
   method: PaymentMethod
@@ -71,7 +71,7 @@ export const getPaymentMethodImages = (method: PaymentMethod) => {
   }
 }
 
-export const getPaymentMethodName = (method: PaymentMethod) => {
+export const getPaymentMethodName = (method: PaymentMethod): string => {
   switch (method) {
     case 'cash':
       return 'Cash'

@@ -12,7 +12,14 @@ import { AppPath } from 'routes/AppRoutes.types'
 import useEndShift from 'hooks/useEndShift'
 import { EndShiftValidationSchema } from 'api/shift/endShift'
 import useGetShift from 'hooks/useGetTodayShift'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
+import useGetShiftReport from 'hooks/useGetShiftReport'
+import LoadingCover from 'components/LoadingCover'
+import {
+  PaymentMethod,
+  getPaymentMethodName,
+} from 'screens/Catalog/screens/Payment'
+import { formatToPeso } from 'util/currency'
 
 const EndShift = () => {
   const navigate = useNavigate()
@@ -21,7 +28,12 @@ const EndShift = () => {
   const isParentScreen = location.pathname === resolvePath.pathname
 
   const { isEnding, endShift } = useEndShift()
-  const { shift } = useGetShift()
+  const { shift, isLoading: isGetShiftLoading } = useGetShift()
+  const { report, isLoading: isGetShiftReportLoading } = useGetShiftReport(
+    shift?.id,
+  )
+
+  const isLoading = isGetShiftLoading || isGetShiftReportLoading
 
   const { user } = useUser()
 
@@ -58,6 +70,57 @@ const EndShift = () => {
     }
   }, [shift])
 
+  const paymentsRecievedPerMethod = useMemo(() => {
+    const paymentDetails = (report?.sales ?? []).reduce(
+      (acc, sale) => {
+        sale.payments.forEach((payment) => {
+          if (acc[payment.method]) {
+            acc[payment.method] += payment.amountReceived - payment.change
+          } else {
+            acc[payment.method] = payment.amountReceived - payment.change
+          }
+        })
+
+        return acc
+      },
+      {} as Record<string, number>,
+    )
+
+    const formattedPaymentDetails: Record<string, string> = {}
+
+    for (const key in paymentDetails) {
+      formattedPaymentDetails[getPaymentMethodName(key as PaymentMethod)] =
+        formatToPeso(paymentDetails[key])
+    }
+
+    return formattedPaymentDetails
+  }, [report?.sales])
+
+  const expectedCash = useMemo(() => {
+    const paymentDetails = (report?.sales ?? []).reduce(
+      (acc, sale) => {
+        sale.payments.forEach((payment) => {
+          if (acc[payment.method]) {
+            acc[payment.method] += payment.amountReceived - payment.change
+          } else {
+            acc[payment.method] = payment.amountReceived - payment.change
+          }
+        })
+
+        return acc
+      },
+      {} as Record<PaymentMethod, number>,
+    )
+
+    const openingCash = report?.shift?.openingPettyCash ?? 0
+
+    return formatToPeso(paymentDetails.cash + openingCash)
+  }, [report?.sales, report?.shift?.openingPettyCash])
+
+  if (isLoading) {
+    return <LoadingCover />
+  }
+
   return (
     <>
       <div
@@ -85,6 +148,10 @@ const EndShift = () => {
               {user?.firstName} {user?.lastName}
             </span>
           </h1>
+          <div className=" grid grid-cols-12 gap-2 text-xl font-bold opacity-70">
+            <div className="col-span-7">Expected Cash:</div>
+            <div className="col-span-5 text-right">{expectedCash}</div>
+          </div>
           {/* Closing Cash */}
           <label className="form-control w-full ">
             <div className="form-control-label  ">
@@ -136,6 +203,20 @@ const EndShift = () => {
               </div>
             )}
           </label>
+          <div className=" grid grid-cols-12 gap-2">
+            <div className="col-span-7">Opening Cash:</div>
+            <div className="col-span-5 text-right">
+              {formatToPeso(report?.shift?.openingPettyCash ?? 0)}
+            </div>
+          </div>
+          {Object.entries(paymentsRecievedPerMethod ?? {}).map(
+            ([key, value]) => (
+              <div key={key} className=" grid grid-cols-12 gap-2">
+                <div className="col-span-7">{key}</div>
+                <div className="col-span-5 text-right">{value}</div>
+              </div>
+            ),
+          )}
 
           <button
             disabled={isEnding}
