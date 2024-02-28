@@ -128,7 +128,13 @@ const ProductCard = (props: ProductCardProps) => {
                   outOfStock ? 'text-red-400' : ''
                 }`}
               >
-                {totalQuantity} {unitOfMeasurement} available
+                {outOfStock ? (
+                  'Out of stock'
+                ) : (
+                  <>
+                    {totalQuantity} {unitOfMeasurement} available
+                  </>
+                )}
               </span>
             </div>
           )}
@@ -139,7 +145,13 @@ const ProductCard = (props: ProductCardProps) => {
                   outOfStock ? 'text-red-400' : ''
                 }`}
               >
-                {totalQuantity} {unitOfMeasurement} available
+                {outOfStock ? (
+                  'Out of stock'
+                ) : (
+                  <>
+                    {totalQuantity} {unitOfMeasurement} available
+                  </>
+                )}
               </span>
             </div>
           )}
