@@ -76,29 +76,25 @@ const ProductCard = (props: ProductCardProps) => {
   return (
     <div className="relative w-[153px] justify-self-center">
       <div className="absolute top-2 z-[9] flex w-full items-center justify-between px-2">
-        {product.isBulkCost === false && (
-          <div className="bg-primary/50 p-1 text-sm text-white">
-            {formatToPeso(
-              new Big(
-                product.forSale
-                  ? product.price
+        <div className="bg-primary/50 p-1 text-sm text-white">
+          {/* 
+            If the product is for sale, use the product price.
+            If the product is not for sale and is a bulk cost, use the cost per unit if it exists, otherwise use 0.
+            If the product is not for sale and is not a bulk cost, use the active batch cost if it exists, otherwise use 0.
+          */}
+          {formatToPeso(
+            new Big(
+              product.forSale
+                ? product.price
+                : product.isBulkCost
+                  ? product.activeBatch.costPerUnit ?? 0
                   : product.activeBatch?.cost ?? 0,
-              ).toNumber(),
-            )}
-          </div>
-        )}
-        {product.isBulkCost === true && (
-          <div className="bg-primary/50 p-1 text-sm text-white">
-            {formatToPeso(
-              new Big(
-                product.forSale
-                  ? product.price
-                  : product.activeBatch.costPerUnit ?? 0,
-              ).toNumber(),
-            )}
-            /{unitAbbrevationsToLabel(unitOfMeasurement)}
-          </div>
-        )}
+            ).toNumber(),
+          )}
+          {/* If the product has a bulk cost, display the unit of measurement */}
+          {product.isBulkCost &&
+            `/${unitAbbrevationsToLabel(unitOfMeasurement)}`}
+        </div>
         <div>
           <DropdownButton
             buttonClassName="btn-primary btn-circle btn-sm "
@@ -120,15 +116,19 @@ const ProductCard = (props: ProductCardProps) => {
           <h2 className="card-title text-sm">
             <MiddleTruncatedText text={name} maxLength={18} />
           </h2>
-
-          {product.trackStock && (
+          {/* 
+            If the product is either tracked or a recipe, display the quantity available.
+            If the product is out of stock and does not allow back orders, display 'Out of stock'.
+            Otherwise, display the quantity available and the unit of measurement.
+          */}
+          {(product.trackStock || product.recipe) && (
             <div className="flex flex-row gap-1  text-xs">
               <span
                 className={`overflow-hidden truncate text-ellipsis ${
                   outOfStock ? 'text-red-400' : ''
                 }`}
               >
-                {outOfStock ? (
+                {product.allowBackOrder === false && outOfStock ? (
                   'Out of stock'
                 ) : (
                   <>
@@ -138,24 +138,11 @@ const ProductCard = (props: ProductCardProps) => {
               </span>
             </div>
           )}
-          {product.recipe && (
-            <div className="flex flex-row gap-1  text-xs">
-              <span
-                className={`overflow-hidden truncate text-ellipsis ${
-                  outOfStock ? 'text-red-400' : ''
-                }`}
-              >
-                {outOfStock ? (
-                  'Out of stock'
-                ) : (
-                  <>
-                    {totalQuantity} {unitOfMeasurement} available
-                  </>
-                )}
-              </span>
-            </div>
-          )}
-          {/* TODO: Fix this via css */}
+          {/* 
+            If the product is not a recipe and is not tracked, display an empty space.
+            This is to maintain the layout consistency.
+          */}
+          {/* Dont show quantity for Untracked product */}
           {!product?.recipe && !product.trackStock && (
             <div className="flex flex-row gap-1  text-xs">
               <span
