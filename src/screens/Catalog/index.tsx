@@ -284,7 +284,7 @@ const Catalog = () => {
     }
 
     return (
-      <div className="relative -top-4 flex flex-col ">
+      <div className="relative -top-4 flex flex-col pb-20 ">
         <div className="mt-2 p-2">
           <h1 className="font-bold">Product Catalog </h1>
         </div>
@@ -354,9 +354,7 @@ const Catalog = () => {
   return (
     <>
       <div
-        className={['screen pb-9', !isParentScreen ? 'hidden-screen' : ''].join(
-          ' ',
-        )}
+        className={['screen', !isParentScreen ? 'hidden-screen' : ''].join(' ')}
       >
         <Toolbar
           items={[
@@ -381,25 +379,20 @@ const Catalog = () => {
         {renderContent()}
 
         {/* Cart Button */}
-        {orders.length > 0 && (
-          <div className="fixed bottom-4 z-10 w-full">
-            <div className="mx-auto max-w-sm md:max-w-md">
-              <button
-                className="btn btn-primary w-full"
-                onClick={showCartScreen}
-              >
-                <div className="flex flex-row gap-4">
-                  <div className="flex flex-row items-center gap-2">
-                    <ShoppingCartIcon className="w-5" /> {totalOrderLength}
-                  </div>
-                  <div className="flex flex-row items-center gap-2">
-                    {formatToPeso(totalOrderAmount)}
-                  </div>
+        <div className="fixed bottom-4 z-10 w-full">
+          <div className="mx-auto max-w-sm md:max-w-md">
+            <button className="btn btn-primary w-full" onClick={showCartScreen}>
+              <div className="flex flex-row gap-4">
+                <div className="flex flex-row items-center gap-2">
+                  <ShoppingCartIcon className="w-5" /> {totalOrderLength}
                 </div>
-              </button>
-            </div>
+                <div className="flex flex-row items-center gap-2">
+                  {formatToPeso(totalOrderAmount)}
+                </div>
+              </div>
+            </button>
           </div>
-        )}
+        </div>
       </div>
       <AnimatePresence>
         <Routes location={location} key={isParentScreen.toString()}>
