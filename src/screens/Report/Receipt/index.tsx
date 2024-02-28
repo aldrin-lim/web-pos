@@ -8,7 +8,6 @@ import { formatToPeso } from 'util/currency'
 import ShareButton from './components/ShareButton'
 import { useMemo, useRef } from 'react'
 import moment from 'moment'
-import { toNumber } from 'lodash'
 
 const Receipt = () => {
   const location = useLocation()

@@ -24,7 +24,6 @@ const ShareButton = (props: ShareButtonProps) => {
       a.download = fileName || 'receipt.png'
       a.click()
     } catch (error) {
-      alert(error)
       console.error('Could not share the screenshot', error)
     }
   }
