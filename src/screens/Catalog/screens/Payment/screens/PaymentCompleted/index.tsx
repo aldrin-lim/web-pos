@@ -62,7 +62,7 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
             </p>
           </div>
           <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl">Amount </h1>
+            <h1 className="text-2xl">Payable </h1>
             <p className="text-3xl font-bold ">
               {formatToPeso(totalAmountPayable)}
             </p>
