@@ -89,11 +89,11 @@ const Receipt = () => {
           <div className=" w-full border-b-2 border-dotted border-black pt-2" />
 
           <div className="flex w-full flex-col gap-2">
-            <div className="col-span-12 grid grid-cols-12 gap-4 font-bold">
+            <div className="col-span-12 grid grid-cols-12 gap-2 font-bold">
               <div className="col-span-4">Item</div>
-              <div className="col-span-3">Price</div>
-              <div className="col-span-2">Qty</div>
-              <div className="col-span-2">Amount</div>
+              <div className="col-span-3 text-right">Price</div>
+              <div className="col-span-2 text-right">Qty</div>
+              <div className="col-span-3 text-right">Amount</div>
             </div>
             {order?.orderItems.map((orderItem) => (
               <div
