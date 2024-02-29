@@ -20,7 +20,7 @@ export const Analytics = {
         tracesSampleRate: 1.0,
       })
     VITE_MIXPANEL_ID && mixpanel.init(VITE_MIXPANEL_ID)
-    VITE_HOTJAR_ID && hotjar.initialize(parseInt(VITE_HOTJAR_ID), 6)
+    hotjar.initialize(parseInt(VITE_HOTJAR_ID), 6)
   },
   identify: (id: string) => {
     VITE_MIXPANEL_ID && mixpanel.identify(id)
