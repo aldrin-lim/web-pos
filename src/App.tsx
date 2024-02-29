@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import AppRoutes from './routes/AppRoutes'
 import { ToastContainer } from 'react-toastify'
 import useUser from 'hooks/useUser'
-import * as Sentry from '@sentry/react'
+import { Analytics } from 'util/analytics'
 
 function App() {
   useUser()
@@ -18,7 +18,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    user?.email && Sentry.setUser({ email: user.email })
+    user?.email && Analytics.identify(user.email)
   }, [user])
 
   return (

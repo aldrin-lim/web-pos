@@ -10,13 +10,11 @@ import Big from 'big.js'
 import { ErrorBoundary } from 'react-error-boundary'
 import Error from 'screens/Error/index.tsx'
 import * as Sentry from '@sentry/react'
+import { Analytics } from 'util/analytics.ts'
 
 Big.DP = 4
 
-Sentry.init({
-  dsn: 'https://a911da052391b13466dbe4ed953f58bb@o4506818846064640.ingest.sentry.io/4506818847834112',
-  integrations: [],
-})
+Analytics.init()
 
 const queryClient = new QueryClient()
 
