@@ -250,6 +250,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
                     setQuantity(value ?? '')
                     return
                   }
+                  return
                 }
                 if (+quantity < originalTotalQuantity) {
                   setQuantity(value ?? '')
@@ -269,6 +270,9 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
                 if (+quantity > 0) {
                   setQuantity(value ?? '')
                 }
+              }}
+              onChange={(value) => {
+                setQuantity(value ?? '0')
               }}
               className="w-full"
             />
