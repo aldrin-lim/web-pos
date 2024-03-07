@@ -8,6 +8,7 @@ import EndShift from 'screens/Shift/EndShift'
 import ZReport from 'screens/Report/ZReport'
 import Receipt from 'screens/Report/Receipt'
 import SignoutScreen from 'components/SignoutScreen'
+import Orders from 'screens/Orders'
 
 const AppRoutes = () => (
   <Routes>
@@ -21,6 +22,7 @@ const AppRoutes = () => (
           </ShiftCheck>
         }
       />
+      <Route path={AppPath.Orders} element={<Orders />} />
       <Route path={AppPath.StartShift} element={<StartShift />} />
       <Route path={AppPath.EndShift} element={<EndShift />} />
       <Route path={AppPath.Report}>

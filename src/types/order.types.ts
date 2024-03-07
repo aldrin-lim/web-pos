@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ProductSchema, ProductVariantSchema } from './product.types'
+import { ProductSchema } from './product.types'
 
 export const PricingOptionSchema = z.object({
   name: z.string({ required_error: 'Name is required' }),
@@ -16,21 +16,35 @@ export const PricingOptionSchema = z.object({
 
 export const OrderItemSchema = z.object({
   product: ProductSchema,
-  productVariant: ProductVariantSchema.optional(),
-  quantity: z.number({ required_error: 'Quantity is required' }),
-  discount: PricingOptionSchema.nullable(),
-  gross: z.number({ required_error: 'Gross is required' }),
-  net: z.number({ required_error: 'Net is required' }),
+  id: z.string(),
+  quantity: z.number(),
+  cost: z.number(),
+  orderItem: z.string(), // assuming OrderItem's id is a string
+  deletedAt: z.date().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 })
 
 const OrderSchema = z.object({
-  gross: z.number({ required_error: 'Gross is required' }),
-  net: z.number({ required_error: 'Net is required' }),
+  id: z.string(),
+  orderNo: z.string(),
+  number: z.string(),
+  sale: z.string(), // assuming Sale's id is a string
+  status: z.enum(['pending', 'completed', 'cancelled', 'voided']),
+  business: z.string(), // assuming Business's id is a string
+  shift: z.string(), // assuming Shift's id is a string
   orderItems: z
     .array(OrderItemSchema)
     .min(1, { message: 'Order items are required' }),
+  deletedAt: z.date().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  totalGross: z.number(),
+  totalDiscount: z.number(),
+  totalNet: z.number(),
+  totalCost: z.number(),
 })
 
-export type Order = z.infer<typeof OrderSchema>
+export type OrderSchema = z.infer<typeof OrderSchema>
 export type OrderItem = z.infer<typeof OrderItemSchema>
 export type PricingOption = z.infer<typeof PricingOptionSchema>

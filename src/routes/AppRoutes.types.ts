@@ -5,5 +5,6 @@ export enum AppPath {
   Report = '/report',
   ZReport = '/report/z',
   Receipt = '/report/receipt',
+  Orders = '/orders',
   Signout = '/signout',
 }

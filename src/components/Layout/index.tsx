@@ -89,7 +89,7 @@ const Layout = () => {
               )}
               {shift && shift.status === 'open' && (
                 <label
-                  onClick={() => navigate(AppPath.EndShift)}
+                  onClick={() => navigate(AppPath.Orders)}
                   htmlFor="my-drawer"
                   className="btn btn-ghost mt-auto w-full justify-start px-1 pl-0"
                 >
