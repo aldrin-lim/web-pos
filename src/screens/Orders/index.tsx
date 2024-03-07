@@ -74,43 +74,43 @@ const Orders = () => {
           {orders &&
             orders.map((order, index) => (
               <React.Fragment key={order.id}>
-                <div className="mb-4 w-full rounded-lg bg-gray-100 p-2">
-                  <thead>
-                    <tr>
-                      <th className="text-xl font-bold text-neutral">
-                        Order #{order.orderNo}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <strong>Date:</strong>{' '}
-                        {moment(order.createdAt).format('MM/DD/YYYY hh:mm A')}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Total:</strong> {formatToPeso(order.totalNet)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Status:</strong>{' '}
-                        <StatusChip status={order.status} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="flex flex-row">
-                          <button className="btn btn-link btn-primary btn-xs no-underline">
-                            <ArchiveBoxArrowDownIcon className="w-4" /> Void
-                            Order
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
+                <div className="mb-4 w-full rounded-lg border border-gray-300 ">
+                  <div className="p-2">
+                    <thead>
+                      <tr>
+                        <th className="text-xl font-bold text-neutral">
+                          Order #{order.orderNo}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <strong>Date:</strong>{' '}
+                          {moment(order.createdAt).format('MM/DD/YYYY hh:mm A')}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Total:</strong> {formatToPeso(order.totalNet)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Status:</strong>{' '}
+                          <StatusChip status={order.status} />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </div>
+                  <div className="flex flex-row justify-center gap-3 bg-gray-100 p-2 py-3">
+                    <button className="btn btn-primary btn-md">
+                      <ArchiveBoxArrowDownIcon className="w-5" /> Void Order
+                    </button>
+                    {/* <button className="btn btn-accent btn-md">
+                      View Order
+                    </button> */}
+                  </div>
                 </div>
               </React.Fragment>
             ))}
