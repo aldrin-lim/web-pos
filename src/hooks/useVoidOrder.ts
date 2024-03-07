@@ -9,13 +9,19 @@ const useVoidOrder = () => {
   const [error, setError] = useState<unknown | undefined | null>(null)
 
   const { mutateAsync, isLoading } = useMutation({
-    mutationFn: async (param: { orderId: string; shiftId: string }) => {
-      const { orderId, shiftId } = param
+    mutationFn: async (param: {
+      orderId: string
+      shiftId: string
+      voidPin: string
+    }) => {
+      const { orderId, shiftId, voidPin } = param
       const url = `/orders/${orderId}/void?shiftId=${encodeURIComponent(
         shiftId,
       )}`
 
-      const result = await httpClient.post(url, param).then((res) => res.data)
+      const result = await httpClient
+        .post(url, { voidPin })
+        .then((res) => res.data)
       return result
     },
     onSuccess: () => {

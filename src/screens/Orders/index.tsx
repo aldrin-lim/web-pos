@@ -14,36 +14,7 @@ import React from 'react'
 import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom'
 import { AppPath } from 'routes/AppRoutes.types'
 import { formatToPeso } from 'util/currency'
-
-const StatusChip = (props: {
-  status: 'pending' | 'completed' | 'cancelled' | 'voided'
-}) => {
-  const { status } = props
-  if (status === 'pending')
-    return (
-      <div className="badge badge-warning badge-outline py-3 text-xs font-bold text-white">
-        Pending
-      </div>
-    )
-  if (status === 'cancelled')
-    return (
-      <div className="badge badge-error badge-outline py-3 text-xs font-bold text-white">
-        Cancelled
-      </div>
-    )
-  if (status === 'voided')
-    return (
-      <div className="badge badge-neutral badge-outline py-3 text-xs font-bold text-white">
-        Voided
-      </div>
-    )
-
-  return (
-    <div className="badge badge-success badge-outline py-3 text-xs font-bold text-white">
-      Completed
-    </div>
-  )
-}
+import OrderItem from './components/OrderItem'
 
 const Orders = () => {
   const navigate = useNavigate()
@@ -51,13 +22,16 @@ const Orders = () => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
 
-  const { user } = useAuth0()
+  const [showPinDialog, setShowPinDialog] = React.useState(false)
+  const [setPin, setSetPin] = React.useState('')
 
   const { orders, isLoading: isOrdersLoading } = useGetOrders()
   const { shift, isLoading: isShiftLoading } = useGetTodayShift()
   const { voidOrder, isLoading: isVoiding } = useVoidOrder()
 
   const isLoading = isOrdersLoading || isShiftLoading
+
+  const submitVoid = () => {}
 
   return (
     <div
@@ -66,6 +40,24 @@ const Orders = () => {
         !isParentScreen ? 'hidden-screen' : '',
       ].join(' ')}
     >
+      {/* <dialog
+        open={showPinDialog}
+        id="unsaved-changes-dialog"
+        className="modal bg-black/30"
+      >
+        <div className="modal-box px-4">
+          <h3 className="text-lg font-bold">Unsaved Changes</h3>
+          <p className="py-4">
+            There are unsaved changes. Do you want to leave without saving?
+          </p>
+          <div className="font-sm modal-action">
+            <button className="btn">Keep editing</button>
+            <button type="button" className="btn btn-primary">
+              Leave without saving
+            </button>
+          </div>
+        </div>
+      </dialog> */}
       <Toolbar
         items={[
           <ToolbarButton
@@ -90,53 +82,7 @@ const Orders = () => {
           {orders &&
             orders.map((order) => (
               <React.Fragment key={order.id}>
-                <div className="mb-4 w-full rounded-lg border border-gray-300 ">
-                  <div className="p-2">
-                    <thead>
-                      <tr>
-                        <th className="text-xl font-bold text-neutral">
-                          Order #{order.orderNo}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <strong>Date:</strong>{' '}
-                          {moment(order.createdAt).format('MM/DD/YYYY hh:mm A')}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>Total:</strong> {formatToPeso(order.totalNet)}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>Status:</strong>{' '}
-                          <StatusChip status={order.status} />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </div>
-                  <div className="flex flex-row justify-center gap-3 bg-gray-100 p-2 py-3">
-                    <button
-                      onClick={() =>
-                        voidOrder({
-                          orderId: order.id,
-                          shiftId: shift?.id ?? '',
-                        })
-                      }
-                      disabled={isVoiding}
-                      className="btn btn-primary btn-md"
-                    >
-                      <ArchiveBoxArrowDownIcon className="w-5" /> Void Order
-                    </button>
-                    {/* <button className="btn btn-accent btn-md">
-                      View Order
-                    </button> */}
-                  </div>
-                </div>
+                <OrderItem shiftId={shift?.id ?? ''} order={order} />
               </React.Fragment>
             ))}
           {/* <thead>
