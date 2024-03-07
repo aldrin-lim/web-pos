@@ -1,3 +1,4 @@
+import { useAuth0 } from '@auth0/auth0-react'
 import {
   ArchiveBoxArrowDownIcon,
   ChevronLeftIcon,
@@ -6,6 +7,8 @@ import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
 import useGetOrders from 'hooks/useGetOrders'
+import useGetTodayShift from 'hooks/useGetTodayShift'
+import useVoidOrder from 'hooks/useVoidOrder'
 import moment from 'moment'
 import React from 'react'
 import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom'
@@ -48,7 +51,13 @@ const Orders = () => {
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
 
-  const { orders } = useGetOrders()
+  const { user } = useAuth0()
+
+  const { orders, isLoading: isOrdersLoading } = useGetOrders()
+  const { shift, isLoading: isShiftLoading } = useGetTodayShift()
+  const { voidOrder, isLoading: isVoiding } = useVoidOrder()
+
+  const isLoading = isOrdersLoading || isShiftLoading
 
   return (
     <div
@@ -69,10 +78,17 @@ const Orders = () => {
           <ToolbarTitle key="title" title="Orders" />,
         ]}
       />
+      {isLoading && (
+        <div className="flex flex-col gap-4">
+          <div className="skeleton h-[283px] w-full rounded-lg" />
+          <div className="skeleton h-[283px] w-full rounded-lg" />
+          <div className="skeleton h-[283px] w-full rounded-lg" />
+        </div>
+      )}
       <div className="w-full ">
         <table className="table table-md">
           {orders &&
-            orders.map((order, index) => (
+            orders.map((order) => (
               <React.Fragment key={order.id}>
                 <div className="mb-4 w-full rounded-lg border border-gray-300 ">
                   <div className="p-2">
@@ -104,7 +120,16 @@ const Orders = () => {
                     </tbody>
                   </div>
                   <div className="flex flex-row justify-center gap-3 bg-gray-100 p-2 py-3">
-                    <button className="btn btn-primary btn-md">
+                    <button
+                      onClick={() =>
+                        voidOrder({
+                          orderId: order.id,
+                          shiftId: shift?.id ?? '',
+                        })
+                      }
+                      disabled={isVoiding}
+                      className="btn btn-primary btn-md"
+                    >
                       <ArchiveBoxArrowDownIcon className="w-5" /> Void Order
                     </button>
                     {/* <button className="btn btn-accent btn-md">
