@@ -87,7 +87,7 @@ const ZReport = () => {
 
   // 14:46:23 to hh:mm:ss am/pm using moment
   const openingStartTime = moment(shift.openedTime, 'HH:mm:ss')
-  const openingDate = moment(shift.createdAt)
+  const openingDate = moment(shift.openedTime)
     .hours(openingStartTime.hours())
     .minutes(openingStartTime.minutes())
     .seconds(openingStartTime.seconds())
@@ -95,7 +95,7 @@ const ZReport = () => {
   const opening = openingDate.format('MMM. d, yyyy @ hh:mm:ss A')
 
   const closingStartTime = moment(shift.closedTime, 'HH:mm:ss')
-  const closingDate = moment(shift.updatedAt)
+  const closingDate = moment(shift.closedTime)
     .hours(closingStartTime.hours())
     .minutes(closingStartTime.minutes())
     .seconds(closingStartTime.seconds())
