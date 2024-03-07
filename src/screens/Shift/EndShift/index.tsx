@@ -20,6 +20,7 @@ import {
   getPaymentMethodName,
 } from 'screens/Catalog/screens/Payment'
 import { formatToPeso } from 'util/currency'
+import { toNumber } from 'lodash'
 
 const EndShift = () => {
   const navigate = useNavigate()
@@ -114,7 +115,9 @@ const EndShift = () => {
 
     const openingCash = report?.shift?.openingPettyCash ?? 0
 
-    return formatToPeso(paymentDetails.cash + openingCash)
+    return formatToPeso(
+      toNumber(paymentDetails.cash ?? 0) + toNumber(openingCash ?? 0),
+    )
   }, [report?.sales, report?.shift?.openingPettyCash])
 
   if (isLoading) {

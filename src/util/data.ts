@@ -25,3 +25,14 @@ export function isWithinExpiration(inputDate?: Date | null) {
   // Check if the current date is before the expiration date
   return now.isBefore(expirationDate)
 }
+
+export const isExpired = (expirationDate: Date | null) => {
+  if (!expirationDate) {
+    return false
+  }
+
+  const date = moment(expirationDate)
+  const now = moment()
+
+  return now.isAfter(date)
+}

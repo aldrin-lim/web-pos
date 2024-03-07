@@ -105,6 +105,7 @@ const BaseProduct = z.object({
   outOfStock: z.boolean().default(false),
   availability: z.string().default(''),
   totalQuantity: z.number().default(0),
+  stockWarning: z.number().default(0),
 })
 
 export const RecipeSchema = z.object({

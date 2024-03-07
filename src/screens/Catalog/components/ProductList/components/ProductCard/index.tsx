@@ -6,6 +6,8 @@ import DropdownButton from 'components/DropdownButton'
 import { formatToPeso } from 'util/currency'
 import Big from 'big.js'
 import { unitAbbrevationsToLabel } from 'util/measurement'
+import { isExpired } from 'util/data'
+import { toNumber } from 'lodash'
 
 type Product = z.infer<typeof ProductSchema>
 
@@ -82,18 +84,7 @@ const ProductCard = (props: ProductCardProps) => {
             If the product is not for sale and is a bulk cost, use the cost per unit if it exists, otherwise use 0.
             If the product is not for sale and is not a bulk cost, use the active batch cost if it exists, otherwise use 0.
           */}
-          {formatToPeso(
-            new Big(
-              product.forSale
-                ? product.price
-                : product.isBulkCost
-                  ? product.activeBatch.costPerUnit ?? 0
-                  : product.activeBatch?.cost ?? 0,
-            ).toNumber(),
-          )}
-          {/* If the product has a bulk cost, display the unit of measurement */}
-          {product.isBulkCost &&
-            `/${unitAbbrevationsToLabel(unitOfMeasurement)}`}
+          {renderPrice(product)}
         </div>
         <div>
           <DropdownButton
@@ -121,41 +112,91 @@ const ProductCard = (props: ProductCardProps) => {
             If the product is out of stock and does not allow back orders, display 'Out of stock'.
             Otherwise, display the quantity available and the unit of measurement.
           */}
-          {(product.trackStock || product.recipe) && (
-            <div className="flex flex-row gap-1  text-xs">
-              <span
-                className={`overflow-hidden truncate text-ellipsis ${
-                  outOfStock ? 'text-red-400' : ''
-                }`}
-              >
-                {product.allowBackOrder === false && outOfStock ? (
-                  'Out of stock'
-                ) : (
-                  <>
-                    {totalQuantity} {unitOfMeasurement} available
-                  </>
-                )}
-              </span>
-            </div>
-          )}
-          {/* 
-            If the product is not a recipe and is not tracked, display an empty space.
-            This is to maintain the layout consistency.
-          */}
-          {/* Dont show quantity for Untracked product */}
-          {!product?.recipe && !product.trackStock && (
-            <div className="flex flex-row gap-1  text-xs">
-              <span
-                className={`overflow-hidden truncate text-ellipsis ${
-                  outOfStock ? 'text-red-400' : ''
-                }`}
-              >
-                &nbsp;
-              </span>
-            </div>
-          )}
+          {renderStockInfo(product)}
         </div>
       </div>
+    </div>
+  )
+}
+
+const renderPrice = (product: Product) => {
+  const activeBatch = product.activeBatch
+  const cost = activeBatch?.cost ?? 0
+  const measurement = activeBatch?.unitOfMeasurement
+  if (!product.forSale) {
+    // user price for ingredients
+
+    if (product.isBulkCost) {
+      return `${formatToPeso(cost)} ${
+        measurement ? `/${unitAbbrevationsToLabel(measurement)}` : ``
+      }`
+    }
+
+    return formatToPeso(cost)
+  }
+
+  if (product.isBulkCost) {
+    return `${formatToPeso(cost)} ${
+      measurement ? `/${unitAbbrevationsToLabel(measurement)}` : ``
+    }`
+  }
+
+  return formatToPeso(product.price)
+}
+
+const renderStockInfo = (product: Product) => {
+  const activeBatch = product.activeBatch
+  const measurement = unitAbbrevationsToLabel(
+    activeBatch?.unitOfMeasurement ?? '',
+  )
+  if (!activeBatch) {
+    return (
+      <div className="flex flex-row gap-1  text-xs">
+        <span className={`overflow-hidden truncate text-ellipsis text-red-400`}>
+          No Batches Found
+        </span>
+      </div>
+    )
+  }
+
+  if (product.outOfStock) {
+    return (
+      <div className="flex flex-row gap-1  text-xs">
+        <span className={`overflow-hidden truncate text-ellipsis text-red-400`}>
+          Out of stock
+        </span>
+      </div>
+    )
+  }
+
+  if (isExpired(activeBatch.expirationDate)) {
+    return (
+      <div className="flex flex-row gap-1  text-xs">
+        <span
+          className={`overflow-hidden truncate text-ellipsis text-orange-400`}
+        >
+          Expired
+        </span>
+      </div>
+    )
+  }
+  if (toNumber(product.stockWarning) >= product.totalQuantity) {
+    return (
+      <div className="flex flex-row gap-1  text-xs">
+        <span
+          className={`overflow-hidden truncate text-ellipsis text-orange-400`}
+        >
+          Low ({product.totalQuantity} {measurement} available)
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-row gap-1  text-xs">
+      <span className={`overflow-hidden truncate text-ellipsis `}>
+        {product.totalQuantity} {measurement} available
+      </span>
     </div>
   )
 }
