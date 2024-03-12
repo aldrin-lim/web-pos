@@ -67,7 +67,11 @@ const Receipt = () => {
           <XCircleIcon className="w-6" />
         </button>
       </div>
-      <div ref={ref} className="h-screen w-full bg-base-100">
+      <div
+        id="receipt-container"
+        ref={ref}
+        className="h-screen w-full bg-base-100"
+      >
         <div className="mx-auto flex h-[calc(100%-48px)] max-w-sm flex-col gap-2 p-4">
           <div>
             <h1 className="text-center text-lg font-bold">

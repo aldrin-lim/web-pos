@@ -10,17 +10,21 @@ const ShareButton = (props: ShareButtonProps) => {
   const { elementToShare, fileName } = props
 
   const shareScreenshot = async () => {
-    if (!elementToShare) return null
+    const recipetContainer = document.getElementById('receipt-container')
+    console.log(recipetContainer)
+    if (!recipetContainer) return null
 
     try {
-      const dataUrl = await htmlToImage.toPng(elementToShare)
+      const dataUrl = await htmlToImage.toPng(recipetContainer)
 
       // Convert dataUrl to Blob for sharing
       const blob = await (await fetch(dataUrl)).blob()
 
       const url = URL.createObjectURL(blob)
+
       const a = document.createElement('a')
       a.href = url
+      a.target = '_blank'
       a.download = fileName || 'receipt.png'
       a.click()
     } catch (error) {
