@@ -85,22 +85,9 @@ const ZReport = () => {
 
   const { shift, sales } = report
 
-  // 14:46:23 to hh:mm:ss am/pm using moment
-  const openingStartTime = moment(shift.openedTime, 'HH:mm:ss')
-  const openingDate = moment(shift.openedTime)
-    .hours(openingStartTime.hours())
-    .minutes(openingStartTime.minutes())
-    .seconds(openingStartTime.seconds())
+  const opened = moment(shift.openedTime).format('MMM. d, yyyy @ hh:mm:ss A')
 
-  const opening = openingDate.format('MMM. d, yyyy @ hh:mm:ss A')
-
-  const closingStartTime = moment(shift.closedTime, 'HH:mm:ss')
-  const closingDate = moment(shift.closedTime)
-    .hours(closingStartTime.hours())
-    .minutes(closingStartTime.minutes())
-    .seconds(closingStartTime.seconds())
-
-  const closing = closingDate.format('MMM. d, yyyy @ hh:mm:ss A')
+  const closed = moment(shift.closedTime).format('MMM. d, yyyy @ hh:mm:ss A')
 
   const grossSales = sales.reduce((acc, sale) => {
     return (
@@ -146,14 +133,14 @@ const ZReport = () => {
 
           {/* Opening */}
           <div className="grid grid-cols-12 gap-2">
-            <div className="opening-date col-span-6">Opened: {opening}</div>
+            <div className="opening-date col-span-6">Opened: {opened}</div>
             <div className="opening-staff col-span-6">
               Staff: {shift.openedBy?.firstName} {shift.closedBy?.lastName}
             </div>
           </div>
           {/* Closing */}
           <div className="grid grid-cols-12 gap-2">
-            <div className="closing-date col-span-6">Closed: {closing}</div>
+            <div className="closing-date col-span-6">Closed: {closed}</div>
             <div className="closing-staff col-span-6">
               Staff: {shift.closedBy?.firstName} {shift.closedBy?.lastName}
             </div>
