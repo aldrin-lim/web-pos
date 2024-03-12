@@ -276,8 +276,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               }}
               className="w-full"
             />
-            {product.trackStock === true && <p>{totalQuantity} Available</p>}
-            {product.recipe && <p>{totalQuantity} Available</p>}
+            {!product.allowBackOrder && <p>{totalQuantity} Available</p>}
             <p className="text-red-400">{error}</p>
           </div>
           {renderCTA()}
