@@ -7,6 +7,7 @@ const {
   VITE_HOTJAR_ID,
   VITE_SENTRY_DSN,
   VITE_SENTRY_ENVIRONMENT,
+  NODE_ENV,
 } = import.meta.env
 
 export const Analytics = {
@@ -19,7 +20,14 @@ export const Analytics = {
         integrations: [Sentry.browserTracingIntegration()],
         tracesSampleRate: 1.0,
       })
-    VITE_MIXPANEL_ID && mixpanel.init(VITE_MIXPANEL_ID)
+    VITE_MIXPANEL_ID &&
+      mixpanel.init(VITE_MIXPANEL_ID, {
+        debug: NODE_ENV !== 'production',
+        track_pageview: true,
+        persistence: 'localStorage',
+        ignore_dnt: true,
+        api_transport: 'sendBeacon',
+      })
     hotjar.initialize(parseInt(VITE_HOTJAR_ID), 6)
   },
   identify: (id: string) => {
