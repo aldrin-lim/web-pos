@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary
       onError={(error) => {
-        Sentry.captureException(error)
+        // Sentry.captureException(error)
       }}
       fallback={<Error />}
     >

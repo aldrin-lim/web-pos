@@ -100,6 +100,7 @@ const BaseProduct = z.object({
   batches: z
     .array(ProductBatchSchema)
     .min(1, 'Batches must have at least 1 item'),
+  applyTax: z.boolean().default(false),
 
   // Read only
   outOfStock: z.boolean().default(false),

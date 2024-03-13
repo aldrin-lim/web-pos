@@ -77,8 +77,8 @@ const ProductCard = (props: ProductCardProps) => {
 
   return (
     <div className="relative w-[153px] justify-self-center">
-      <div className="absolute top-2 z-[9] flex w-full items-center justify-between px-2">
-        <div className="bg-primary/50 p-1 text-sm text-white">
+      <div className="absolute z-[9] flex w-full items-center justify-between">
+        <div className="ml-2 mt-2 rounded-md bg-neutral/20 p-1 text-sm ">
           {/* 
             If the product is for sale, use the product price.
             If the product is not for sale and is a bulk cost, use the cost per unit if it exists, otherwise use 0.
@@ -86,9 +86,9 @@ const ProductCard = (props: ProductCardProps) => {
           */}
           {renderPrice(product)}
         </div>
-        <div>
+        <div className="relative -right-[1px]">
           <DropdownButton
-            buttonClassName="btn-primary btn-circle btn-sm "
+            buttonClassName="btn-primary btn-circle btn-sm rounded-none rounded-bl-xl"
             items={getMenuItems()}
           />
         </div>
