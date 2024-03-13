@@ -108,7 +108,7 @@ const ProductImages = (props: ProductImagesProps) => {
         {images.map((image, index) => (
           <div key={index} className="relative">
             <div
-              className={`flex justify-center overflow-hidden rounded-md border bg-gray-100`}
+              className={`flex justify-center overflow-hidden rounded-md border bg-base-100`}
               style={{
                 width: imageSize,
                 height: imageSize,

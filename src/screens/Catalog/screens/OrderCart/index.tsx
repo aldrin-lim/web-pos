@@ -101,7 +101,7 @@ const OrderCart = (props: CartProps) => {
             })}
           </div>
         </div>
-        <div className="fixed bottom-4 left-0 right-0 flex flex-col bg-gray-300 px-2">
+        <div className="fixed bottom-4 left-0 right-0 flex flex-col bg-base-100 px-2">
           <button onClick={showPaymentScreen} className="btn btn-primary">
             Payment
           </button>

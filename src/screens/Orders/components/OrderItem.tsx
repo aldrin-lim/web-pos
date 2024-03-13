@@ -145,7 +145,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, shiftId }) => {
             </tr>
           </tbody>
         </div>
-        <div className="flex flex-row justify-center gap-3 bg-gray-100 p-2 py-3">
+        <div className="flex flex-row justify-center gap-3 bg-base-100 p-2 py-3">
           <button
             onClick={() => setShowPinDialog(true)}
             disabled={isVoiding}
