@@ -18,14 +18,14 @@ const ProductCard = (props: ProductCardProps) => {
   const image = product.images?.[0] || ''
 
   return (
-    <div className="relative  justify-self-center">
+    <div className="relative  justify-self-center bg-neutral">
       <div className="absolute top-2 z-[9] flex w-full items-center justify-between px-2">
         <div className="bg-primary/50 p-1 text-sm text-white">
           {renderPrice(product)}
         </div>
       </div>
       <div
-        className={`ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300  bg-base-100 `}
+        className={`ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300  bg-neutral `}
         onClick={() => onClick?.(product)}
       >
         <figure className="top-1 h-[155px] w-[153px] overflow-hidden  bg-gray-300">

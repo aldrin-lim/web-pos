@@ -286,7 +286,7 @@ const Catalog = () => {
     return (
       <div className="relative -top-4 flex flex-col pb-20 ">
         <div className="mt-2 p-2">
-          <h1 className="font-bold">Product Catalog </h1>
+          <h1 className="font-bold text-white">Product Catalog </h1>
         </div>
         <div className="mt-4">
           <ProductList
@@ -370,7 +370,7 @@ const Catalog = () => {
               className="mx-auto flex flex-row gap-3 self-center py-3 text-center"
             >
               <img key="logo " className="w-6 self-center" src={logo} />
-              <h1 className="font-bold">Qrafter</h1>
+              <h1 className="h1-primary font-bold">Qrafter</h1>
             </div>,
             null,
           ]}

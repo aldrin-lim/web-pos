@@ -16,25 +16,27 @@ export default {
   daisyui: {
     themes: [
       {
-        light: {
-          ...require("daisyui/src/theming/themes")["light"],
-          primary: "#856AD4",
-          secondary: "#3A9E92",
-          warning: "FF7300",
-          "primary-content": "#ffffff",
-          "secondary-content": "#ffffff",
-          "accent-content": "#ffffff",
-        },
-        // dark: {
-        //   ...require("daisyui/src/theming/themes")["dark"],
+        // light: {
+        //   ...require("daisyui/src/theming/themes")["light"],
         //   primary: "#856AD4",
         //   secondary: "#3A9E92",
         //   warning: "FF7300",
-        //   neutral: "#FFFFFF",
         //   "primary-content": "#ffffff",
         //   "secondary-content": "#ffffff",
         //   "accent-content": "#ffffff",
-        // }
+        // },
+        dark: {
+          ...require("daisyui/src/theming/themes")["dark"],
+          primary: "#856AD4",
+          secondary: "#3A9E92",
+          warning: "FF7300",
+          neutral: "#FFFFFF",
+          "primary-content": "#ffffff",
+          "secondary-content": "#ffffff",
+          "accent-content": "#ffffff",
+          "base-secondary": "#fff"
+
+        }
       },
       // "dark",
       // "cupcake",

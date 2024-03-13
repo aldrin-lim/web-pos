@@ -34,10 +34,10 @@ const DropdownButton = (props: DropdownProps) => {
         onClick={() => setOpen((prev) => !prev)}
         className={`btn ${buttonClassName}`}
       >
-        <EllipsisVerticalIcon className="w-6" />
+        <EllipsisVerticalIcon className="w-6 text-gray-900 hover:text-white focus:text-white" />
       </label>
       {open && (
-        <div className="dop menu dropdown-content top-10 flex w-36 flex-col overflow-hidden rounded-md bg-base-100 p-0 shadow">
+        <div className="dop menu dropdown-content top-10 flex w-36 flex-col overflow-hidden rounded-md bg-neutral p-0 shadow">
           {items.map((item, index) => {
             if (item.disabled) {
               return null
