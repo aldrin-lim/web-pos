@@ -24,6 +24,7 @@ import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import SinglePayment from './screens/SinglePayment'
 import SplitPayment from './screens/SplitPayment'
+import useUser from 'hooks/useUser'
 
 enum Screen {
   SinglePayment = 'single-payment',
@@ -92,6 +93,7 @@ export const getPaymentMethodName = (method: PaymentMethod): string => {
 
 const Payment = (props: PaymentProps) => {
   const { orders } = props
+  const { taxRate } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -120,7 +122,21 @@ const Payment = (props: PaymentProps) => {
           .toFixed(2),
       )
     }
-    return acc + price * order.quantity
+    if (order.product.applyTax && taxRate) {
+      return new Big(acc)
+        .add(
+          new Big(price).add(
+            new Big(price).times(new Big(taxRate ?? 0).div(100)),
+          ),
+        )
+        .round(2)
+        .toNumber()
+    }
+
+    return new Big(acc)
+      .add(new Big(price).times(new Big(order.quantity)))
+      .round(2)
+      .toNumber()
   }, 0)
 
   return (

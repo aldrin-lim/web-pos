@@ -28,6 +28,7 @@ import { useFormik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import NextPayment from './NextPayment'
 import { useEffect } from 'react'
+import useUser from 'hooks/useUser'
 
 enum Screen {
   NextPayment = 'next-payment',
@@ -112,6 +113,7 @@ export const getPaymentMethodName = (method: PaymentMethod) => {
 
 const SplitPayment = (props: PaymentProps) => {
   const { orders } = props
+  const { taxRate } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -140,7 +142,21 @@ const SplitPayment = (props: PaymentProps) => {
           .toFixed(2),
       )
     }
-    return acc + price * order.quantity
+    if (order.product.applyTax && taxRate) {
+      return new Big(acc)
+        .add(
+          new Big(price).add(
+            new Big(price).times(new Big(taxRate ?? 0).div(100)),
+          ),
+        )
+        .round(2)
+        .toNumber()
+    }
+
+    return new Big(acc)
+      .add(new Big(price).times(new Big(order.quantity)))
+      .round(2)
+      .toNumber()
   }, 0)
 
   const { setFieldValue, values, errors, submitForm } = useFormik({
