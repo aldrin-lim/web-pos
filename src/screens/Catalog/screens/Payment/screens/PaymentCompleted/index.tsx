@@ -32,7 +32,10 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
   }, 0)
 
   const totalChange = payments.reduce((acc, payment) => {
-    return acc + payment.change
+    if (payment.method === 'cash') {
+      return acc + payment.change
+    }
+    return acc
   }, 0)
 
   const showReceipt = () => {
