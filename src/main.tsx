@@ -9,7 +9,6 @@ import { AuthProvider } from 'contexts/AuthContext.tsx'
 import Big from 'big.js'
 import { ErrorBoundary } from 'react-error-boundary'
 import Error from 'screens/Error/index.tsx'
-import * as Sentry from '@sentry/react'
 import { Analytics } from 'util/analytics.ts'
 
 Big.DP = 4
