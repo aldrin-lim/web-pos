@@ -7,7 +7,7 @@ const {
   VITE_HOTJAR_ID,
   VITE_SENTRY_DSN,
   VITE_SENTRY_ENVIRONMENT,
-  NODE_ENV,
+  MODE,
 } = import.meta.env
 
 export const Analytics = {
@@ -22,7 +22,7 @@ export const Analytics = {
       })
     VITE_MIXPANEL_ID &&
       mixpanel.init(VITE_MIXPANEL_ID, {
-        debug: NODE_ENV !== 'production',
+        debug: MODE !== 'production',
         track_pageview: true,
         persistence: 'localStorage',
         ignore_dnt: true,

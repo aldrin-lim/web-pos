@@ -18,7 +18,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (import.meta.env.NODE_ENV === 'production') {
+    if (import.meta.env.MODE === 'production') {
       console.log('production')
       if (user?.email) {
         Analytics.identify(user.email)
