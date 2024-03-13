@@ -31,9 +31,7 @@ type ProductCardProps = {
 //  Card component for displaying the products from collection
 const ProductCard = (props: ProductCardProps) => {
   const { product, onClick, active = false } = props
-  const { name, outOfStock, totalQuantity } = product
-
-  const { unitOfMeasurement } = product.activeBatch
+  const { name, outOfStock } = product
 
   const image = product.images?.[0] || ''
 

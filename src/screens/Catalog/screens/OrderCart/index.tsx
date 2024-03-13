@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, PencilIcon } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
@@ -103,8 +103,6 @@ const OrderCart = (props: CartProps) => {
 
     return totalTax
   }, [orders, taxRate])
-
-  console.log(tax)
 
   if (orders.length === 0) {
     return <Navigate to="../" />

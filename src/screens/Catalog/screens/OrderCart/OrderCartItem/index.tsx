@@ -2,7 +2,6 @@ import { PencilIcon } from '@heroicons/react/24/outline'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
 import { useMemo } from 'react'
-import { Navigate } from 'react-router-dom'
 import { Order } from 'screens/Catalog'
 import { formatToPeso } from 'util/currency'
 

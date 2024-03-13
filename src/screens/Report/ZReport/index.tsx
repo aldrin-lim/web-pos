@@ -3,7 +3,10 @@ import useGetShiftReport from 'hooks/useGetShiftReport'
 import moment from 'moment'
 import { useMemo } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { getPaymentMethodName } from 'screens/Catalog/screens/Payment'
+import {
+  PaymentMethod,
+  getPaymentMethodName,
+} from 'screens/Catalog/screens/Payment'
 import { formatToPeso } from 'util/currency'
 
 const ZReport = () => {
@@ -34,9 +37,8 @@ const ZReport = () => {
     const formattedPaymentDetails: Record<string, string> = {}
 
     for (const key in paymentDetails) {
-      formattedPaymentDetails[getPaymentMethodName(key)] = formatToPeso(
-        paymentDetails[key],
-      )
+      formattedPaymentDetails[getPaymentMethodName(key as PaymentMethod)] =
+        formatToPeso(paymentDetails[key])
     }
 
     return formattedPaymentDetails
