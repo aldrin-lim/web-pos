@@ -361,7 +361,7 @@ const Catalog = () => {
             <label
               htmlFor="my-drawer"
               key="1"
-              className="btn btn-link px-0 normal-case text-blue-400 no-underline disabled:bg-transparent disabled:text-gray-400"
+              className="btn btn-link px-0 normal-case text-neutral no-underline disabled:bg-transparent disabled:text-gray-400"
             >
               <Bars3Icon className="w-6" />
             </label>,
