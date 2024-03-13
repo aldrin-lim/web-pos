@@ -21,6 +21,7 @@ import {
 } from 'screens/Catalog/screens/Payment'
 import { formatToPeso } from 'util/currency'
 import { toNumber } from 'lodash'
+import mixpanel from 'mixpanel-browser'
 
 const EndShift = () => {
   const navigate = useNavigate()
@@ -33,6 +34,14 @@ const EndShift = () => {
   const { report, isLoading: isGetShiftReportLoading } = useGetShiftReport(
     shift?.id,
   )
+
+  useEffect(() => {
+    if (shift?.closedBy) {
+      mixpanel.track('End Shift', {
+        email: shift?.closedBy.email,
+      })
+    }
+  }, [shift])
 
   const isLoading = isGetShiftLoading || isGetShiftReportLoading
 

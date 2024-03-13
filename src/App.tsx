@@ -18,7 +18,9 @@ function App() {
   }, [])
 
   useEffect(() => {
-    user?.email && Analytics.identify(user.email)
+    user?.email &&
+      import.meta.env.NODE_ENV === 'production' &&
+      Analytics.identify(user.email)
   }, [user])
 
   return (
