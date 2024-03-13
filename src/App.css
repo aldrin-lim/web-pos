@@ -9,6 +9,8 @@ body,
   @apply h-full;
 }
 
+
+
 *, html {
   scroll-behavior: smooth !important;
 }
@@ -22,10 +24,14 @@ html, body {
 }
 
 .App {
-  @apply w-full bg-base-100 h-full;
+  @apply w-full bg-base-100;
 }
 
 @layer base {
+  body {
+    @apply font-normal text-base-content/90
+  }
+
   .DatePicker {
     -webkit-min-logical-width: calc(100% - 16px)
   }
@@ -36,6 +42,7 @@ html, body {
 
   .screen > * {
     @apply px-3
+    
   }
 
   /* .ToolbarContainer + * {
@@ -44,9 +51,21 @@ html, body {
 }
 
 @layer components {
+
+  .input {
+    @apply rounded-md px-2
+  }
+  
+  .btn {
+    @apply rounded-md
+  }
+
+  .card {
+    @apply rounded-md
+  }
   
   .screen {
-    @apply absolute flex w-full flex-col gap-4 h-full
+    @apply absolute flex w-full flex-col gap-4 min-h-screen
   }
 
   .hidden-screen {
