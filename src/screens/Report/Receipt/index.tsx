@@ -7,7 +7,7 @@ import { User } from 'types/user.type'
 import { formatToPeso } from 'util/currency'
 import ShareButton from './components/ShareButton'
 import { useMemo, useRef } from 'react'
-import moment from 'moment'
+import * as moment from 'moment-timezone'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
 import {
@@ -190,7 +190,9 @@ const Receipt = () => {
           </div>
           <div className="flex flex-col gap-1">
             {order?.createdAt &&
-              moment(order.createdAt).format('MMM DD YYYY, h:mm:ss a')}
+              moment(order.createdAt)
+                .tz('Asia/Manila')
+                .format('MMM DD YYYY, h:mm:ss a')}
           </div>
 
           <div className=" w-full border-b-2 border-dotted border-black pt-2" />

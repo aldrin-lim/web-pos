@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import moment from 'moment'
+import * as moment from 'moment-timezone'
 import {
   ArchiveBoxArrowDownIcon,
   EyeIcon,
@@ -130,7 +130,9 @@ const OrderItem: React.FC<OrderItemProps> = ({ order, shiftId }) => {
             <tr>
               <td>
                 <strong>Date:</strong>{' '}
-                {moment(order.createdAt).format('MM/DD/YYYY hh:mm A')}
+                {moment(order.createdAt)
+                  .tz('Asia/Manila')
+                  .format('MM/DD/YYYY hh:mm A')}
               </td>
             </tr>
             <tr>
