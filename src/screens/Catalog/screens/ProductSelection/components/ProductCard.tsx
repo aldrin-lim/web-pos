@@ -18,22 +18,22 @@ const ProductCard = (props: ProductCardProps) => {
   const image = product.images?.[0] || ''
 
   return (
-    <div className="relative  justify-self-center bg-neutral">
-      <div className="absolute top-2 z-[9] flex w-full items-center justify-between px-2">
-        <div className="bg-primary/50 p-1 text-sm text-white">
+    <div className="relative w-[160px] justify-self-center rounded border-gray-300 bg-neutral">
+      <div className="absolute z-[9] flex w-full items-start justify-between">
+        <div className="ml-2 mt-2 rounded-md bg-neutral bg-opacity-70 p-1 text-sm text-gray-900">
           {renderPrice(product)}
         </div>
       </div>
       <div
-        className={`ProductCard card card-compact relative w-[155px] cursor-pointer border border-gray-300  bg-neutral `}
+        className={`ProductCard  card card-compact relative w-[160px] cursor-pointer border-0  bg-neutral`}
         onClick={() => onClick?.(product)}
       >
-        <figure className="top-1 h-[155px] w-[153px] overflow-hidden  bg-gray-300">
+        <figure className="top-1  h-[98px] w-[160px] overflow-hidden  rounded-tl rounded-tr bg-gray-300">
           {/* Show image or PhotoIcon based on image load status */}
           <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
         </figure>
-        <div className="card-body flex flex-col gap-0 !py-2 text-left">
-          <h2 className="card-title text-sm">
+        <div className="card-body flex w-[160px] flex-col gap-0 rounded-bl rounded-br !py-2 text-left group-hover:bg-primary group-focus:bg-primary">
+          <h2 className="card-title text-sm  text-gray-900 group-hover:text-white group-focus:text-white">
             <MiddleTruncatedText text={name} maxLength={18} />
           </h2>
 
