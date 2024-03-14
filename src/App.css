@@ -69,7 +69,7 @@ html, body {
   }
 
   .hidden-screen {
-    @apply h-0 overflow-hidden
+    @apply !h-0 !overflow-hidden
   }
   
 
