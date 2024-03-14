@@ -87,13 +87,17 @@ const ZReport = () => {
 
   const { shift, sales } = report
 
-  const opened = moment(shift.openedTime)
-    .tz('Asia/Manila')
-    .format('MMM. d, yyyy @ hh:mm:ss A')
+  const opened =
+    shift?.openedTime &&
+    moment(shift.openedTime)
+      .tz('Asia/Manila')
+      .format('MMM. d, yyyy @ hh:mm:ss A')
 
-  const closed = moment(shift.closedTime)
-    .tz('Asia/Manila')
-    .format('MMM. d, yyyy @ hh:mm:ss A')
+  const closed =
+    shift?.closedTime &&
+    moment(shift.closedTime)
+      .tz('Asia/Manila')
+      .format('MMM. d, yyyy @ hh:mm:ss A')
 
   const grossSales = sales.reduce((acc, sale) => {
     return (
