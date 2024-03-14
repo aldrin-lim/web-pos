@@ -1,6 +1,6 @@
 import LoadingCover from 'components/LoadingCover'
 import useGetShiftReport from 'hooks/useGetShiftReport'
-import moment from 'moment'
+import * as moment from 'moment-timezone'
 import { useMemo } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -87,9 +87,13 @@ const ZReport = () => {
 
   const { shift, sales } = report
 
-  const opened = moment(shift.openedTime).format('MMM. d, yyyy @ hh:mm:ss A')
+  const opened = moment(shift.openedTime)
+    .tz('Asia/Manila')
+    .format('MMM. d, yyyy @ hh:mm:ss A')
 
-  const closed = moment(shift.closedTime).format('MMM. d, yyyy @ hh:mm:ss A')
+  const closed = moment(shift.closedTime)
+    .tz('Asia/Manila')
+    .format('MMM. d, yyyy @ hh:mm:ss A')
 
   const grossSales = sales.reduce((acc, sale) => {
     return (

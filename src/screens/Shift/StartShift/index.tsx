@@ -13,6 +13,7 @@ import { AppPath } from 'routes/AppRoutes.types'
 import { getTodayShift } from 'api/shift'
 import { useEffect } from 'react'
 import useGetShift from 'hooks/useGetTodayShift'
+import mixpanel from 'mixpanel-browser'
 
 const StartShift = () => {
   const navigate = useNavigate()
@@ -24,6 +25,14 @@ const StartShift = () => {
   const { shift } = useGetShift()
 
   const { user } = useUser()
+
+  useEffect(() => {
+    if (shift?.openedBy) {
+      mixpanel.track('Start Shift', {
+        email: shift?.openedBy.email,
+      })
+    }
+  }, [shift])
 
   const { values, errors, submitForm, setFieldValue, getFieldProps } =
     useFormik({

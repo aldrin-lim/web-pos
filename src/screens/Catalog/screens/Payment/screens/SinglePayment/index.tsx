@@ -28,6 +28,7 @@ import PaymentCompleted from '../PaymentCompleted'
 import { AppPath } from 'routes/AppRoutes.types'
 import useFulfillOrder from 'hooks/useFulfillOrder'
 import useGetShift from 'hooks/useGetTodayShift'
+import useUser from 'hooks/useUser'
 
 enum Screen {
   Completed = 'completed',
@@ -95,6 +96,7 @@ export const getPaymentMethodName = (method: PaymentMethod) => {
 
 const SinglePayment = (props: PaymentProps) => {
   const { orders } = props
+  const { taxRate } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -137,7 +139,22 @@ const SinglePayment = (props: PaymentProps) => {
           .toFixed(2),
       )
     }
-    return acc + price * order.quantity
+
+    if (order.product.applyTax && taxRate) {
+      return new Big(acc)
+        .add(
+          new Big(price).add(
+            new Big(price).times(new Big(taxRate ?? 0).div(100)),
+          ),
+        )
+        .round(2)
+        .toNumber()
+    }
+
+    return new Big(acc)
+      .add(new Big(price).times(new Big(order.quantity)))
+      .round(2)
+      .toNumber()
   }, 0)
 
   useEffect(() => {

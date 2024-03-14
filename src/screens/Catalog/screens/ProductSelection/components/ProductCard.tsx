@@ -52,7 +52,7 @@ const renderPrice = (product: Product) => {
     // user price for ingredients
 
     if (product.isBulkCost) {
-      return `${formatToPeso(cost)} ${
+      return `${formatToPeso(activeBatch?.costPerUnit ?? 0)} ${
         measurement ? `/${unitAbbrevationsToLabel(measurement)}` : ``
       }`
     }
@@ -61,7 +61,7 @@ const renderPrice = (product: Product) => {
   }
 
   if (product.isBulkCost) {
-    return `${formatToPeso(cost)} ${
+    return `${formatToPeso(product.price)} ${
       measurement ? `/${unitAbbrevationsToLabel(measurement)}` : ``
     }`
   }

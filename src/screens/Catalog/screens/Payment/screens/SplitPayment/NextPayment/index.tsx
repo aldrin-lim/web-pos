@@ -31,6 +31,7 @@ import PaymentSummary from '../PaymentSummary'
 import PaymentCompleted from '../../PaymentCompleted'
 import useFulfillOrder from 'hooks/useFulfillOrder'
 import useGetShift from 'hooks/useGetTodayShift'
+import useUser from 'hooks/useUser'
 
 enum Screen {
   Summary = 'summary',
@@ -92,6 +93,7 @@ export const getPaymentMethodName = (method: PaymentMethod) => {
 
 const NextPayment = (props: PaymentProps) => {
   const { orders } = props
+  const { taxRate } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
   const resolvePath = useResolvedPath('')
@@ -131,7 +133,22 @@ const NextPayment = (props: PaymentProps) => {
           .toFixed(2),
       )
     }
-    return acc + price * order.quantity
+
+    if (order.product.applyTax && taxRate) {
+      return new Big(acc)
+        .add(
+          new Big(price).add(
+            new Big(price).times(new Big(taxRate ?? 0).div(100)),
+          ),
+        )
+        .round(2)
+        .toNumber()
+    }
+
+    return new Big(acc)
+      .add(new Big(price).times(new Big(order.quantity)))
+      .round(2)
+      .toNumber()
   }, 0)
 
   const { setFieldValue, values, errors, submitForm } = useFormik({
