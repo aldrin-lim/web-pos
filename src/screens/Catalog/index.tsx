@@ -353,9 +353,7 @@ const Catalog = () => {
 
   return (
     <>
-      <div
-        className={['screen', !isParentScreen ? 'hidden-screen' : ''].join(' ')}
-      >
+      <div className={[isParentScreen ? 'screen' : 'hidden-screen'].join(' ')}>
         <Toolbar
           items={[
             <label
