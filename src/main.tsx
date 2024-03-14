@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary
       onError={(error) => {
-        // Sentry.captureException(error)
+        Analytics.trackUnhandledError(error)
       }}
       fallback={<Error />}
     >
