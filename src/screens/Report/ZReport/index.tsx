@@ -87,6 +87,8 @@ const ZReport = () => {
 
   const { shift, sales } = report
 
+  console.log(shift)
+
   const opened =
     shift?.openedTime &&
     moment(shift.openedTime)
