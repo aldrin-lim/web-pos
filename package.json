@@ -27,7 +27,7 @@
     "match-sorter": "^6.3.1",
     "mixpanel-browser": "^2.49.0",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.45",
+    "moment-timezone": "^0.5.44",
     "react": "^18.2.0",
     "react-currency-input-field": "^3.6.14",
     "react-datepicker": "^4.25.0",
