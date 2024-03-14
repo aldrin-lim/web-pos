@@ -12,7 +12,7 @@ const DropdownButtonItem = (props: DropdownItemProps) => {
     <button
       onClick={onClick}
       disabled={disabled}
-      className="btn btn-ghost flex flex-row items-center justify-center gap-1 rounded-none "
+      className="btn btn-ghost flex flex-row items-center justify-center gap-1 rounded-none text-gray-900"
     >
       {icon}
       {text}
