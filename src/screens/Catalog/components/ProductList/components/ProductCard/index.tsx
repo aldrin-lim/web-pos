@@ -77,7 +77,7 @@ const ProductCard = (props: ProductCardProps) => {
     <div className="group relative w-[160px] justify-self-center rounded border-gray-300 bg-neutral">
       <div className="absolute z-[9] flex w-full items-start justify-between">
         <div
-          className={`ml-2 mt-2 rounded-md  bg-opacity-70 p-1 text-sm group-hover:bg-primary group-hover:text-white group-focus:bg-primary group-focus:text-white ${
+          className={`ml-2 mt-2 rounded-md p-1 text-sm group-hover:bg-primary group-hover:text-white group-focus:bg-primary group-focus:text-white ${
             active ? `bg-primary text-white` : `bg-neutral text-gray-900`
           }`}
         >
@@ -90,7 +90,9 @@ const ProductCard = (props: ProductCardProps) => {
         </div>
         <div className="relative">
           <DropdownButton
-            buttonClassName="btn-primary btn-circle btn-sm rounded-none rounded-bl-xl rounded-tr w-6 h-6 min-h-min bg-neutral hover:bg-primary border-0"
+            buttonClassName={`btn-primary btn-circle btn-sm rounded-none rounded-bl-xl rounded-tr w-6 h-6 min-h-min hover:bg-primary border-0 ${
+              active ? `bg-primary text-white` : `bg-neutral text-gray-900`
+            }`}
             items={getMenuItems()}
           />
         </div>

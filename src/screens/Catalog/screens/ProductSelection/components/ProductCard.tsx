@@ -20,7 +20,7 @@ const ProductCard = (props: ProductCardProps) => {
   return (
     <div className="relative w-[160px] justify-self-center rounded border-gray-300 bg-neutral">
       <div className="absolute z-[9] flex w-full items-start justify-between">
-        <div className="ml-2 mt-2 rounded-md bg-neutral bg-opacity-70 p-1 text-sm text-gray-900">
+        <div className="ml-2 mt-2 rounded-md bg-neutral p-1 text-sm text-gray-900">
           {renderPrice(product)}
         </div>
       </div>
