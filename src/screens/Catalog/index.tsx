@@ -370,7 +370,7 @@ const Catalog = () => {
               className="mx-auto flex flex-row gap-3 self-center py-3 text-center"
             >
               <img key="logo " className="w-6 self-center" src={logo} />
-              <h1 className="h1-primary font-bold">Qrafter</h1>
+              <h1 className="font-bold">Qrafter</h1>
             </div>,
             null,
           ]}
