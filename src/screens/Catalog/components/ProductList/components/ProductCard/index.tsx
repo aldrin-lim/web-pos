@@ -76,7 +76,11 @@ const ProductCard = (props: ProductCardProps) => {
   return (
     <div className="group relative w-[160px] justify-self-center rounded border-gray-300 bg-neutral">
       <div className="absolute z-[9] flex w-full items-start justify-between">
-        <div className="ml-2 mt-2 rounded-md bg-neutral bg-opacity-70 p-1 text-sm text-gray-900 group-hover:bg-primary group-hover:text-white group-focus:bg-primary group-focus:text-white">
+        <div
+          className={`ml-2 mt-2 rounded-md  bg-opacity-70 p-1 text-sm group-hover:bg-primary group-hover:text-white group-focus:bg-primary group-focus:text-white ${
+            active ? `bg-primary text-white` : `bg-neutral text-gray-900`
+          }`}
+        >
           {/* 
             If the product is for sale, use the product price.
             If the product is not for sale and is a bulk cost, use the cost per unit if it exists, otherwise use 0.
@@ -102,7 +106,11 @@ const ProductCard = (props: ProductCardProps) => {
           <ImageLoader src={image} iconClassName="w-24 text-gray-400" />
         </figure>
         <div className="card-body flex w-[160px] flex-col gap-0 rounded-bl rounded-br !py-2 text-left group-hover:bg-primary group-focus:bg-primary">
-          <h2 className="card-title text-sm text-gray-900 group-hover:text-white group-focus:text-white">
+          <h2
+            className={`card-title text-sm  group-hover:text-white group-focus:text-white ${
+              active ? `text-white` : `text-gray-900`
+            }`}
+          >
             <MiddleTruncatedText text={name} maxLength={18} />
           </h2>
           {/* 
