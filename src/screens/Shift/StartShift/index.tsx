@@ -104,7 +104,7 @@ const StartShift = () => {
               value={getFieldProps('openingPettyCash').value}
               type="text"
               tabIndex={3}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full focus:border-teal-500"
               prefix={'₱'}
               onValueChange={(value) => {
                 setFieldValue('openingPettyCash', value)
@@ -130,7 +130,7 @@ const StartShift = () => {
             </div> */}
             <textarea
               {...getFieldProps('notes')}
-              className="textarea textarea-bordered"
+              className="textarea textarea-bordered focus:border-teal-500"
             />
 
             {errors.notes && (
