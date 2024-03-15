@@ -85,18 +85,19 @@ const StartShift = () => {
             <ToolbarTitle key="title" title="New Shift" />,
           ]}
         />
-        <div className="flex h-full flex-col gap-4">
-          <h1>
+        <div className="flex h-full flex-col gap-2">
+          <h1 className="text-xs text-white">
             Opening Staff:{' '}
             <span className="text-neutral">
               {user?.firstName} {user?.lastName}
             </span>
           </h1>
+          <h2 className="text-base text-white">Opening Cash</h2>
           {/* Opening Cash */}
           <label className="form-control w-full ">
-            <div className="form-control-label  ">
+            {/* <div className="form-control-label  ">
               <span className="label-text-alt text-gray-400">Opening Cash</span>
-            </div>
+            </div> */}
             <CurrencyInput
               onBlur={getFieldProps('openingPettyCash').onBlur}
               name={getFieldProps('openingPettyCash').name}
@@ -122,10 +123,11 @@ const StartShift = () => {
           </label>
 
           {/* Notes */}
+          <h2 className="text-base text-white">Notes</h2>
           <label className="form-control w-full ">
-            <div className="form-control-label  ">
+            {/* <div className="form-control-label  ">
               <span className="label-text-alt text-gray-400">Notes</span>
-            </div>
+            </div> */}
             <textarea
               {...getFieldProps('notes')}
               className="textarea textarea-bordered"
@@ -140,7 +142,10 @@ const StartShift = () => {
             )}
           </label>
 
-          <button onClick={submitForm} className="btn btn-primary mb-9 mt-auto">
+          <button
+            onClick={submitForm}
+            className="btn btn-secondary mb-9 mb-auto mt-2"
+          >
             Open
           </button>
         </div>
