@@ -85,14 +85,14 @@ const StartShift = () => {
             <ToolbarTitle key="title" title="New Shift" />,
           ]}
         />
-        <div className="flex h-full flex-col gap-2">
+        <div className="flex h-full flex-col gap-4">
           <h1 className="text-xs text-white">
             Opening Staff:{' '}
             <span className="text-neutral">
               {user?.firstName} {user?.lastName}
             </span>
           </h1>
-          <h2 className="text-base text-white">Opening Cash</h2>
+          <h2 className="text-base font-bold text-white">Opening Cash</h2>
           {/* Opening Cash */}
           <label className="form-control w-full ">
             {/* <div className="form-control-label  ">
@@ -123,7 +123,7 @@ const StartShift = () => {
           </label>
 
           {/* Notes */}
-          <h2 className="text-base text-white">Notes</h2>
+          <h2 className="text-base font-bold text-white">Notes</h2>
           <label className="form-control w-full ">
             {/* <div className="form-control-label  ">
               <span className="label-text-alt text-gray-400">Notes</span>

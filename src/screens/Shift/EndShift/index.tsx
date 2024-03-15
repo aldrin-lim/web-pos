@@ -154,30 +154,34 @@ const EndShift = () => {
           ]}
         />
         <div className="flex h-full flex-col gap-4">
-          <h1>
+          <h1 className="text-xs text-white">
             Closing Staff:{' '}
             <span className="text-neutral">
               {user?.firstName} {user?.lastName}
             </span>
           </h1>
-          <div className=" grid grid-cols-12 gap-2 text-xl font-bold opacity-70">
-            <div className="col-span-7">Expected Cash:</div>
-            <div className="col-span-5 text-right">{expectedCash}</div>
+
+          <div className=" grid grid-cols-12 gap-2 text-xl font-bold">
+            <div className="col-span-7 text-white">Expected Cash:</div>
+            <div className="col-span-5 text-right text-white">
+              {expectedCash}
+            </div>
           </div>
           {/* Closing Cash */}
+          <h2 className="text-base text-white">Total Cash Counted</h2>
           <label className="form-control w-full ">
-            <div className="form-control-label  ">
+            {/* <div className="form-control-label  ">
               <span className="label-text-alt text-gray-400">
                 Total Cash Counted
               </span>
-            </div>
+            </div> */}
             <CurrencyInput
               onBlur={getFieldProps('closingPettyCash').onBlur}
               name={getFieldProps('closingPettyCash').name}
               value={getFieldProps('closingPettyCash').value}
               type="text"
               tabIndex={3}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full focus:border-secondary"
               prefix={'₱'}
               disabled={isEnding}
               onValueChange={(value) => {
@@ -196,15 +200,32 @@ const EndShift = () => {
             )}
           </label>
 
+          {/* Difference */}
+          <h2 className="border-b border-gray-700 pb-4 text-base font-bold text-white">
+            Difference:{' '}
+          </h2>
+
+          {/* Opening Cash */}
+          <h2 className="text-base text-white">Opening Cash: </h2>
+          {/* Payments in Cash */}
+          <h2 className="text-base text-white">Payments in Cash: </h2>
+          {/* Payments in Gcash */}
+          <h2 className="text-base text-white">Payments in Gcash: </h2>
+          {/* Payments in MAYA */}
+          <h2 className="border-b border-gray-700 pb-4 text-base text-white">
+            Payments in MAYA:{' '}
+          </h2>
+
           {/* Notes */}
+          <h2 className="text-base font-bold text-white">Notes</h2>
           <label className="form-control w-full ">
-            <div className="form-control-label  ">
+            {/* <div className="form-control-label  ">
               <span className="label-text-alt text-gray-400">Notes</span>
-            </div>
+            </div> */}
             <textarea
               {...getFieldProps('notes')}
               disabled={isEnding}
-              className="textarea textarea-bordered"
+              className="textarea textarea-bordered focus:border-secondary"
             />
 
             {errors.notes && (
@@ -233,7 +254,7 @@ const EndShift = () => {
           <button
             disabled={isEnding}
             onClick={submitForm}
-            className="btn btn-primary mt-auto"
+            className="btn btn-secondary mb-9 mb-auto mt-2"
           >
             Close
           </button>
