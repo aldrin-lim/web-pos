@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { Auth0Provider } from '@auth0/auth0-react'
@@ -10,10 +10,18 @@ import Big from 'big.js'
 import { ErrorBoundary } from 'react-error-boundary'
 import Error from 'screens/Error/index.tsx'
 import { Analytics } from 'util/analytics.ts'
-import { useRegisterSW } from 'virtual:pwa-register/react'
+import { registerSW } from 'virtual:pwa-register'
+
 Big.DP = 4
 
 Analytics.init()
+
+const updateSW = registerSW({
+  onNeedRefresh() {},
+  onOfflineReady() {},
+})
+
+updateSW()
 
 const queryClient = new QueryClient()
 
@@ -44,29 +52,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </React.StrictMode>,
 )
-
-const PWAWrapper: React.FC<PropsWithChildren> = ({ children }) => {
-  const {
-    offlineReady: [offlineReady, setOfflineReady],
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
-    onRegisteredSW(swUrl, r) {
-      console.log(`Service Worker at: ${swUrl}`)
-      // @ts-expect-error just ignore
-      if (reloadSW === 'true') {
-        r &&
-          setInterval(() => {
-            console.log('Checking for sw update')
-            r.update()
-          }, 20000 /* 20s for testing purposes */)
-      } else {
-        // eslint-disable-next-line prefer-template
-        console.log('SW Registered: ' + r)
-      }
-    },
-    onRegisterError(error) {
-      console.log('SW registration error', error)
-    },
-  })
-}
