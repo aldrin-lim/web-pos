@@ -37,6 +37,18 @@ export default mergeConfig(viteConfig, {
             sizes: '512x512',
             type: 'image/png',
           },
+          {
+            src: '/apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png',
+            purpose: 'apple touch icon',
+          },
+          {
+            src: '/maskable_icon.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
         ],
       },
     }),
