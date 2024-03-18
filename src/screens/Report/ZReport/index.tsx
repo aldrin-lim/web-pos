@@ -125,7 +125,7 @@ const ZReport = () => {
   // format the paymentsRecievedPerMethod to peso
 
   return (
-    <div className="min-h-screen w-full bg-neutral">
+    <div className="min-h-screen w-full bg-neutral pb-2 pt-2">
       <div className="flex flex-col items-end pr-6 pt-2 text-gray-900">
         <a onClick={() => navigate('/')} className="">
           Close
