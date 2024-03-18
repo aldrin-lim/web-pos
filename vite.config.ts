@@ -26,6 +26,11 @@ export default mergeConfig(viteConfig, {
         name: 'Qrafter POS',
         short_name: 'Qrafter POS  ',
         theme_color: '#856AD4',
+        start_url: '/',
+        background_color: '#f0e7db',
+        display: 'standalone',
+        scope: '/',
+        orientation: 'portrait',
         icons: [
           {
             src: '/android-chrome-192x192.png',
