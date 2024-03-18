@@ -17,11 +17,9 @@ export default mergeConfig(viteConfig, {
         enabled: process.env.NODE_ENV === 'development',
       },
       workbox: {
-        clientsClaim: true,
-        skipWaiting: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        sourcemap: true,
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'Qrafter POS',
         short_name: 'Qrafter POS  ',
@@ -52,7 +50,7 @@ export default mergeConfig(viteConfig, {
             src: '/maskable_icon.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable',
+            purpose: 'maskable',
           },
         ],
       },
@@ -62,12 +60,12 @@ export default mergeConfig(viteConfig, {
   define: process.env.NODE_ENV === 'development' ? { global: 'window' } : {},
   build: {
     sourcemap: true,
-    rollupOptions: {
-      output: {
-        entryFileNames: `[name].` + hash + `.js`,
-        chunkFileNames: `[name].` + hash + `.js`,
-        assetFileNames: `[name].` + hash + `.[ext]`,
-      },
-    },
+    // rollupOptions: {
+    //   output: {
+    //     entryFileNames: `[name].` + hash + `.js`,
+    //     chunkFileNames: `[name].` + hash + `.js`,
+    //     assetFileNames: `[name].` + hash + `.[ext]`,
+    //   },
+    // },
   },
 })

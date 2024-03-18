@@ -11,15 +11,13 @@ import { ErrorBoundary } from 'react-error-boundary'
 import Error from 'screens/Error/index.tsx'
 import { Analytics } from 'util/analytics.ts'
 import { registerSW } from 'virtual:pwa-register'
+import ReloadPrompt from 'components/ReloadPrompt/index.tsx'
 
 Big.DP = 4
 
 Analytics.init()
 
-const updateSW = registerSW({
-  onNeedRefresh() {},
-  onOfflineReady() {},
-})
+const updateSW = registerSW({})
 
 updateSW()
 
@@ -49,6 +47,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </QueryClientProvider>
         </AuthProvider>
       </Auth0Provider>
+      <ReloadPrompt />
     </ErrorBoundary>
   </React.StrictMode>,
 )
