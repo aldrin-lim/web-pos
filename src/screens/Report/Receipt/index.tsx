@@ -159,50 +159,57 @@ const Receipt = () => {
   }
 
   return (
-    <div className="min-h-screen  w-full print:max-w-screen-sm">
-      <div className="flex flex-row justify-between print:hidden">
+    <div className="min-h-screen  w-full bg-neutral pb-2 pt-2 print:max-w-screen-sm">
+      <div className="flex flex-row justify-between pr-6 pt-2 text-gray-900 print:hidden">
         <ShareButton
           fileName={`receipt-${order?.orderNo}.png`}
           elementToShare={ref.current}
         />
-        <button
-          onClick={() => navigate('/')}
-          className="btn btn-ghost flex flex-row items-center gap-1"
-        >
-          <XCircleIcon className="w-6" />
-        </button>
+        <a onClick={() => navigate('/')} className="flex flex-row items-center">
+          Close
+        </a>
       </div>
       <div
         id="receipt-container"
         ref={ref}
-        className="min-h-screen  w-full bg-base-100"
+        className="min-h-screen  w-full bg-neutral pb-2 pt-2 text-black"
       >
         <div className="mx-auto flex h-[calc(100%-48px)] max-w-sm flex-col gap-2 p-4">
-          <div>
-            <h1 className="text-center text-lg ">{user.businesses[0].name}</h1>
-            <h2 className="text-center">{user.businesses[0].address}</h2>
+          <div className="mb-2">
+            <h1 className="mb-2 text-center text-lg font-bold leading-6 text-black">
+              {user.businesses[0].name}
+            </h1>
+            <div>
+              <h2 className="text-center text-sm">
+                {user.businesses[0].address}
+              </h2>
+              <h2 className="text-center text-sm">TIN: 123-456-789-101</h2>
+            </div>
           </div>
           <div className=" flex flex-col gap-1">
             <div className="">Receipt #: {order?.orderNo}</div>
-            <div className="">
-              Staff: {user.firstName} {user.lastName}
+            <div>
+              {order?.createdAt &&
+                moment(order.createdAt)
+                  .tz('Asia/Manila')
+                  .format('MMM DD YYYY, h:mm:ss a')}
             </div>
+            <div className="">
+              Cashier: {user.firstName} {user.lastName}
+            </div>
+            <div className="">Customer:</div>
+            <div className="">Order Type:</div>
           </div>
-          <div className="flex flex-col gap-1">
-            {order?.createdAt &&
-              moment(order.createdAt)
-                .tz('Asia/Manila')
-                .format('MMM DD YYYY, h:mm:ss a')}
-          </div>
+          <div className="flex flex-col gap-1"></div>
 
           <div className=" w-full border-b-2 border-dotted border-black pt-2" />
 
           <div className="flex w-full flex-col gap-2">
             <div className="col-span-12 grid grid-cols-12 gap-2 ">
               <div className="col-span-4">Item</div>
-              <div className="col-span-3 text-right">Price</div>
-              <div className="col-span-2 text-right">Qty</div>
-              <div className="col-span-3 text-right">Amount</div>
+              {/* <div className="col-span-3 text-right"></div> */}
+              <div className="col-span-4 text-right">Qty</div>
+              <div className="col-span-4 text-right">Price</div>
             </div>
             {order?.orderItems.map((orderItem) => (
               <div
@@ -210,15 +217,16 @@ const Receipt = () => {
                 key={orderItem.id}
               >
                 <div className="col-span-4">{orderItem.product.name}</div>
-                <div className="col-span-3 text-right">
-                  {formatToPeso(orderItem.price)}
-                </div>
-                <div className="col-span-2 text-right">
+                <div className="col-span-4 text-right">
                   {orderItem.quantity}
                 </div>
-                <div className="col-span-3 text-right">
+                <div className="col-span-4 text-right">
+                  {/* {formatToPeso(orderItem.price)} */}
                   {formatToPeso(orderItem.gross)}
                 </div>
+                {/* <div className="col-span-3 text-right">
+                  {formatToPeso(orderItem.gross)}
+                </div> */}
               </div>
             ))}
           </div>
@@ -235,10 +243,8 @@ const Receipt = () => {
           {!!discount && discount > 0 && (
             <div className="flex w-full flex-col gap-2">
               <div className="col-span-12 grid grid-cols-12 gap-2">
-                <div className="col-span-4">Discount</div>
-                <div className="col-span-3 text-right">&nbsp;</div>
-                <div className="col-span-2 text-right">&nbsp;</div>
-                <div className="col-span-3 text-right">
+                <div className="col-span-7">Sr Citizen Discount (5%)</div>
+                <div className="col-span-5 text-right">
                   {formatToPeso(discount)}
                 </div>
               </div>
@@ -248,10 +254,8 @@ const Receipt = () => {
           {!!tax && tax > 0 && (
             <div className="flex w-full flex-col gap-2">
               <div className="col-span-12 grid grid-cols-12 gap-2">
-                <div className="col-span-4">Tax ({taxRate}%)</div>
-                <div className="col-span-3 text-right">&nbsp;</div>
-                <div className="col-span-2 text-right">&nbsp;</div>
-                <div className="col-span-3 text-right">{formatToPeso(tax)}</div>
+                <div className="col-span-7">Tax excl. (12%) ({taxRate}%)</div>
+                <div className="col-span-5 text-right">{formatToPeso(tax)}</div>
               </div>
             </div>
           )}
@@ -259,12 +263,10 @@ const Receipt = () => {
           <div className=" w-full border-b-2  border-black pt-2" />
 
           {!!orderTotal && orderTotal > 0 && (
-            <div className="flex w-full flex-col gap-2 font-bold">
+            <div className="flex w-full flex-col gap-2">
               <div className="col-span-12 grid grid-cols-12 gap-2">
-                <div className="col-span-4">Total Php</div>
-                <div className="col-span-3 text-right">&nbsp;</div>
-                <div className="col-span-2 text-right">&nbsp;</div>
-                <div className="col-span-3 text-right">
+                <div className="col-span-7">Total Due</div>
+                <div className="col-span-5 text-right">
                   {formatToPeso(orderTotal)}
                 </div>
               </div>
@@ -297,8 +299,27 @@ const Receipt = () => {
           })}
 
           <div className="mt-auto w-full border-b-2 border-dotted border-black pt-2" />
+          <div className="flex w-full flex-col gap-2">
+            <div className="col-span-12 grid grid-cols-12 gap-2">
+              <div className="col-span-7">Split Payment</div>
+              <div className="col-span-5 text-right"></div>
+            </div>
+          </div>
+          <div className="flex w-full flex-col gap-2">
+            <div className="col-span-12 grid grid-cols-12 gap-2">
+              <div className="col-span-7">Cash</div>
+              <div className="col-span-5 text-right"></div>
+            </div>
+          </div>
+          <div className="flex w-full flex-col gap-2">
+            <div className="col-span-12 grid grid-cols-12 gap-2">
+              <div className="col-span-7">Card</div>
+              <div className="col-span-5 text-right"></div>
+            </div>
+          </div>
+          <div className="mt-auto w-full border-b-2 border-dotted border-black pt-2" />
 
-          <p className="text-center uppercase ">
+          <p className="flex h-[37px] flex-row content-center items-center justify-center text-center uppercase">
             This serves as temporary receipt{' '}
           </p>
         </div>
