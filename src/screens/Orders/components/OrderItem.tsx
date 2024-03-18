@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import * as moment from 'moment-timezone'
+import moment from 'moment-timezone'
 import {
   ArchiveBoxArrowDownIcon,
   EyeIcon,

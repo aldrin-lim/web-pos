@@ -7,7 +7,7 @@ import { User } from 'types/user.type'
 import { formatToPeso } from 'util/currency'
 import ShareButton from './components/ShareButton'
 import { useMemo, useRef } from 'react'
-import * as moment from 'moment-timezone'
+import moment from 'moment-timezone'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
 import {
