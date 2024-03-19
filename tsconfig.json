@@ -20,7 +20,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+
+    "types": [
+      "vite-plugin-pwa/client",
+      "vite-plugin-pwa/info"
+    ]
   },
   "include": ["src", "env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }],

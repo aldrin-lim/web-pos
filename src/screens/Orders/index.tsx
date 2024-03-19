@@ -9,7 +9,7 @@ import ToolbarTitle from 'components/Layout/components/Toolbar/components/Toolba
 import useGetOrders from 'hooks/useGetOrders'
 import useGetTodayShift from 'hooks/useGetTodayShift'
 import useVoidOrder from 'hooks/useVoidOrder'
-import * as moment from 'moment-timezone'
+import moment from 'moment-timezone'
 import React from 'react'
 import { useNavigate, useLocation, useResolvedPath } from 'react-router-dom'
 import { AppPath } from 'routes/AppRoutes.types'

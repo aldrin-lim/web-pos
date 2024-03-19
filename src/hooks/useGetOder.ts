@@ -22,7 +22,7 @@ const useGetOrder = (orderId?: string, shiftId?: string) => {
       return result
     },
     retry: 0,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     enabled: !!shiftId && !!orderId,
   })
 
