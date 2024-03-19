@@ -13,7 +13,7 @@ const useUser = () => {
     queryKey: ['user'],
     queryFn: () => getUser(user?.email ?? ''),
     retry: 0,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   useEffect(() => {

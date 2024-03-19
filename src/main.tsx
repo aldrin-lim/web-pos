@@ -10,10 +10,16 @@ import Big from 'big.js'
 import { ErrorBoundary } from 'react-error-boundary'
 import Error from 'screens/Error/index.tsx'
 import { Analytics } from 'util/analytics.ts'
+import { registerSW } from 'virtual:pwa-register'
+import ReloadPrompt from 'components/ReloadPrompt/index.tsx'
 
 Big.DP = 4
 
 Analytics.init()
+
+const updateSW = registerSW({})
+
+updateSW()
 
 const queryClient = new QueryClient()
 
@@ -21,7 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary
       onError={(error) => {
-        // Sentry.captureException(error)
+        Analytics.trackUnhandledError(error)
       }}
       fallback={<Error />}
     >
@@ -41,6 +47,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </QueryClientProvider>
         </AuthProvider>
       </Auth0Provider>
+      <ReloadPrompt />
     </ErrorBoundary>
   </React.StrictMode>,
 )

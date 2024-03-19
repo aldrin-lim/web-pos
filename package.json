@@ -7,7 +7,8 @@
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "generate-pwa-assets": "pwa-assets-generator"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.1",
@@ -27,7 +28,7 @@
     "match-sorter": "^6.3.1",
     "mixpanel-browser": "^2.49.0",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.45",
+    "moment-timezone": "^0.5.44",
     "react": "^18.2.0",
     "react-currency-input-field": "^3.6.14",
     "react-datepicker": "^4.25.0",
@@ -57,6 +58,7 @@
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
+    "@vite-pwa/assets-generator": "^0.2.4",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.45.0",
@@ -74,7 +76,7 @@
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
-    "vite-plugin-pwa": "^0.16.5",
+    "vite-plugin-pwa": "^0.19.4",
     "vite-tsconfig-paths": "^4.2.1",
     "vitest": "^0.34.6"
   }

@@ -11,7 +11,7 @@ const useAllProducts = () => {
     queryKey: ['products'],
     queryFn: () => API.getAllProducts(),
     retry: 0,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   return {

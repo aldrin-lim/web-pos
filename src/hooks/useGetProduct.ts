@@ -7,7 +7,7 @@ const useGetProduct = (productId?: string) => {
     queryFn: () => API.getProductById(productId as string),
     retry: 0,
     enabled: Boolean(productId),
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   return {

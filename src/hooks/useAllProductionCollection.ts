@@ -6,7 +6,7 @@ const useAllProductionCollection = () => {
     queryKey: ['productCollections'],
     queryFn: () => API.getAllProductCollection(),
     retry: 0,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   return {
