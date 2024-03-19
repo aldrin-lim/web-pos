@@ -286,7 +286,7 @@ const Catalog = () => {
     return (
       <div className="relative -top-4 flex flex-col pb-20 ">
         <div className="mt-2 p-2">
-          <h1 className="font-bold">Product Catalog </h1>
+          <h1 className="font-bold text-white">Product Catalog </h1>
         </div>
         <div className="mt-4">
           <ProductList
@@ -359,7 +359,7 @@ const Catalog = () => {
             <label
               htmlFor="my-drawer"
               key="1"
-              className="btn btn-link px-0 normal-case text-blue-400 no-underline disabled:bg-transparent disabled:text-gray-400"
+              className="btn btn-link px-0 normal-case text-neutral no-underline disabled:bg-transparent disabled:text-gray-400"
             >
               <Bars3Icon className="w-6" />
             </label>,

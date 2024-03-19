@@ -68,7 +68,7 @@ const ProductImages = (props: ProductImagesProps) => {
   }, [props.images])
 
   return (
-    <div className={`flex w-full flex-row gap-5`}>
+    <div className={`flex w-full flex-row`}>
       <div>
         <input
           ref={inputRef}
@@ -104,17 +104,21 @@ const ProductImages = (props: ProductImagesProps) => {
           </button>
         )}
       </div>
-      <div className="flex max-w-xs flex-row  gap-3 overflow-x-auto">
+      <div className="flex w-full flex-row gap-3 overflow-x-auto">
         {images.map((image, index) => (
-          <div key={index} className="relative">
+          <div key={index} className="relative w-full">
             <div
-              className={`flex justify-center overflow-hidden rounded-md border bg-base-100`}
-              style={{
-                width: imageSize,
-                height: imageSize,
-              }}
+              className={`flex w-full justify-center overflow-hidden rounded-md border bg-base-100`}
+              // style={{
+              //   width: imageSize,
+              //   height: imageSize,
+              // }}
             >
-              <img src={image} alt="Uploaded preview" />
+              <img
+                src={image}
+                className="h-[120px] w-full object-cover object-center"
+                alt="Uploaded preview"
+              />
             </div>
             {!readOnly && (
               <button

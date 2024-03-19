@@ -29,7 +29,7 @@ const Dropdown = (props: DropdownProps) => {
         <EllipsisVerticalIcon className="w-6" />
       </label>
       {open && (
-        <div className="dop menu dropdown-content top-10 flex w-36 flex-col overflow-hidden rounded-md bg-base-100 p-0 shadow">
+        <div className="dop menu dropdown-content top-10 flex w-36 flex-col overflow-hidden rounded-md bg-neutral p-0 shadow">
           <button
             onClick={onDiscountClick}
             className="btn btn-ghost flex flex-row items-center justify-center gap-1 rounded-none "

@@ -41,7 +41,7 @@ const PaymentSummary = (props: PaymentCompletedPrpos) => {
           ]}
         />
 
-        <div className="flex h-full flex-col gap-4">
+        <div className="flex h-full flex-col gap-4 pb-4">
           {payments.map((payment, index) => {
             return (
               <div key={index} className="mb-2 flex flex-col">

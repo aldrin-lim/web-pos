@@ -210,7 +210,7 @@ const SinglePayment = (props: PaymentProps) => {
           ]}
         />
 
-        <div className="flex h-full flex-col gap-4">
+        <div className="flex h-full flex-col gap-4 pb-4">
           <div className="flex flex-col items-center justify-center gap-2">
             <img
               className="w-[30px]"
@@ -232,7 +232,7 @@ const SinglePayment = (props: PaymentProps) => {
               id="single-payment-amount-received"
               type="text"
               tabIndex={1}
-              className="input input-bordered input-lg w-full text-center text-xl"
+              className="input input-lg input-bordered w-full text-center text-xl"
               prefix={'₱'}
               placeholder="P0.00"
               inputMode="decimal"

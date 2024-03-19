@@ -23,6 +23,10 @@ html, body {
   overscroll-behavior: none;
 }
 
+h1 {
+  color: #00B1BC;
+}
+
 .App {
   @apply w-full bg-base-100;
 }
@@ -57,11 +61,11 @@ html, body {
   }
   
   .btn {
-    @apply rounded-md
+    @apply rounded-md h-[28px]
   }
 
   .card {
-    @apply rounded-md
+    @apply rounded
   }
   
   .screen {
