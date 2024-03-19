@@ -393,7 +393,7 @@ const Catalog = () => {
         </div>
       </div>
       <AnimatePresence>
-        <Routes location={location} key={isParentScreen.toString()}>
+        <Routes>
           <Route
             path={`${ScreenPath.AddProduct}/*`}
             element={
