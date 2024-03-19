@@ -60,13 +60,13 @@ const OrderCartItem = (props: OrderCartItemProps) => {
   return (
     <div
       onClick={onClick}
-      className="flex flex-row justify-between bg-base-300 p-2 "
+      className="ml-[-0.75rem] mr-[-0.75rem] flex flex-row justify-between bg-gray-700 p-2 pl-[0.75rem] pr-[0.75rem]"
     >
       <div className="flex flex-row items-center">
-        <button className="btn btn-ghost btn-primary btn-sm">
-          <PencilSquareIcon className="w-6 text-primary" />
+        <button className="btn btn-ghost btn-primary btn-sm pl-0">
+          <PencilSquareIcon className="w-6 text-primary text-secondary" />
         </button>
-        <div className="flex flex-col">
+        <div className="flex flex-col text-white">
           <p>{name}</p>
           <p>
             {quantity} x {formatToPeso(price)}{' '}
@@ -74,7 +74,7 @@ const OrderCartItem = (props: OrderCartItemProps) => {
           </p>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col text-white">
         {discount && (
           <p className="line-through">{formatToPeso(totalGrossPrice)}</p>
         )}
