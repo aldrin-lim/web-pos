@@ -377,7 +377,9 @@ const Catalog = () => {
         {renderContent()}
 
         {/* Cart Button */}
-        <div className="fixed bottom-4 z-10 w-full">
+        <div
+          className={`fixed bottom-4 z-10 w-full ${!isParentScreen ? 'hidden' : ''}`}
+        >
           <div className="mx-auto max-w-sm md:max-w-md">
             <button className="btn btn-primary w-full" onClick={showCartScreen}>
               <div className="flex flex-row gap-4">
