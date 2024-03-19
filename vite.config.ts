@@ -3,8 +3,9 @@ import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { mergeConfig } from 'vitest/config'
 import viteConfig from './vite.config'
-export const hash = Math.floor(Math.random() * 90000) + 1000000
 import { VitePWA } from 'vite-plugin-pwa'
+
+export const hash = Math.floor(Math.random() * 90000) + 1000000
 // https://vitejs.dev/config/
 export default mergeConfig(viteConfig, {
   plugins: [
@@ -23,7 +24,7 @@ export default mergeConfig(viteConfig, {
       },
       manifest: {
         name: 'Qrafter POS',
-        short_name: 'Qrafter POS  ',
+        short_name: 'Qrafter POS',
         theme_color: '#856AD4',
         start_url: '/',
         background_color: '#f0e7db',
