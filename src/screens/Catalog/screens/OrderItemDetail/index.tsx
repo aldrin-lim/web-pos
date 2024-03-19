@@ -215,7 +215,7 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
         />
         <div className="flex h-full w-full flex-col gap-4">
           <ProductImages readOnly images={product.images} />
-          <div className="flex w-full flex-row justify-between gap-3">
+          <div className="flex w-full flex-row justify-between gap-3 text-white">
             <div className="flex flex-col gap-2">
               <p>{product.name}</p>
             </div>
@@ -232,8 +232,8 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               )}
             </div>
           </div>
-          <div className="flex w-full flex-col gap-2">
-            <label>Quantity</label>
+          <div className="flex w-full flex-col gap-2 text-white">
+            <label className="font-bold">Quantity</label>
             <QuantityInput
               value={quantity}
               onAdd={(value) => {

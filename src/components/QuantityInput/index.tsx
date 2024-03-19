@@ -13,7 +13,7 @@ type QuantityInputProps = {
 const QuantityInput = (props: QuantityInputProps) => {
   const { value = 0, onChange, onAdd, onSubtract } = props
   return (
-    <div className="join flex  border  border-gray-300">
+    <div className="join flex  border  border-secondary">
       <button
         disabled={props.disabled}
         className="join-itm  btn"

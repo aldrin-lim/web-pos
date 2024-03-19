@@ -1,4 +1,6 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+import { XMarkIcon } from '@heroicons/react/24/solid'
+import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
@@ -47,7 +49,7 @@ const DiscountDetail = (props: DiscountDetailProps) => {
           items={[
             <ToolbarButton
               key={'negative'}
-              icon={<ChevronLeftIcon className="w-6" />}
+              icon={<XMarkIcon className="w-6 text-white" />}
               onClick={() => navigate(-1)}
             />,
             <ToolbarTitle key="title" title="Discount" />,
@@ -55,19 +57,21 @@ const DiscountDetail = (props: DiscountDetailProps) => {
         />
         <div className="flex h-full flex-col gap-4">
           {/* Discount Name */}
-          <label className="form-control w-full ">
-            <div className="form-control-label  ">
+          {/* <h2 className="text-base text-white">Discount Name</h2> */}
+          <label className="form-control relative w-full">
+            {/* <div className="form-control-label  ">
               <span className="label-text-alt text-gray-400">
                 Discount Name
               </span>
-            </div>
+            </div> */}
             <input
               {...getFieldProps('name')}
               type="text"
               placeholder="Optional"
-              className="input input-bordered w-full"
+              className="input input-bordered w-full border-neutral text-white"
               tabIndex={1}
             />
+            <ChevronDownIcon className="t- absolute right-[0.5rem] top-[15px] w-6 text-white" />
 
             {errors.name && (
               <div className="label py-0">
@@ -78,59 +82,66 @@ const DiscountDetail = (props: DiscountDetailProps) => {
             )}
           </label>
 
-          {/* Discount Type */}
-          <label className="form-control w-full ">
-            <div className="form-control-label  ">
-              <span className="label-text-alt text-gray-400">Type</span>
+          <div className="grid grid-cols-12 gap-2 text-sm">
+            {/* Discount Amount */}
+            <div className="col-span-6">
+              <label className="form-control w-full ">
+                {/* <div className="form-control-label  ">
+                  <span className="label-text-alt text-gray-400">Amount</span>
+                </div> */}
+                <CurrencyInput
+                  onBlur={getFieldProps('amount').onBlur}
+                  name={getFieldProps('amount').name}
+                  value={getFieldProps('amount').value}
+                  type="text"
+                  tabIndex={3}
+                  className="input input-bordered w-full border-neutral text-white"
+                  prefix={values.type === 'fixed' ? '₱' : undefined}
+                  onValueChange={(value) => {
+                    setFieldValue('amount', value)
+                  }}
+                  inputMode="decimal"
+                  allowNegativeValue={false}
+                />
+
+                {errors.amount && (
+                  <div className="label py-0">
+                    <span className="label-text-alt text-xs text-red-400">
+                      {errors.amount}
+                    </span>
+                  </div>
+                )}
+              </label>
             </div>
-            <select
-              {...getFieldProps('type')}
-              className="select select-bordered w-full"
-              tabIndex={2}
-            >
-              <option value="percentage">Percentage (%)</option>
-              <option value="fixed">Fixed Amount(₱)</option>
-            </select>
 
-            {errors.type && (
-              <div className="label py-0">
-                <span className="label-text-alt text-xs text-red-400">
-                  {errors.type}
-                </span>
-              </div>
-            )}
-          </label>
-
-          {/* Discount Amount */}
-          <label className="form-control w-full ">
-            <div className="form-control-label  ">
-              <span className="label-text-alt text-gray-400">Amount</span>
+            {/* Discount Type */}
+            <div className="col-span-6">
+              <label className="form-control relative w-full">
+                {/* <div className="form-control-label  ">
+                  <span className="label-text-alt text-gray-400">Type</span>
+                </div> */}
+                <select
+                  {...getFieldProps('type')}
+                  className="select select-bordered w-full border-neutral bg-none text-white"
+                  tabIndex={2}
+                >
+                  <option value="percentage">Percentage (%)</option>
+                  <option value="fixed">Fixed Amount(₱)</option>
+                </select>
+                <ChevronDownIcon className="t- absolute right-[0.5rem] top-[15px] w-6 text-white" />
+                {errors.type && (
+                  <div className="label py-0">
+                    <span className="label-text-alt text-xs text-red-400">
+                      {errors.type}
+                    </span>
+                  </div>
+                )}
+              </label>
             </div>
-            <CurrencyInput
-              onBlur={getFieldProps('amount').onBlur}
-              name={getFieldProps('amount').name}
-              value={getFieldProps('amount').value}
-              type="text"
-              tabIndex={3}
-              className="input input-bordered w-full"
-              prefix={values.type === 'fixed' ? '₱' : undefined}
-              onValueChange={(value) => {
-                setFieldValue('amount', value)
-              }}
-              inputMode="decimal"
-              allowNegativeValue={false}
-            />
+          </div>
 
-            {errors.amount && (
-              <div className="label py-0">
-                <span className="label-text-alt text-xs text-red-400">
-                  {errors.amount}
-                </span>
-              </div>
-            )}
-          </label>
           <button onClick={submitForm} className="btn btn-primary mt-auto">
-            {props.value ? 'Update' : 'Apply'} Discount
+            {props.value ? 'Update' : 'Apply'}
           </button>
         </div>
       </div>

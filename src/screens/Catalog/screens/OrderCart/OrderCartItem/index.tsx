@@ -1,4 +1,4 @@
-import { PencilIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
 import { useMemo } from 'react'
@@ -64,7 +64,7 @@ const OrderCartItem = (props: OrderCartItemProps) => {
     >
       <div className="flex flex-row items-center">
         <button className="btn btn-ghost btn-primary btn-sm">
-          <PencilIcon className="w-6 text-primary" />
+          <PencilSquareIcon className="w-6 text-primary" />
         </button>
         <div className="flex flex-col">
           <p>{name}</p>

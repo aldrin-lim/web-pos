@@ -158,7 +158,7 @@ const Payment = (props: PaymentProps) => {
           ]}
         />
 
-        <div className="flex h-full flex-col gap-4">
+        <div className="flex h-full flex-col gap-4 pb-4">
           {/* Heading */}
           <div className="flex w-full flex-col gap-2 text-center">
             <h1 className="text-2xl">Amount Payable</h1>

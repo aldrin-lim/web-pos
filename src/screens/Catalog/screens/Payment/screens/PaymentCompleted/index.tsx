@@ -57,7 +57,7 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
           ]}
         />
 
-        <div className="flex h-full flex-col gap-4">
+        <div className="flex h-full flex-col gap-4 pb-4">
           <div className="flex w-full flex-col gap-2 text-center">
             <h1 className="text-2xl"> Change</h1>
             <p className="text-4xl font-bold text-primary">
