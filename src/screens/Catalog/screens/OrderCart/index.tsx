@@ -128,8 +128,8 @@ const OrderCart = (props: CartProps) => {
         />
         <div className="flex h-full flex-col gap-4 pb-8">
           {/* Heading */}
-          <div className="flex flex-row justify-between gap-4">
-            <h1 className="text-2xl font-bold">Total</h1>
+          <div className="flex flex-row justify-between gap-4 text-white">
+            <h1 className="text-2xl font-bold text-white">Total</h1>
             <p className="text-2xl font-bold">{formatToPeso(totalAmount)}</p>
           </div>
           {/* Items */}
