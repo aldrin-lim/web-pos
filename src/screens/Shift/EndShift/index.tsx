@@ -153,7 +153,7 @@ const EndShift = () => {
             <ToolbarTitle key="title" title="Close Shift" />,
           ]}
         />
-        <div className="flex flex-col gap-4 pb-4">
+        <div className="flex flex-col gap-4 pb-4 text-white">
           <h1 className="text-xs text-white">
             Closing Staff:{' '}
             <span className="text-neutral">
