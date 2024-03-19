@@ -137,7 +137,7 @@ const EndShift = () => {
     <>
       <div
         className={[
-          'screen h-full pb-9',
+          'screen pb-23 h-full',
           !isParentScreen ? 'hidden-screen' : '',
         ].join(' ')}
       >
@@ -153,7 +153,7 @@ const EndShift = () => {
             <ToolbarTitle key="title" title="Close Shift" />,
           ]}
         />
-        <div className="flex h-full flex-col gap-4">
+        <div className="flex h-full flex-col gap-4 pb-4">
           <h1 className="text-xs text-white">
             Closing Staff:{' '}
             <span className="text-neutral">

@@ -212,7 +212,7 @@ const NextPayment = (props: PaymentProps) => {
           ]}
         />
 
-        <div className="flex h-full flex-col gap-4">
+        <div className="flex h-full flex-col gap-4 pb-4">
           {/* Heading */}
           <div className="flex w-full flex-col gap-4 text-center">
             <h1 className="text-2xl">Amount Payable</h1>

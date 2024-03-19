@@ -85,7 +85,7 @@ const StartShift = () => {
             <ToolbarTitle key="title" title="New Shift" />,
           ]}
         />
-        <div className="flex h-full flex-col gap-4">
+        <div className="flex h-full flex-col gap-4 pb-4">
           <h1 className="text-xs text-white">
             Opening Staff:{' '}
             <span className="text-neutral">
