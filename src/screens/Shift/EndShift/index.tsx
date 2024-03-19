@@ -200,21 +200,14 @@ const EndShift = () => {
             )}
           </label>
 
-          {/* Difference */}
-          <h2 className="border-b border-gray-700 pb-4 text-base font-bold text-white">
-            Difference:{' '}
-          </h2>
-
-          {/* Opening Cash */}
-          <h2 className="text-base text-white">Opening Cash: </h2>
-          {/* Payments in Cash */}
-          <h2 className="text-base text-white">Payments in Cash: </h2>
-          {/* Payments in Gcash */}
-          <h2 className="text-base text-white">Payments in Gcash: </h2>
-          {/* Payments in MAYA */}
-          <h2 className="border-b border-gray-700 pb-4 text-base text-white">
-            Payments in MAYA:{' '}
-          </h2>
+          {Object.entries(paymentsRecievedPerMethod ?? {}).map(
+            ([key, value]) => (
+              <div key={key} className=" grid grid-cols-12 gap-2">
+                <div className="col-span-7">{key}</div>
+                <div className="col-span-5 text-right">{value}</div>
+              </div>
+            ),
+          )}
 
           {/* Notes */}
           <h2 className="text-base font-bold text-white">Notes</h2>
@@ -242,14 +235,6 @@ const EndShift = () => {
               {formatToPeso(report?.shift?.openingPettyCash ?? 0)}
             </div>
           </div>
-          {Object.entries(paymentsRecievedPerMethod ?? {}).map(
-            ([key, value]) => (
-              <div key={key} className=" grid grid-cols-12 gap-2">
-                <div className="col-span-7">{key}</div>
-                <div className="col-span-5 text-right">{value}</div>
-              </div>
-            ),
-          )}
 
           <button
             disabled={isEnding}
