@@ -161,8 +161,8 @@ const Payment = (props: PaymentProps) => {
         <div className="flex h-full flex-col gap-4 pb-4">
           {/* Heading */}
           <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl">Amount Payable</h1>
-            <p className="text-3xl font-bold text-primary">
+            <h1 className="text-2xl text-white">Amount Payable</h1>
+            <p className="text-3xl text-secondary">
               {formatToPeso(totalOrderAmount)}
             </p>
           </div>
@@ -178,26 +178,26 @@ const Payment = (props: PaymentProps) => {
                     })
                   }
                   key={method}
-                  className="btn btn-outline flex h-auto w-min min-w-[155px] items-center py-6 text-center"
+                  className="btn btn-outline flex h-auto w-min min-w-[155px] items-center bg-neutral py-2.5 text-center font-normal text-black"
                 >
                   <div className="flex flex-col items-center justify-center">
                     <img
                       className="w-[30px]"
                       src={getPaymentMethodImages(method)}
                     />
-                    <p className="text-lg">{getPaymentMethodName(method)}</p>
+                    <p className="text-base">{getPaymentMethodName(method)}</p>
                   </div>
                 </button>
               )
             })}
           </div>
-          <div className="mt-10 flex flex-col gap-4 text-center ">
-            <h1>OR</h1>
+          <div className="mt-10 flex flex-col items-center justify-center gap-10 text-center">
+            <h1 className="text-white">OR</h1>
             <button
               onClick={() => navigate(Screen.SplitPayment)}
-              className="btn btn-outline btn-primary"
+              className="btn btn-outline btn-primary w-36 border-neutral  "
             >
-              Split Payment
+              <span className="text-white">Split Payment</span>
             </button>
           </div>
         </div>
