@@ -8,6 +8,7 @@ import { Business } from 'types/business.type'
 const useUser = () => {
   const { user } = useAuth()
   const [taxRate, setTaxRate] = useState<number | null>(null)
+  const [tax, setTax] = useState<Business['tax'] | null>(null)
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['user'],
@@ -19,11 +20,13 @@ const useUser = () => {
   useEffect(() => {
     const business = get(data, 'businesses[0]') as Business | undefined
     if (business && business.tax?.amount) {
+      setTax(business.tax)
       setTaxRate(business.tax.amount)
     }
   }, [data])
 
   return {
+    tax,
     taxRate,
     user: data,
     error,

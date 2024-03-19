@@ -38,7 +38,7 @@ type CartProps = {
 
 const OrderCart = (props: CartProps) => {
   const { totalAmount, orders } = props
-  const { taxRate } = useUser()
+  const { taxRate, tax } = useUser()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -65,8 +65,11 @@ const OrderCart = (props: CartProps) => {
     })
   }
 
-  const tax = useMemo(() => {
+  const totalTax = useMemo(() => {
     const totalTax = orders.reduce((acc, order) => {
+      if (tax?.type === 'inclusive') {
+        return acc
+      }
       if (order.product.applyTax === false) {
         return acc
       }
@@ -102,7 +105,7 @@ const OrderCart = (props: CartProps) => {
     }, 0)
 
     return totalTax
-  }, [orders, taxRate])
+  }, [orders, taxRate, tax])
 
   if (orders.length === 0) {
     return <Navigate to="../" />
@@ -143,15 +146,17 @@ const OrderCart = (props: CartProps) => {
                 />
               )
             })}
-            {tax > 0 && (
-              <div className="flex flex-row items-center justify-between bg-base-300 p-2 text-white">
+            {totalTax > 0 && (
+              <div className="ml-[-0.75rem] mr-[-0.75rem] flex flex-row justify-between bg-gray-700 p-2 pl-[0.75rem] pr-[0.75rem]">
                 <div className="flex flex-row items-center">
                   <div className="flex flex-col">
-                    <p className="text-xl">TAX</p>
+                    <p className="text-xl text-white">TAX</p>
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <p className="font-bold">{formatToPeso(tax)}</p>
+                  <p className="font-bold text-white">
+                    {formatToPeso(totalTax)}
+                  </p>
                 </div>
               </div>
             )}
@@ -164,7 +169,7 @@ const OrderCart = (props: CartProps) => {
         </div>
       </div>
       <AnimatePresence>
-        <Routes location={location} key={isParentScreen.toString()}>
+        <Routes>
           <Route
             path={`${Screen.Payment}/*`}
             element={

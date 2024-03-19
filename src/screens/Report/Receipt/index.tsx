@@ -26,6 +26,7 @@ const Receipt = () => {
 
   const user = queryClient.getQueryData(['user']) as User
   const taxRate = user.businesses[0].tax?.amount ?? 0
+  const tax = user.businesses[0].tax
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -41,8 +42,11 @@ const Receipt = () => {
     return 0
   }, [order?.totalDiscount, order?.totalGross])
 
-  const tax = useMemo(() => {
+  const totalTax = useMemo(() => {
     const totalTax = order?.orderItems.reduce((acc, order) => {
+      if (tax && tax?.type === 'inclusive') {
+        return acc
+      }
       if (order.product.applyTax === false) {
         return acc
       }
@@ -78,16 +82,16 @@ const Receipt = () => {
     }, 0)
 
     return totalTax
-  }, [order?.orderItems, taxRate])
+  }, [order?.orderItems, taxRate, tax])
 
   const orderTotal = useMemo(() => {
     const total = new Big(order?.totalNet ?? 0).round(2).toNumber()
-    if (tax) {
-      return new Big(total).add(tax).round(2).toNumber()
+    if (totalTax) {
+      return new Big(total).add(totalTax).round(2).toNumber()
     }
 
     return total
-  }, [order?.totalNet, tax])
+  }, [order?.totalNet, totalTax])
 
   const paymentMethods = useMemo(() => {
     const paymentDetails = ([order?.sale] ?? []).reduce(
@@ -251,11 +255,13 @@ const Receipt = () => {
             </div>
           )}
 
-          {!!tax && tax > 0 && (
+          {!!totalTax && totalTax > 0 && (
             <div className="flex w-full flex-col gap-2">
               <div className="col-span-12 grid grid-cols-12 gap-2">
-                <div className="col-span-7">Tax excl. (12%) ({taxRate}%)</div>
-                <div className="col-span-5 text-right">{formatToPeso(tax)}</div>
+                <div className="col-span-7">Tax excl. ({taxRate}%)</div>
+                <div className="col-span-5 text-right">
+                  {formatToPeso(totalTax)}
+                </div>
               </div>
             </div>
           )}

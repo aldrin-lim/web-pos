@@ -9,19 +9,11 @@ import ZReport from 'screens/Report/ZReport'
 import Receipt from 'screens/Report/Receipt'
 import SignoutScreen from 'components/SignoutScreen'
 import Orders from 'screens/Orders'
-import ProtectedRoute from './ProtectedRoutes'
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<ProtectedRoute element={<Layout />} />}>
-      <Route
-        index
-        element={
-          <ShiftCheck>
-            <Catalog />
-          </ShiftCheck>
-        }
-      />
+    <Route path="/" element={<Layout />}>
+      <Route index element={<Navigate to={AppPath.Catalog} />} />
       <Route
         path={`${AppPath.Catalog}/*`}
         element={
