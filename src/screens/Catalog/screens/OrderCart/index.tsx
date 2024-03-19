@@ -144,7 +144,7 @@ const OrderCart = (props: CartProps) => {
               )
             })}
             {tax > 0 && (
-              <div className="flex flex-row items-center justify-between bg-base-300 p-2 ">
+              <div className="flex flex-row items-center justify-between bg-base-300 p-2 text-white">
                 <div className="flex flex-row items-center">
                   <div className="flex flex-col">
                     <p className="text-xl">TAX</p>
