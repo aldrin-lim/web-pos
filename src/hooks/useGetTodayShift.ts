@@ -6,7 +6,7 @@ const useGetTodayShift = () => {
     queryKey: ['shift', 'today'],
     queryFn: API.getTodayShift,
     retry: 0,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   return {

@@ -1,4 +1,5 @@
 export enum AppPath {
+  Root = '/',
   Catalog = '/catalog',
   StartShift = '/shift/start',
   EndShift = '/shift/end',

@@ -6,7 +6,7 @@ const useGetProductCollection = () => {
     queryKey: ['productCollection', 'default'],
     queryFn: () => API.getDefaultProductCollection(),
     retry: 0,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   return {

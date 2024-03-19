@@ -17,7 +17,7 @@ const useGetOrders = () => {
       return result
     },
     retry: 0,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   return {
