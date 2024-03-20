@@ -212,27 +212,29 @@ const SinglePayment = (props: PaymentProps) => {
 
         <div className="flex h-full flex-col gap-4 pb-4">
           <div className="flex flex-col items-center justify-center gap-2">
-            <img
-              className="w-[30px]"
-              src={getPaymentMethodImages(paymentMethod)}
-            />
-            <p className="text-lg">{getPaymentMethodName(paymentMethod)}</p>
+            <div className="btn btn-outline flex h-[78px] w-min min-w-[155px] items-center bg-neutral py-2.5 text-center font-normal text-black">
+              <img
+                className="w-[30px]"
+                src={getPaymentMethodImages(paymentMethod)}
+              />
+              <p className="text-lg">{getPaymentMethodName(paymentMethod)}</p>
+            </div>
           </div>
           {/* Heading */}
           <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl">Amount Payable</h1>
-            <p className="text-3xl font-bold text-primary">
+            <h1 className="text-base text-white">Amount Payable</h1>
+            <p className="text-3xl text-secondary">
               {formatToPeso(totalOrderAmount)}
             </p>
           </div>
           {/* Payment Input */}
           <label className="form-control mt-20 flex w-full flex-col gap-4 text-center">
-            <h1 className="text-2xl">Amount Received</h1>
+            <h1 className="text-base text-white">Amount Received</h1>
             <CurrencyInput
               id="single-payment-amount-received"
               type="text"
               tabIndex={1}
-              className="input input-lg input-bordered w-full text-center text-xl"
+              className="input input-lg input-bordered w-full border-secondary text-center text-xl text-white"
               prefix={'₱'}
               placeholder="P0.00"
               inputMode="decimal"

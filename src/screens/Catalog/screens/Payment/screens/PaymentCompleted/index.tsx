@@ -59,16 +59,14 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
 
         <div className="flex h-full flex-col gap-4 pb-4">
           <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl"> Change</h1>
-            <p className="text-4xl font-bold text-primary">
+            <h1 className=" text-base text-white"> Change</h1>
+            <p className="mb-2  text-4xl text-accent">
               {formatToPeso(totalChange)}
             </p>
           </div>
-          <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl">Payable </h1>
-            <p className="text-3xl font-bold ">
-              {formatToPeso(totalAmountPayable)}
-            </p>
+          <div className="flex w-full flex-col gap-2 text-center text-white">
+            <h1 className=" mb-1 text-base text-white">Payable </h1>
+            <p className="text-3xl  ">{formatToPeso(totalAmountPayable)}</p>
           </div>
           <div className="mt-auto flex w-full flex-col gap-4">
             <button onClick={goBackToCatalog} className="btn btn-primary">
@@ -76,9 +74,9 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
             </button>
             <button
               onClick={showReceipt}
-              className="btn btn-outline btn-primary"
+              className="btn btn-outline btn-neutral"
             >
-              Receipt
+              <span className="text-white">Receipt</span>
             </button>
           </div>
         </div>
