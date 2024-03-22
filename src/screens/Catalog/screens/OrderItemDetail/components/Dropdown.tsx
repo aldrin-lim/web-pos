@@ -13,7 +13,7 @@ const Dropdown = (props: DropdownProps) => {
     <div
       tabIndex={0}
       className={[
-        'dropdown dropdown-end inline-flex w-auto',
+        'dropdown dropdown-end col-start-12 inline-flex w-auto',
         open ? 'dropdown-open' : '',
       ].join(' ')}
       onBlur={() => {

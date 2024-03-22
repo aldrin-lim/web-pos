@@ -1,4 +1,5 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+import { BackspaceIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
@@ -242,7 +243,8 @@ const SinglePayment = (props: PaymentProps) => {
           {/* Payment Input */}
           <label className="form-control flex w-full flex-col gap-4 text-center">
             <h1 className="text-base text-white">Amount Received</h1>
-            <div className="flex justify-between">
+            {/* TODO: Replace  this  with function that suggest denomination base from the ammount */}
+            {/* <div className="flex justify-between">
               <button
                 onClick={clickButton}
                 className="btn btn-secondary w-[30%]"
@@ -264,7 +266,7 @@ const SinglePayment = (props: PaymentProps) => {
               >
                 100
               </button>
-            </div>
+            </div> */}
             <CurrencyInput
               id="single-payment-amount-received"
               type="text"
@@ -279,6 +281,7 @@ const SinglePayment = (props: PaymentProps) => {
               }}
             />
           </label>
+
           <button
             onClick={fulfillOrders}
             disabled={!amountReceived || isLoading}
