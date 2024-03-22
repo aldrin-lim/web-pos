@@ -196,7 +196,7 @@ const SinglePayment = (props: PaymentProps) => {
       'single-payment-amount-received',
     ) as HTMLInputElement
     if (inputElement) {
-      inputElement.value = x.currentTarget.value
+      inputElement.value = formatToPeso(x.currentTarget.value)
     }
   }
 
@@ -240,7 +240,7 @@ const SinglePayment = (props: PaymentProps) => {
             </p>
           </div>
           {/* Payment Input */}
-          <label className="form-control mt-20 flex w-full flex-col gap-4 text-center">
+          <label className="form-control flex w-full flex-col gap-4 text-center">
             <h1 className="text-base text-white">Amount Received</h1>
             <div className="flex justify-between">
               <button
