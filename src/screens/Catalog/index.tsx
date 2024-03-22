@@ -365,7 +365,7 @@ const Catalog = () => {
             </label>,
             <div
               key="title"
-              className="mx-auto flex flex-row gap-3 self-center py-3 text-center"
+              className="col-span-8 col-start-3 mx-auto flex flex-row gap-3 self-center py-3 text-center"
             >
               <img key="logo " className="w-6 self-center" src={logo} />
               <h1 className="font-bold">Qrafter</h1>
