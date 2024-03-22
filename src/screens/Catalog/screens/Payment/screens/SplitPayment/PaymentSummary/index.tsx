@@ -44,7 +44,7 @@ const PaymentSummary = (props: PaymentCompletedPrpos) => {
         <div className="flex h-full flex-col gap-4 pb-4">
           {payments.map((payment, index) => {
             return (
-              <div key={index} className="mb-2 flex flex-col">
+              <div key={index} className="mb-2 flex flex-col text-white">
                 <div className="flex w-full flex-row justify-between text-lg font-bold">
                   <p>
                     Payment {index + 1} ({getPaymentMethodName(payment.method)})
@@ -56,7 +56,7 @@ const PaymentSummary = (props: PaymentCompletedPrpos) => {
                   <p>{formatToPeso(payment.amountReceived)}</p>
                 </div>
                 {payment.method === 'cash' && (
-                  <div className="flex w-full flex-row justify-between text-primary">
+                  <div className="flex w-full flex-row justify-between text-secondary">
                     <p>Change</p>
                     <p>{formatToPeso(payment.change)}</p>
                   </div>

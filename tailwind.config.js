@@ -31,6 +31,7 @@ export default {
           secondary: "#3A9E92",
           warning: "FF7300",
           neutral: "#FFFFFF",
+          accent:"#9CF50A",
           "primary-content": "#ffffff",
           "secondary-content": "#ffffff",
           "accent-content": "#ffffff",

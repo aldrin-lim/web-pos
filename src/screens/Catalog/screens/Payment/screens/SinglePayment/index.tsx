@@ -1,4 +1,5 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+import { BackspaceIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
@@ -191,6 +192,15 @@ const SinglePayment = (props: PaymentProps) => {
     })
   }
 
+  function clickButton(x: React.MouseEvent<HTMLButtonElement>): void {
+    const inputElement = document.getElementById(
+      'single-payment-amount-received',
+    ) as HTMLInputElement
+    if (inputElement) {
+      inputElement.value = formatToPeso(x.currentTarget.value)
+    }
+  }
+
   return (
     <>
       <div
@@ -206,33 +216,62 @@ const SinglePayment = (props: PaymentProps) => {
               icon={<ChevronLeftIcon className="w-6" />}
               onClick={() => navigate(-1)}
             />,
-            <ToolbarTitle key="title" title="Payment" />,
+            <ToolbarTitle
+              key="title"
+              title={getPaymentMethodName(paymentMethod) + ' Payment'}
+            />,
           ]}
         />
 
         <div className="flex h-full flex-col gap-4 pb-4">
           <div className="flex flex-col items-center justify-center gap-2">
-            <img
-              className="w-[30px]"
-              src={getPaymentMethodImages(paymentMethod)}
-            />
-            <p className="text-lg">{getPaymentMethodName(paymentMethod)}</p>
+            <div className="btn btn-outline flex h-auto min-h-[78px] w-min min-w-[155px] flex-col items-center bg-neutral py-2.5 text-center font-normal text-black">
+              <img
+                className="w-[30px]"
+                src={getPaymentMethodImages(paymentMethod)}
+              />
+              <p className="text-lg">{getPaymentMethodName(paymentMethod)}</p>
+            </div>
           </div>
           {/* Heading */}
           <div className="flex w-full flex-col gap-2 text-center">
-            <h1 className="text-2xl">Amount Payable</h1>
-            <p className="text-3xl font-bold text-primary">
+            <h1 className="text-base text-white">Amount Payable</h1>
+            <p className="text-3xl text-secondary">
               {formatToPeso(totalOrderAmount)}
             </p>
           </div>
           {/* Payment Input */}
-          <label className="form-control mt-20 flex w-full flex-col gap-4 text-center">
-            <h1 className="text-2xl">Amount Received</h1>
+          <label className="form-control flex w-full flex-col gap-4 text-center">
+            <h1 className="text-base text-white">Amount Received</h1>
+            {/* TODO: Replace  this  with function that suggest denomination base from the ammount */}
+            {/* <div className="flex justify-between">
+              <button
+                onClick={clickButton}
+                className="btn btn-secondary w-[30%]"
+                value="85"
+              >
+                85
+              </button>
+              <button
+                onClick={clickButton}
+                className="btn btn-secondary w-[30%]"
+                value="90"
+              >
+                90
+              </button>
+              <button
+                onClick={clickButton}
+                className="btn btn-secondary w-[30%]"
+                value="100"
+              >
+                100
+              </button>
+            </div> */}
             <CurrencyInput
               id="single-payment-amount-received"
               type="text"
               tabIndex={1}
-              className="input input-lg input-bordered w-full text-center text-xl"
+              className="input input-lg input-bordered w-full border-secondary text-center text-xl text-white"
               prefix={'₱'}
               placeholder="P0.00"
               inputMode="decimal"
@@ -242,6 +281,7 @@ const SinglePayment = (props: PaymentProps) => {
               }}
             />
           </label>
+
           <button
             onClick={fulfillOrders}
             disabled={!amountReceived || isLoading}

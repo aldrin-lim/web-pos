@@ -1,4 +1,5 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import Toolbar from 'components/Layout/components/Toolbar'
 import ToolbarButton from 'components/Layout/components/Toolbar/components/ToolbarButton'
 import ToolbarTitle from 'components/Layout/components/Toolbar/components/ToolbarTitle'
@@ -203,33 +204,33 @@ const SplitPayment = (props: PaymentProps) => {
               icon={<ChevronLeftIcon className="w-6" />}
               onClick={() => navigate(-1)}
             />,
-            <ToolbarTitle key="title" title="Payment 1" />,
+            <ToolbarTitle key="title" title="Split Payment" />,
           ]}
         />
 
         <div className="flex h-full flex-col gap-4 pb-4">
           {/* Heading */}
           <div className="flex w-full flex-col gap-4 text-center">
-            <h1 className="text-2xl">Amount Payable</h1>
-            <p className="text-3xl font-bold text-primary">
+            <h1 className="text-2xl text-white">Amount Payable</h1>
+            <p className="text-3xl text-secondary">
               {formatToPeso(totalOrderAmount)}
             </p>
 
             {/* Payment Method Item */}
             <div className="flex flex-col justify-start gap-2 text-left">
-              <h1>Payment 1</h1>
+              <h1 className="text-white">Payment 1</h1>
               {/* Amount Payable */}
               <label className="form-control w-full ">
-                <div className="form-control-label  ">
+                {/* <div className="form-control-label  ">
                   <span className="label-text-alt text-gray-400">
                     Amount Payable
                   </span>
-                </div>
+                </div> */}
                 <CurrencyInput
                   id="split-payment-1-amount-payable"
                   type="text"
                   tabIndex={1}
-                  className="input input-bordered w-full text-center"
+                  className="input input-bordered w-full border-secondary text-center text-2xl text-white"
                   prefix={'₱'}
                   placeholder="P0.00"
                   inputMode="decimal"
@@ -248,10 +249,10 @@ const SplitPayment = (props: PaymentProps) => {
               </label>
 
               {/* Payment Method */}
-              <label className="form-control w-full ">
+              <label className="form-control w-full text-white">
                 <select
                   tabIndex={2}
-                  className="join-item select select-bordered"
+                  className="join-item select select-bordered border-neutral bg-none"
                   onChange={(e) => {
                     setFieldValue('method', e.target.value as PaymentMethod)
                     if (e.target.value === 'cash') {
@@ -270,6 +271,7 @@ const SplitPayment = (props: PaymentProps) => {
                     )
                   })}
                 </select>
+                <ChevronDownIcon className="t- absolute right-[0.5rem] top-[15px] w-6 text-white" />
                 {errors.method && (
                   <div className="label py-0">
                     <span className="label-text-alt text-xs text-red-400">
@@ -279,18 +281,18 @@ const SplitPayment = (props: PaymentProps) => {
                 )}
               </label>
 
-              <label className="form-control w-full ">
-                <div className="form-control-label  ">
-                  <span className="label-text-alt text-gray-400">
+              <label className="form-control w-full text-white">
+                {/* <div className="absolute left-4 top-[3px] flex pl-[1px] align-top">
+                  <span className="label-text-alt text-[8px] text-white">
                     Amount Received
                   </span>
-                </div>
+                </div> */}
                 <CurrencyInput
                   type="text"
                   tabIndex={3}
-                  className="input input-bordered w-full text-center"
+                  className="input input-bordered w-full border-neutral pl-4 pr-4"
                   prefix={'₱'}
-                  placeholder="P0.00"
+                  placeholder="Amount Received"
                   inputMode="decimal"
                   allowNegativeValue={false}
                   onValueChange={(value) => {

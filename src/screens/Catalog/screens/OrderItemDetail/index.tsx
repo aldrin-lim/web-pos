@@ -276,7 +276,9 @@ const OrderItemDetail = (props: OrderItemDetailProps) => {
               }}
               className="w-full"
             />
-            {!product.allowBackOrder && <p>{totalQuantity} Available</p>}
+            {!product.allowBackOrder && (
+              <p className="text-white">{totalQuantity} Available</p>
+            )}
             <p className="text-red-400">{error}</p>
           </div>
           {renderCTA()}
