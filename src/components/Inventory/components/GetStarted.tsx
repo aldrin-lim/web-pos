@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom'
-
 const GetStarted = () => {
   const onAddProduct = () => {
     localStorage.setItem('productAdded', 'true')
