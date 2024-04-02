@@ -115,8 +115,8 @@ const OrderCart = (props: CartProps) => {
     <>
       <div
         className={[
-          'screen relative h-full w-full pb-9',
-          !isParentScreen ? 'hidden-screen' : '',
+          'screen relative w-full grid-cols-4 pb-20',
+          isParentScreen ? 'screen' : 'hidden',
         ].join(' ')}
       >
         <Toolbar
@@ -129,14 +129,14 @@ const OrderCart = (props: CartProps) => {
             <ToolbarTitle key="title" title="Cart" />,
           ]}
         />
-        <div className="flex h-full flex-col gap-4 pb-8">
+        <div className="bottom-0 top-0 flex flex-col gap-4 ">
           {/* Heading */}
           <div className="flex flex-row justify-between gap-4 text-white">
             <h1 className="text-2xl font-bold text-white">Total</h1>
             <p className="text-2xl font-bold">{formatToPeso(totalAmount)}</p>
           </div>
           {/* Items */}
-          <div className="flex w-full flex-col gap-[2px]">
+          <div className="flex w-full flex-grow flex-col gap-[2px] ">
             {orders.map((order) => {
               return (
                 <OrderCartItem
@@ -161,32 +161,26 @@ const OrderCart = (props: CartProps) => {
               </div>
             )}
           </div>
-        </div>
-        <div className="fixed bottom-4 left-0 right-0 flex flex-col bg-base-100 px-2">
-          <button onClick={showPaymentScreen} className="btn btn-primary">
-            Payment
-          </button>
+          <div className="fixed bottom-4 left-0 right-0 mt-auto flex flex-col bg-base-100 px-2">
+            <button onClick={showPaymentScreen} className="btn btn-primary">
+              Payment
+            </button>
+          </div>
         </div>
       </div>
       <AnimatePresence>
         <Routes>
           <Route
             path={`${Screen.Payment}/*`}
-            element={
-              <SlidingTransition>
-                <Payment orders={orders} />
-              </SlidingTransition>
-            }
+            element={<Payment orders={orders} />}
           />
           <Route
             path={`${Screen.UpdateOrder}/*`}
             element={
-              <SlidingTransition>
-                <OrderItemDetail
-                  onBack={() => navigate(-1)}
-                  onUpdateOrder={updateProductInOrder}
-                />
-              </SlidingTransition>
+              <OrderItemDetail
+                onBack={() => navigate(-1)}
+                onUpdateOrder={updateProductInOrder}
+              />
             }
           />
         </Routes>

@@ -142,10 +142,9 @@ const Payment = (props: PaymentProps) => {
   return (
     <>
       <div
-        className={[
-          'screen h-full pb-9',
-          !isParentScreen ? 'hidden-screen' : '',
-        ].join(' ')}
+        className={['Payment pb-9', isParentScreen ? 'screen' : 'hidden'].join(
+          ' ',
+        )}
       >
         <Toolbar
           items={[
@@ -206,19 +205,11 @@ const Payment = (props: PaymentProps) => {
         <Routes location={location} key={isParentScreen.toString()}>
           <Route
             path={`${Screen.SinglePayment}/*`}
-            element={
-              <SlidingTransition>
-                <SinglePayment orders={orders} />
-              </SlidingTransition>
-            }
+            element={<SinglePayment orders={orders} />}
           />
           <Route
             path={`${Screen.SplitPayment}/*`}
-            element={
-              <SlidingTransition>
-                <SplitPayment orders={orders} />
-              </SlidingTransition>
-            }
+            element={<SplitPayment orders={orders} />}
           />
         </Routes>
       </AnimatePresence>

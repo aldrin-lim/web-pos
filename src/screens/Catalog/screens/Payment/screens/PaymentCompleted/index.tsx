@@ -46,8 +46,8 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
     <>
       <div
         className={[
-          'screen h-full pb-9',
-          !isParentScreen ? 'hidden-screen' : '',
+          'screen relative h-full pb-9',
+          !isParentScreen ? 'hidden' : '',
         ].join(' ')}
       >
         <Toolbar
@@ -70,7 +70,7 @@ const PaymentCompleted = (props: PaymentCompletedPrpos) => {
               {formatToPeso(totalAmountPayable)}
             </p>
           </div>
-          <div className="mt-auto flex w-full flex-col gap-4">
+          <div className="fixed bottom-4 left-0 right-0 flex w-full flex-col gap-4 px-4">
             <button onClick={goBackToCatalog} className="btn btn-primary">
               New Order
             </button>

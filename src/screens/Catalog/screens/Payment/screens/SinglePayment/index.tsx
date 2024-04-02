@@ -193,12 +193,7 @@ const SinglePayment = (props: PaymentProps) => {
 
   return (
     <>
-      <div
-        className={[
-          'screen h-full pb-9',
-          !isParentScreen ? 'hidden-screen' : '',
-        ].join(' ')}
-      >
+      <div className={['pb-9', isParentScreen ? 'screen' : 'hidden'].join(' ')}>
         <Toolbar
           items={[
             <ToolbarButton
@@ -210,7 +205,7 @@ const SinglePayment = (props: PaymentProps) => {
           ]}
         />
 
-        <div className="flex h-full flex-col gap-4 pb-4">
+        <div className="flex  flex-col gap-4 pb-4">
           <div className="flex flex-col items-center justify-center gap-2">
             <img
               className="w-[30px]"
@@ -226,7 +221,7 @@ const SinglePayment = (props: PaymentProps) => {
             </p>
           </div>
           {/* Payment Input */}
-          <label className="form-control mt-20 flex w-full flex-col gap-4 text-center">
+          <label className="form-control flex w-full flex-col gap-4 text-center">
             <h1 className="text-2xl">Amount Received</h1>
             <CurrencyInput
               id="single-payment-amount-received"
@@ -251,28 +246,24 @@ const SinglePayment = (props: PaymentProps) => {
           </button>
         </div>
       </div>
-      <AnimatePresence>
-        <Routes location={location} key={isParentScreen.toString()}>
-          <Route
-            path={`${Screen.Completed}/*`}
-            element={
-              <SlidingTransition>
-                <PaymentCompleted
-                  orders={orders}
-                  payments={[
-                    {
-                      amountPayable: totalOrderAmount,
-                      amountReceived: Number(amountReceived),
-                      change,
-                      method: paymentMethod ?? 'cash',
-                    },
-                  ]}
-                />
-              </SlidingTransition>
-            }
-          />
-        </Routes>
-      </AnimatePresence>
+      <Routes location={location} key={isParentScreen.toString()}>
+        <Route
+          path={`${Screen.Completed}/*`}
+          element={
+            <PaymentCompleted
+              orders={orders}
+              payments={[
+                {
+                  amountPayable: totalOrderAmount,
+                  amountReceived: Number(amountReceived),
+                  change,
+                  method: paymentMethod ?? 'cash',
+                },
+              ]}
+            />
+          }
+        />
+      </Routes>
     </>
   )
 }

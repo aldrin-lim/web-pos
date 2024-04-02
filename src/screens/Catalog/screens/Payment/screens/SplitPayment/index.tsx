@@ -191,10 +191,7 @@ const SplitPayment = (props: PaymentProps) => {
   return (
     <>
       <div
-        className={[
-          'screen h-full pb-9',
-          !isParentScreen ? 'hidden-screen' : '',
-        ].join(' ')}
+        className={['screen pb-9', !isParentScreen ? 'hidden' : ''].join(' ')}
       >
         <Toolbar
           items={[
@@ -207,7 +204,7 @@ const SplitPayment = (props: PaymentProps) => {
           ]}
         />
 
-        <div className="flex h-full flex-col gap-4 pb-4">
+        <div className="flex flex-col gap-4 pb-4">
           {/* Heading */}
           <div className="flex w-full flex-col gap-4 text-center">
             <h1 className="text-2xl">Amount Payable</h1>
@@ -327,11 +324,7 @@ const SplitPayment = (props: PaymentProps) => {
         <Routes location={location} key={isParentScreen.toString()}>
           <Route
             path={`${Screen.NextPayment}/*`}
-            element={
-              <SlidingTransition>
-                <NextPayment orders={orders} />
-              </SlidingTransition>
-            }
+            element={<NextPayment orders={orders} />}
           />
         </Routes>
       </AnimatePresence>

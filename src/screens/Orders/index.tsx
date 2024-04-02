@@ -35,10 +35,9 @@ const Orders = () => {
 
   return (
     <div
-      className={[
-        'screen h-full pb-9',
-        !isParentScreen ? 'hidden-screen' : '',
-      ].join(' ')}
+      className={['screen h-full pb-9', !isParentScreen ? 'hidden' : ''].join(
+        ' ',
+      )}
     >
       {/* <dialog
         open={showPinDialog}

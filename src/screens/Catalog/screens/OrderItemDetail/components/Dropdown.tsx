@@ -32,7 +32,7 @@ const Dropdown = (props: DropdownProps) => {
         <div className="dop menu dropdown-content top-10 flex w-36 flex-col overflow-hidden rounded-md bg-neutral p-0 shadow">
           <button
             onClick={onDiscountClick}
-            className="btn btn-ghost flex flex-row items-center justify-center gap-1 rounded-none "
+            className="btn btn-ghost flex flex-row items-center justify-center gap-1 rounded-none text-black"
           >
             Discount
           </button>

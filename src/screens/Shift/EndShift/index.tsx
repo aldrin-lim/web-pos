@@ -136,10 +136,7 @@ const EndShift = () => {
   return (
     <>
       <div
-        className={[
-          'screen h-full',
-          !isParentScreen ? 'hidden-screen' : '',
-        ].join(' ')}
+        className={['screen h-full', !isParentScreen ? 'hidden' : ''].join(' ')}
       >
         <Toolbar
           items={[

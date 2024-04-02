@@ -353,7 +353,9 @@ const Catalog = () => {
 
   return (
     <>
-      <div className={[isParentScreen ? 'screen' : 'hidden-screen'].join(' ')}>
+      <div
+        className={['Catalog', isParentScreen ? 'screen' : 'hidden'].join(' ')}
+      >
         <Toolbar
           items={[
             <label
@@ -399,48 +401,40 @@ const Catalog = () => {
           <Route
             path={`${ScreenPath.AddProduct}/*`}
             element={
-              <SlidingTransition>
-                <ProductSelection
-                  onProductSelect={addProductToCollection}
-                  filter={filter}
-                  onBack={() => navigate(-1)}
-                />
-              </SlidingTransition>
+              <ProductSelection
+                onProductSelect={addProductToCollection}
+                filter={filter}
+                onBack={() => navigate(-1)}
+              />
             }
           />
           <Route
             path={`${ScreenPath.AddOrder}/*`}
             element={
-              <SlidingTransition>
-                <OrderItemDetail
-                  onBack={() => navigate(-1)}
-                  onAddToOrder={addOrder}
-                />
-              </SlidingTransition>
+              <OrderItemDetail
+                onBack={() => navigate(-1)}
+                onAddToOrder={addOrder}
+              />
             }
           />
           <Route
             path={`${ScreenPath.UpdateOrder}/*`}
             element={
-              <SlidingTransition>
-                <OrderItemDetail
-                  onBack={() => navigate(-1)}
-                  onUpdateOrder={updateProductInOrder}
-                />
-              </SlidingTransition>
+              <OrderItemDetail
+                onBack={() => navigate(-1)}
+                onUpdateOrder={updateProductInOrder}
+              />
             }
           />
           <Route
             path={`${ScreenPath.OrderCart}/*`}
             element={
-              <SlidingTransition>
-                <OrderCart
-                  updateProductInOrder={updateProductInOrder}
-                  totalAmount={totalOrderAmount}
-                  products={products}
-                  orders={orders}
-                />
-              </SlidingTransition>
+              <OrderCart
+                updateProductInOrder={updateProductInOrder}
+                totalAmount={totalOrderAmount}
+                products={products}
+                orders={orders}
+              />
             }
           />
         </Routes>

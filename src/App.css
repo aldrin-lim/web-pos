@@ -6,10 +6,8 @@
 html,
 body,
 #root {
-  @apply h-full;
+  /* @apply h-full; */
 }
-
-
 
 *, html {
   scroll-behavior: smooth !important;
@@ -23,13 +21,15 @@ html, body {
   overscroll-behavior: none;
 }
 
-h1 {
-  color: #00B1BC;
-}
-
 .App {
   @apply w-full bg-base-100;
 }
+
+.MuiInputBase-input {
+  @apply !px-2 !py-3 placeholder:!text-base-content disabled:!bg-base-200 disabled:!border-transparent disabled:!outline-none;
+  font-family: Poppins, sans-serif !important;
+}
+
 
 @layer base {
   body {
@@ -40,40 +40,42 @@ h1 {
     -webkit-min-logical-width: calc(100% - 16px)
   }
 
-  .screen .ToolbarContainer {
-    @apply px-3
-  }
 
   .screen > * {
-    @apply px-3
+    @apply p-3
     
   }
 
-  /* .ToolbarContainer + * {
-    @apply px-3
-  } */
+
+  .screen .ToolbarContainer {
+    @apply px-3 py-0
+  }
+
 }
 
 @layer components {
 
   .input {
-    @apply rounded-md px-2
+    @apply rounded-md px-2 focus:outline-none
+  }
+  .textarea {
+    @apply rounded-md px-2 focus:outline-none
   }
   
   .btn {
-    @apply rounded-md h-[28px]
+    @apply rounded-md
   }
 
   .card {
-    @apply rounded
+    @apply rounded-md
   }
   
   .screen {
-    @apply absolute flex w-full flex-col gap-4 min-h-screen
+    @apply  flex w-full flex-col h-full relative
   }
 
   .hidden-screen {
-    @apply !h-0 !overflow-hidden
+    @apply h-0 overflow-hidden
   }
   
 

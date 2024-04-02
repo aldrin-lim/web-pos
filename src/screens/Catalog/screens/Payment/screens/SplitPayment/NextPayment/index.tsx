@@ -196,10 +196,9 @@ const NextPayment = (props: PaymentProps) => {
   return (
     <>
       <div
-        className={[
-          'screen h-full pb-9',
-          !isParentScreen ? 'hidden-screen' : '',
-        ].join(' ')}
+        className={['screen h-full pb-9', !isParentScreen ? 'hidden' : ''].join(
+          ' ',
+        )}
       >
         <Toolbar
           items={[
@@ -346,34 +345,28 @@ const NextPayment = (props: PaymentProps) => {
           </button>
         </div>
       </div>
-      <AnimatePresence>
-        <Routes location={location} key={isParentScreen.toString()}>
-          <Route
-            path={`${Screen.Summary}/*`}
-            element={
-              <SlidingTransition>
-                <PaymentSummary
-                  isLoading={isLoading}
-                  onPayClick={fulfillOrders}
-                  orders={orders}
-                  payments={[previousPayment, values]}
-                />
-              </SlidingTransition>
-            }
-          />
-          <Route
-            path={`${Screen.Completed}/*`}
-            element={
-              <SlidingTransition>
-                <PaymentCompleted
-                  orders={orders}
-                  payments={[previousPayment, values]}
-                />
-              </SlidingTransition>
-            }
-          />
-        </Routes>
-      </AnimatePresence>
+      <Routes location={location} key={isParentScreen.toString()}>
+        <Route
+          path={`${Screen.Summary}/*`}
+          element={
+            <PaymentSummary
+              isLoading={isLoading}
+              onPayClick={fulfillOrders}
+              orders={orders}
+              payments={[previousPayment, values]}
+            />
+          }
+        />
+        <Route
+          path={`${Screen.Completed}/*`}
+          element={
+            <PaymentCompleted
+              orders={orders}
+              payments={[previousPayment, values]}
+            />
+          }
+        />
+      </Routes>
     </>
   )
 }

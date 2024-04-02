@@ -10,7 +10,6 @@ import { toast } from 'react-toastify'
 import { StartShiftValidationSchema } from 'api/shift/startShift'
 import useStartShift from 'hooks/useStartShift'
 import { AppPath } from 'routes/AppRoutes.types'
-import { getTodayShift } from 'api/shift'
 import { useEffect } from 'react'
 import useGetShift from 'hooks/useGetTodayShift'
 import mixpanel from 'mixpanel-browser'
@@ -68,10 +67,7 @@ const StartShift = () => {
   return (
     <>
       <div
-        className={[
-          'screen h-full',
-          !isParentScreen ? 'hidden-screen' : '',
-        ].join(' ')}
+        className={['screen h-full', !isParentScreen ? 'hidden' : ''].join(' ')}
       >
         <Toolbar
           items={[

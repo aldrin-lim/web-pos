@@ -100,9 +100,7 @@ const ProductSelection = (props: ProductSelectionProps) => {
   return (
     <>
       <div
-        className={['screen pb-9', !isParentScreen ? 'hidden-screen' : ''].join(
-          ' ',
-        )}
+        className={['screen pb-9', !isParentScreen ? 'hidden' : ''].join(' ')}
       >
         <Toolbar
           items={[
@@ -123,13 +121,11 @@ const ProductSelection = (props: ProductSelectionProps) => {
           <Route
             path={`${ScreenPath.List}/*`}
             element={
-              <SlidingTransition>
-                <Inventory
-                  products={filteredProducts}
-                  onBack={() => navigate(-1)}
-                  onProductSelect={viewProduct}
-                />
-              </SlidingTransition>
+              <Inventory
+                products={filteredProducts}
+                onBack={() => navigate(-1)}
+                onProductSelect={viewProduct}
+              />
             }
           />
         </Routes>
