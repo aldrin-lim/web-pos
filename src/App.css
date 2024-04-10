@@ -56,7 +56,7 @@ html, body {
 @layer components {
 
   .input {
-    @apply rounded-md px-2 focus:outline-none
+    @apply rounded-md px-2 focus:outline-none placeholder:text-base-content/40
   }
   .textarea {
     @apply rounded-md px-2 focus:outline-none

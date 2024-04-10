@@ -21,7 +21,6 @@ import debitcard from '../../assets/debitcard.svg'
 import gcash from '../../assets/gcash.svg'
 import paymaya from '../../assets/paymaya.svg'
 import CurrencyInput from 'react-currency-input-field'
-import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import { z } from 'zod'
 import { useFormik } from 'formik'
@@ -29,6 +28,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter'
 import NextPayment from './NextPayment'
 import { useEffect } from 'react'
 import useUser from 'hooks/useUser'
+import { Customer } from 'types/customer.types'
 
 enum Screen {
   NextPayment = 'next-payment',
@@ -36,6 +36,7 @@ enum Screen {
 
 type PaymentProps = {
   orders: Order[]
+  customer?: Customer
 }
 
 const paymentMethods = [
@@ -112,7 +113,7 @@ export const getPaymentMethodName = (method: PaymentMethod) => {
 }
 
 const SplitPayment = (props: PaymentProps) => {
-  const { orders } = props
+  const { orders, customer } = props
   const { taxRate } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
@@ -324,7 +325,7 @@ const SplitPayment = (props: PaymentProps) => {
         <Routes location={location} key={isParentScreen.toString()}>
           <Route
             path={`${Screen.NextPayment}/*`}
-            element={<NextPayment orders={orders} />}
+            element={<NextPayment orders={orders} customer={customer} />}
           />
         </Routes>
       </AnimatePresence>

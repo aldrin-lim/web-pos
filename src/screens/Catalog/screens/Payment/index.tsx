@@ -20,11 +20,11 @@ import creditcard from './assets/creditcard.svg'
 import debitcard from './assets/debitcard.svg'
 import gcash from './assets/gcash.svg'
 import paymaya from './assets/paymaya.svg'
-import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import SinglePayment from './screens/SinglePayment'
 import SplitPayment from './screens/SplitPayment'
 import useUser from 'hooks/useUser'
+import { Customer } from '../OrderCart/CustomerDetail'
 
 enum Screen {
   SinglePayment = 'single-payment',
@@ -33,6 +33,7 @@ enum Screen {
 
 type PaymentProps = {
   orders: Order[]
+  customer?: Customer
 }
 
 const paymentMethods = [
@@ -92,7 +93,7 @@ export const getPaymentMethodName = (method: PaymentMethod): string => {
 }
 
 const Payment = (props: PaymentProps) => {
-  const { orders } = props
+  const { orders, customer } = props
   const { taxRate } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
@@ -205,11 +206,11 @@ const Payment = (props: PaymentProps) => {
         <Routes location={location} key={isParentScreen.toString()}>
           <Route
             path={`${Screen.SinglePayment}/*`}
-            element={<SinglePayment orders={orders} />}
+            element={<SinglePayment orders={orders} customer={customer} />}
           />
           <Route
             path={`${Screen.SplitPayment}/*`}
-            element={<SplitPayment orders={orders} />}
+            element={<SplitPayment orders={orders} customer={customer} />}
           />
         </Routes>
       </AnimatePresence>

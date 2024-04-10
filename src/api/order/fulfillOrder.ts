@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios'
+import { customerSchema } from 'types/customer.types'
 import { OrderSchema, SaleSchema } from 'types/report.types'
 import { httpClient } from 'util/http'
 import { z } from 'zod'
@@ -70,6 +71,7 @@ export const FulFillOrderValidationSchema = z.object({
   shiftId: z.string({
     required_error: 'Shift ID is required',
   }),
+  customer: customerSchema.optional(),
   status: z
     .enum(['pending', 'completed', 'cancelled'])
     .default('pending')

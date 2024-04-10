@@ -14,18 +14,20 @@ import { Order } from 'screens/Catalog'
 import { Product } from 'types/product.types'
 import { formatToPeso } from 'util/currency'
 import OrderCartItem from './OrderCartItem'
-import SlidingTransition from 'components/SlidingTransition'
 import { AnimatePresence } from 'framer-motion'
 import Payment from '../Payment'
 import OrderItemDetail from '../OrderItemDetail'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import useUser from 'hooks/useUser'
 import Big from 'big.js'
 import { toNumber } from 'lodash'
+import { ChevronRightIcon, UserIcon } from '@heroicons/react/24/outline'
+import CustomerDetail, { Customer } from './CustomerDetail'
 
 enum Screen {
   Payment = 'payment',
   UpdateOrder = 'update-order',
+  Customer = 'set-customer',
 }
 
 type CartProps = {
@@ -44,6 +46,8 @@ const OrderCart = (props: CartProps) => {
   const location = useLocation()
   const resolvePath = useResolvedPath('')
   const isParentScreen = location.pathname === resolvePath.pathname
+
+  const [customer, setCustomer] = useState<Customer | undefined>()
 
   const showPaymentScreen = () => {
     navigate(Screen.Payment)
@@ -135,6 +139,28 @@ const OrderCart = (props: CartProps) => {
             <h1 className="text-2xl font-bold text-white">Total</h1>
             <p className="text-2xl font-bold">{formatToPeso(totalAmount)}</p>
           </div>
+          <div>
+            <button
+              className="btn btn-ghost btn-sm w-full justify-between p-0"
+              onClick={() => navigate(Screen.Customer)}
+            >
+              <div className="flex flex-row">
+                {!customer && (
+                  <>
+                    <UserIcon className="w-4" /> &nbsp;Customer Details
+                  </>
+                )}
+                {customer && (
+                  <>
+                    <UserIcon className="w-4" /> &nbsp;{' '}
+                    {customer.name ||
+                      `Guest (${customer.contact || customer.email || customer.location})`}
+                  </>
+                )}
+              </div>
+              <ChevronRightIcon className="w-4" />
+            </button>
+          </div>
           {/* Items */}
           <div className="flex w-full flex-grow flex-col gap-[2px] ">
             {orders.map((order) => {
@@ -172,7 +198,7 @@ const OrderCart = (props: CartProps) => {
         <Routes>
           <Route
             path={`${Screen.Payment}/*`}
-            element={<Payment orders={orders} />}
+            element={<Payment orders={orders} customer={customer} />}
           />
           <Route
             path={`${Screen.UpdateOrder}/*`}
@@ -180,6 +206,15 @@ const OrderCart = (props: CartProps) => {
               <OrderItemDetail
                 onBack={() => navigate(-1)}
                 onUpdateOrder={updateProductInOrder}
+              />
+            }
+          />
+          <Route
+            path={`${Screen.Customer}/*`}
+            element={
+              <CustomerDetail
+                customer={customer}
+                setCustomer={(customer) => setCustomer(customer)}
               />
             }
           />

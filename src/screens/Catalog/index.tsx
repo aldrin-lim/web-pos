@@ -28,6 +28,7 @@ import { formatToPeso } from 'util/currency'
 import { useQueryClient } from '@tanstack/react-query'
 import { AppPath } from 'routes/AppRoutes.types'
 import LoadingCover from 'components/LoadingCover'
+import { Customer } from 'types/customer.types'
 enum ScreenPath {
   AddProduct = 'add-product',
   AddOrder = 'add-product-to-order',
@@ -40,6 +41,7 @@ export type Order = {
   product: Product
   quantity: number
   discount?: Discount
+  customer?: Customer
 }
 
 export type OrderAction = 'add' | 'edit' | 'reset'

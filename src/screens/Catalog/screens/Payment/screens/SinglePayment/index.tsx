@@ -22,13 +22,14 @@ import gcash from '../../assets/gcash.svg'
 import paymaya from '../../assets/paymaya.svg'
 import { useEffect, useState } from 'react'
 import CurrencyInput from 'react-currency-input-field'
-import SlidingTransition from 'components/SlidingTransition'
-import { AnimatePresence } from 'framer-motion'
 import PaymentCompleted from '../PaymentCompleted'
 import { AppPath } from 'routes/AppRoutes.types'
 import useFulfillOrder from 'hooks/useFulfillOrder'
 import useGetShift from 'hooks/useGetTodayShift'
 import useUser from 'hooks/useUser'
+import { FulFillOrderValidationSchema } from 'api/order/fulfillOrder'
+import { v4 } from 'uuid'
+import { Customer } from 'types/customer.types'
 
 enum Screen {
   Completed = 'completed',
@@ -36,6 +37,7 @@ enum Screen {
 
 type PaymentProps = {
   orders: Order[]
+  customer?: Customer
 }
 
 const paymentMethods = [
@@ -95,7 +97,7 @@ export const getPaymentMethodName = (method: PaymentMethod) => {
 }
 
 const SinglePayment = (props: PaymentProps) => {
-  const { orders } = props
+  const { orders, customer } = props
   const { taxRate } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
@@ -179,8 +181,14 @@ const SinglePayment = (props: PaymentProps) => {
         },
       ],
       shiftId: shift?.id,
-    }
+    } as FulFillOrderValidationSchema
 
+    if (customer && !Object.values(customer).every((v) => v === '')) {
+      payload.customer = {
+        id: v4(),
+        ...customer,
+      }
+    }
     const order = await fulfillOrder(payload)
     navigate(Screen.Completed, {
       state: {
@@ -245,6 +253,9 @@ const SinglePayment = (props: PaymentProps) => {
             Pay
           </button>
         </div>
+        <pre className="max-w-xs text-xs">
+          {JSON.stringify(orders, null, 2)}
+        </pre>
       </div>
       <Routes location={location} key={isParentScreen.toString()}>
         <Route

@@ -84,11 +84,25 @@ const renderStockInfo = (product: Product) => {
     )
   }
 
+  if (product.allowBackOrder && product.outOfStock) {
+    if (product.outOfStock) {
+      return (
+        <div className="flex flex-row gap-1  text-xs">
+          <span className={`overflow-hidden truncate text-ellipsis`}>
+            {product.batches.reduce((acc, batch) => acc + batch.quantity, 0)}{' '}
+            {measurement}
+          </span>
+        </div>
+      )
+    }
+  }
+
   if (product.outOfStock) {
     return (
       <div className="flex flex-row gap-1  text-xs">
         <span className={`overflow-hidden truncate text-ellipsis text-red-400`}>
           Out of stock
+          {isExpired(activeBatch.expirationDate) && ` • Expired`}
         </span>
       </div>
     )
