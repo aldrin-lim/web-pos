@@ -253,9 +253,6 @@ const SinglePayment = (props: PaymentProps) => {
             Pay
           </button>
         </div>
-        <pre className="max-w-xs text-xs">
-          {JSON.stringify(orders, null, 2)}
-        </pre>
       </div>
       <Routes location={location} key={isParentScreen.toString()}>
         <Route
