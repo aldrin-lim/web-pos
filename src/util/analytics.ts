@@ -45,8 +45,10 @@ export const Analytics = {
     VITE_MIXPANEL_ID && mixpanel.alias(id)
   },
   track: (name: string, props?: Dict) => {
-    VITE_MIXPANEL_ID && mixpanel.track(name, props)
-    VITE_HOTJAR_ID && hotjar.event(name)
+    if (MODE === 'production' && VITE_MIXPANEL_ID) {
+      VITE_MIXPANEL_ID && mixpanel.track(name, props)
+      VITE_HOTJAR_ID && hotjar.event(name)
+    }
   },
   trackUnhandledError: (error: unknown) => {
     if (MODE === 'production' && VITE_SENTRY_ENVIRONMENT && VITE_SENTRY_DSN) {
@@ -54,7 +56,9 @@ export const Analytics = {
     }
   },
   trackPageView: (name: string, props?: Dict) => {
-    VITE_MIXPANEL_ID && mixpanel.track_pageview({ name, ...props })
+    if (MODE === 'production' && VITE_MIXPANEL_ID) {
+      mixpanel.track_pageview({ name, ...props })
+    }
   },
   people: {
     set: (props: Dict) => {
