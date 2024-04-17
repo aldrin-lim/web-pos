@@ -137,7 +137,7 @@ const ZReport = () => {
       </div>
       <div className="mx-auto flex h-full max-w-md flex-col gap-10 bg-neutral p-6 text-black">
         <div className="item flex flex-col gap-1">
-          <h1 className="border-b-2 border-black  text-center text-2xl font-bold leading-6 text-black">
+          <h1 className="border-b-2 border-black pb-4  text-center text-2xl font-bold leading-6 text-black">
             Z-Report
           </h1>
           <h2 className="mb-4 mt-4 text-center text-sm">
